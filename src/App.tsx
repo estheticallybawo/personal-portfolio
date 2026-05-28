@@ -2,6 +2,7 @@ import { type CSSProperties, type MouseEvent, useEffect, useMemo, useRef, useSta
 import { flushSync } from "react-dom";
 import {
   ArrowUpRight,
+  ArrowLeft,
   Check,
   Code2,
   Copy,
@@ -139,11 +140,12 @@ declare global {
 
 function App() {
   const spotlightRef = useRef<HTMLDivElement | null>(null);
+  const scrollProgressRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<ReturnType<typeof createAudioController> | null>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [themeRipple, setThemeRipple] = useState<ThemeRipple>(null);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem(soundStorageKey) === "on");
   const [copied, setCopied] = useState(false);
+  const [path, setPath] = useState(() => window.location.pathname);
   const [theme, setTheme] = useState<Theme>(() => {
     const requestedTheme = new URLSearchParams(window.location.search).get("theme");
     if (requestedTheme === "light" || requestedTheme === "dark") {
@@ -165,9 +167,24 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const updatePath = () => setPath(window.location.pathname);
+    window.addEventListener("popstate", updatePath);
+    return () => window.removeEventListener("popstate", updatePath);
+  }, []);
+
+  useEffect(() => {
+    let frame = 0;
+
     const updateProgress = () => {
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(maxScroll > 0 ? window.scrollY / maxScroll : 0);
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        const progress = scrollProgressRef.current;
+        if (!progress) return;
+
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.transform = `scaleX(${maxScroll > 0 ? window.scrollY / maxScroll : 0})`;
+      });
     };
 
     updateProgress();
@@ -175,6 +192,7 @@ function App() {
     window.addEventListener("resize", updateProgress);
 
     return () => {
+      window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", updateProgress);
       window.removeEventListener("resize", updateProgress);
     };
@@ -328,10 +346,19 @@ function App() {
     window.setTimeout(() => setCopied(false), 1800);
   };
 
+  const navigateTo = (nextPath: string) => {
+    window.history.pushState({}, "", nextPath);
+    setPath(nextPath);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const activeProjectSlug = path.match(/^\/work\/([^/]+)\/?$/)?.[1];
+  const activeProject = projects.find((project) => project.slug === activeProjectSlug);
+
   return (
     <>
       <div className="cursor-spotlight" ref={spotlightRef} aria-hidden="true" />
-      <div className="scroll-progress" style={{ transform: `scaleX(${scrollProgress})` }} aria-hidden="true" />
+      <div className="scroll-progress" ref={scrollProgressRef} aria-hidden="true" />
       {themeRipple ? (
         <span
           className="theme-ripple"
@@ -349,12 +376,18 @@ function App() {
         onSoundCue={playSound}
       />
       <main className="site-shell">
-        <Hero onSoundCue={playSound} />
-        <Tools />
-        <Projects onSoundCue={playSound} />
-        <About />
-        <Resume />
-        <Footer copied={copied} onCopyEmail={copyEmail} onSoundCue={playSound} />
+        {activeProject ? (
+          <ProjectDetail project={activeProject} onBack={() => navigateTo("/")} onSoundCue={playSound} />
+        ) : (
+          <>
+            <Hero onSoundCue={playSound} />
+            <Tools />
+            <Projects onNavigate={navigateTo} onSoundCue={playSound} />
+            <About />
+            <Resume />
+            <Footer copied={copied} onCopyEmail={copyEmail} onSoundCue={playSound} />
+          </>
+        )}
       </main>
     </>
   );
@@ -377,16 +410,16 @@ function Nav({
 }) {
   return (
     <header className="nav-wrap">
-      <a href="#home" className="brand-mark" aria-label="Esther Tsotso home" onClick={() => onSoundCue("button")}>
+      <a href="/" className="brand-mark" aria-label="Esther Tsotso home" onClick={() => onSoundCue("button")}>
         {profile.shortName}
       </a>
       <nav className="nav-links" aria-label="Primary navigation">
-        <a href="#projects" onClick={() => onSoundCue("button")}>Projects</a>
-        <a href="#about" onClick={() => onSoundCue("button")}>About</a>
+        <a href="/#projects" onClick={() => onSoundCue("button")}>Projects</a>
+        <a href="/#about" onClick={() => onSoundCue("button")}>About</a>
         <a href={profile.cvUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
           Resume
         </a>
-        <a href="#contact" onClick={() => onSoundCue("button")}>Contact</a>
+        <a href="/#contact" onClick={() => onSoundCue("button")}>Contact</a>
       </nav>
       <div className="nav-controls">
         <button
@@ -495,7 +528,13 @@ function Tools() {
   );
 }
 
-function Projects({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
+function Projects({
+  onNavigate,
+  onSoundCue,
+}: {
+  onNavigate: (path: string) => void;
+  onSoundCue: (kind: SoundKind) => void;
+}) {
   return (
     <section className="projects section-anchor" id="projects">
       <SectionHeading
@@ -525,6 +564,9 @@ function Projects({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
                 ))}
               </div>
               <div className="project-actions">
+                <button type="button" onClick={() => { onSoundCue("button"); onNavigate(`/work/${project.slug}`); }}>
+                  Case study <ArrowUpRight size={15} />
+                </button>
                 {project.liveUrl ? (
                   <a href={project.liveUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
                     Live preview <ArrowUpRight size={15} />
@@ -539,11 +581,13 @@ function Projects({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
             </div>
             <a
               className="project-image"
-              href={project.liveUrl || project.codeUrl}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`Open ${project.name}`}
-              onClick={() => onSoundCue("button")}
+              href={`/work/${project.slug}`}
+              aria-label={`Open ${project.name} case study`}
+              onClick={(event) => {
+                event.preventDefault();
+                onSoundCue("button");
+                onNavigate(`/work/${project.slug}`);
+              }}
             >
               <img src={project.image} alt={`${project.name} preview`} />
             </a>
@@ -551,6 +595,109 @@ function Projects({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
         ))}
       </div>
     </section>
+  );
+}
+
+function ProjectDetail({
+  project,
+  onBack,
+  onSoundCue,
+}: {
+  project: (typeof projects)[number];
+  onBack: () => void;
+  onSoundCue: (kind: SoundKind) => void;
+}) {
+  return (
+    <article className="case-study">
+      <button
+        className="back-link"
+        type="button"
+        onClick={() => {
+          onSoundCue("button");
+          onBack();
+        }}
+      >
+        <ArrowLeft size={16} />
+        Back to portfolio
+      </button>
+
+      <header className="case-hero">
+        <p className="eyebrow">{project.role} / {project.year}</p>
+        <h1>{project.name}</h1>
+        <span>{project.description}</span>
+        <div className="case-actions">
+          {project.liveUrl ? (
+            <a href={project.liveUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
+              View live <ArrowUpRight size={15} />
+            </a>
+          ) : null}
+          {project.codeUrl ? (
+            <a href={project.codeUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
+              Codebase <Github size={15} />
+            </a>
+          ) : null}
+        </div>
+      </header>
+
+      <figure className="case-cover">
+        <img src={project.image} alt={`${project.name} project preview`} />
+      </figure>
+
+      <section className="case-grid">
+        <div>
+          <p className="eyebrow">Overview</p>
+          <h2>The problem</h2>
+        </div>
+        <p>{project.overview}</p>
+      </section>
+
+      <section className="case-grid">
+        <div>
+          <p className="eyebrow">My role</p>
+          <h2>What I owned</h2>
+        </div>
+        <p>{project.roleDetails}</p>
+      </section>
+
+      <section className="case-list-section">
+        <div className="section-heading">
+          <p>Process</p>
+          <h2>How I approached it.</h2>
+        </div>
+        <div className="case-list">
+          {project.process.map((item, index) => (
+            <article className="case-note" key={item}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <p>{item}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="case-list-section">
+        <div className="section-heading">
+          <p>Outcome</p>
+          <h2>What it demonstrates.</h2>
+        </div>
+        <div className="case-list">
+          {project.outcomes.map((item) => (
+            <article className="case-note" key={item}>
+              <Check size={18} />
+              <p>{item}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="case-stack">
+        <p className="eyebrow">Tech stack</p>
+        <div className="tags">
+          {project.tech.map((tag) => (
+            <span key={tag}>{tag}</span>
+          ))}
+        </div>
+      </section>
+    </article>
   );
 }
 

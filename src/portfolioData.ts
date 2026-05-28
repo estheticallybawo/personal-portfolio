@@ -1,12 +1,18 @@
 export type Project = {
+  slug: string;
   name: string;
   role: string;
+  year: string;
   description: string;
   story: string;
   tech: string[];
   liveUrl?: string;
   codeUrl?: string;
   image: string;
+  overview: string;
+  roleDetails: string;
+  process: string[];
+  outcomes: string[];
 };
 
 export const profile = {
@@ -117,8 +123,10 @@ export const craftCards = [
 
 export const projects: Project[] = [
   {
+    slug: "loft-craft",
     name: "Loft Craft",
     role: "E-commerce platform",
+    year: "2025",
     description:
       "A Next.js furniture store with Paystack payments, cart state, callbacks, and order confirmation flows.",
     story:
@@ -128,10 +136,26 @@ export const projects: Project[] = [
     codeUrl: "https://github.com/estheticallybawo/loft-craft-store",
     image:
       "https://hellocv.s3.amazonaws.com/assets/resumes/v93fp6CT6nxnklAF8VzDfcVomuq6tD3UklBjyKQn.png",
+    overview:
+      "Loft Craft is an e-commerce experience built around the full shopping path: browsing furniture, managing a cart, paying securely, and confirming the order state without leaving users unsure about what happened.",
+    roleDetails:
+      "I built the frontend flow, cart behavior, payment callback handling, and responsive interface patterns that make the purchase journey feel clear across devices.",
+    process: [
+      "Mapped the shopping journey from product discovery to order confirmation.",
+      "Used Zustand for predictable cart state and Paystack for payment flow integration.",
+      "Built responsive UI states for loading, payment feedback, and confirmation moments.",
+    ],
+    outcomes: [
+      "A complete checkout flow with fewer dead ends.",
+      "Clearer payment feedback for users after transactions.",
+      "A stronger example of product thinking inside a frontend build.",
+    ],
   },
   {
+    slug: "ticket-generator",
     name: "Ticket Generator",
     role: "Figma-to-app experience",
+    year: "2025",
     description:
       "A multi-step ticketing interface for Techember Fest with form progression and precise UI translation.",
     story:
@@ -141,10 +165,26 @@ export const projects: Project[] = [
     codeUrl: "https://github.com/estheticallybawo/Ticket-Generator",
     image:
       "https://hellocv.s3.amazonaws.com/assets/resumes/ziBV7xuXZYvx4aL9JwyEM6s1XzJcASW8vbaKBecj.png",
+    overview:
+      "Ticket Generator turns a festival ticketing design into a working multi-step flow where users can select a ticket, complete their details, and reach confirmation without friction.",
+    roleDetails:
+      "I translated the Figma direction into a responsive React experience and focused on progression, validation, and interface clarity.",
+    process: [
+      "Broke the ticketing task into clear steps with simple state transitions.",
+      "Matched the visual direction while keeping form behavior usable on smaller screens.",
+      "Handled form and confirmation states so users always know where they are.",
+    ],
+    outcomes: [
+      "A polished Figma-to-code implementation.",
+      "A smoother ticket selection and confirmation flow.",
+      "A useful proof point for detail-oriented frontend delivery.",
+    ],
   },
   {
+    slug: "markdown-previewer",
     name: "Markdown Previewer",
     role: "Real-time editor",
+    year: "2025",
     description:
       "A Vue 3 markdown workspace for live editing and rendering with responsive document-preview behavior.",
     story:
@@ -154,22 +194,54 @@ export const projects: Project[] = [
     codeUrl: "https://github.com/estheticallybawo/Markdown-Preview",
     image:
       "https://hellocv.s3.amazonaws.com/assets/resumes/IMTxsqWYvjmckGNoJnqfXVIFmxNhfGwTS0c6TzzG.png",
+    overview:
+      "Markdown Previewer is a live writing workspace that helps users edit structured text and immediately see the rendered output.",
+    roleDetails:
+      "I built the Vue interface, editing experience, and preview behavior with attention to predictable state and calm document-focused layout.",
+    process: [
+      "Separated editing and preview concerns so the workspace stays easy to reason about.",
+      "Focused on real-time feedback as the core interaction.",
+      "Kept the interface responsive so writing and previewing remains usable on different screen sizes.",
+    ],
+    outcomes: [
+      "Immediate markdown feedback for users.",
+      "A lightweight productivity tool with simple interaction rules.",
+      "A project that demonstrates state and rendering fundamentals.",
+    ],
   },
   {
+    slug: "echo-landing",
     name: "Echo Landing",
     role: "AI product landing page",
+    year: "2026",
     description:
       "A polished TypeScript landing page for Echo, built to communicate product value with clarity and momentum.",
     story:
       "A communication problem: turn an urgent social-good idea into a clear product story people can understand quickly.",
     tech: ["TypeScript", "Landing Page", "Product Story"],
-    liveUrl: "https://echoxgemma.live",
+    liveUrl: "https://www.echoxgemma.live",
     codeUrl: "https://github.com/estheticallybawo/echo-landing",
     image: "/assets/echo-tag.png",
+    overview:
+      "Echo Landing presents the story behind Echo, an AI-powered emergency response product, and turns a sensitive social-good idea into a clear product narrative.",
+    roleDetails:
+      "I built the TypeScript landing page and shaped the communication around urgency, trust, and product value so visitors can understand the idea quickly.",
+    process: [
+      "Clarified the core product promise before building the landing page sections.",
+      "Structured the page around the problem, how Echo works, roadmap, team, and trust signals.",
+      "Used strong responsive typography and spacing to keep the message readable.",
+    ],
+    outcomes: [
+      "A clearer public-facing story for Echo.",
+      "A landing page that supports a long-term product initiative beyond the hackathon.",
+      "A stronger example of engineering with product empathy.",
+    ],
   },
   {
+    slug: "remfi",
     name: "RemFi",
     role: "Webflow landing page",
+    year: "2025",
     description:
       "A conversion-focused landing page for a financial reminder app that helps people plan expenses intentionally.",
     story:
@@ -178,10 +250,26 @@ export const projects: Project[] = [
     liveUrl: "https://remfi-app.webflow.io/",
     image:
       "https://hellocv.s3.amazonaws.com/assets/resumes/1uK9BPhSUiV8Rjpy8JITG1nfM7slUf9OoQHI2Egb.png",
+    overview:
+      "RemFi is a landing page for a financial reminder app, designed to explain how the product helps people plan expenses and avoid missed payments.",
+    roleDetails:
+      "I worked on the Webflow landing page, focusing on simple product messaging, conversion flow, and trust-building sections.",
+    process: [
+      "Framed the product around intentional planning rather than generic finance copy.",
+      "Organized the landing page to introduce the problem, value, and call to action quickly.",
+      "Balanced clear copy with a layout that feels approachable for finance users.",
+    ],
+    outcomes: [
+      "A more understandable entry point for the product.",
+      "Clearer trust and value communication.",
+      "A practical example of product messaging in a frontend-adjacent workflow.",
+    ],
   },
   {
+    slug: "veritrade",
     name: "Veritrade",
     role: "Mobile MVP",
+    year: "2025",
     description:
       "A business verification and risk-intelligence mobile MVP with AI-powered checks and practical trust signals.",
     story:
@@ -190,12 +278,26 @@ export const projects: Project[] = [
     codeUrl: "https://github.com/estheticallybawo/veritrade-app",
     image:
       "https://hellocv.s3.amazonaws.com/assets/resumes/zXBXN7t9avDkkrODQXhyqfLcHY4mfk8nL8lJCRs5.png",
+    overview:
+      "Veritrade is a mobile MVP for business verification and risk intelligence, helping users make safer business decisions through practical trust signals.",
+    roleDetails:
+      "I contributed to the mobile-first product experience, shaping flows that make verification signals understandable rather than overwhelming.",
+    process: [
+      "Started from the user risk: uncertainty before trusting a business.",
+      "Organized verification and intelligence signals into a mobile-first flow.",
+      "Used practical UI states to help users interpret results and next steps.",
+    ],
+    outcomes: [
+      "A clearer mobile MVP direction for trust and verification.",
+      "A product example centered on risk reduction and user confidence.",
+      "A stronger story around problem-solving beyond visual interface work.",
+    ],
   },
 ];
 
 export const resumeHighlights = [
   {
-    type: "Product Initiative",
+    type: "Hackathon",
     title: "Echo App",
     org: "Gemma for Good / Long-term project",
     period: "May 2026 - Present",
@@ -203,7 +305,7 @@ export const resumeHighlights = [
       "Restructuring Echo beyond the hackathon into an AI-powered emergency response product, with a Flutter MVP for alerts, location sharing, contact escalation, onboarding, and emergency-state flows.",
   },
   {
-    type: "Open Source",
+    type: "Volunteer",
     title: "Open Source Engineer",
     org: "ADEN-HIVE (YC Backed)",
     period: "Mar 2026 - Present",
@@ -211,7 +313,7 @@ export const resumeHighlights = [
       "Reviews pull requests and contributes JavaScript improvements to Hive open-source projects.",
   },
   {
-    type: "Mobile",
+    type: "Capstone",
     title: "Mobile Development",
     org: "WTFellowship",
     period: "Aug 2025 - Aug 2026",
@@ -219,7 +321,7 @@ export const resumeHighlights = [
       "Selected for a 52-week fellowship focused on Flutter, React Native, Firebase, APIs, and mobile MVP delivery.",
   },
   {
-    type: "AI Interface",
+    type: "Internship",
     title: "AI/ML Intern",
     org: "UNICCON",
     period: "Jul 2025 - Oct 2025",
@@ -227,7 +329,7 @@ export const resumeHighlights = [
       "Built interface features and API-connected flows for a text-to-speech product powered by ML and NLP.",
   },
   {
-    type: "Frontend",
+    type: "Internship",
     title: "Frontend Engineering Intern",
     org: "HNG Tech",
     period: "Dec 2024 - Apr 2025",

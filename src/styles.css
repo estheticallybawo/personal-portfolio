@@ -63,6 +63,7 @@
 
 html {
   scrollbar-color: var(--accent) transparent;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -255,7 +256,8 @@ img {
 
 .nav-links a:hover,
 .social-links a:hover,
-.project-actions a:hover {
+.project-actions a:hover,
+.project-actions button:hover {
   color: var(--text);
   border-color: var(--accent-line);
   background: var(--accent-soft);
@@ -589,11 +591,7 @@ img {
   border-radius: 24px;
   background: var(--project-card-bg);
   box-shadow: var(--project-card-shadow);
-  transform-origin: center top;
-  transform: translateZ(0);
   transition: border-color 220ms ease, background 220ms ease, box-shadow 220ms ease;
-  backface-visibility: hidden;
-  contain: paint;
 }
 
 .project-copy {
@@ -722,7 +720,8 @@ img {
   padding-top: 16px;
 }
 
-.project-actions a {
+.project-actions a,
+.project-actions button {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -732,6 +731,12 @@ img {
   color: var(--muted-strong);
   font-size: 13px;
   font-weight: 700;
+  cursor: pointer;
+}
+
+.project-actions button {
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
 }
 
 .project-image {
@@ -770,6 +775,150 @@ img {
   display: grid;
   grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
   gap: clamp(36px, 6vw, 72px);
+}
+
+.case-study {
+  padding: 126px 0 var(--section-gap);
+}
+
+.back-link,
+.case-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--muted-strong);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.back-link {
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+.case-actions a {
+  padding: 0 13px;
+}
+
+.back-link:hover,
+.case-actions a:hover {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.case-hero {
+  max-width: 920px;
+  margin-top: 78px;
+}
+
+.case-hero h1 {
+  margin: 18px 0 20px;
+  color: var(--text);
+  font-family: var(--heading-font);
+  font-size: clamp(3rem, 10vw, 8rem);
+  line-height: 0.9;
+}
+
+.case-hero > span {
+  display: block;
+  max-width: 640px;
+  color: var(--muted-strong);
+  font-size: clamp(1.05rem, 2.2vw, 1.45rem);
+  font-weight: 500;
+  line-height: 1.7;
+}
+
+.case-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.case-cover {
+  margin: clamp(52px, 9vw, 92px) 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: #fff;
+}
+
+.case-cover img {
+  width: 100%;
+  max-height: 680px;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.case-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.6fr) minmax(0, 1fr);
+  gap: clamp(28px, 6vw, 80px);
+  padding: clamp(46px, 7vw, 76px) 0;
+  border-top: 1px solid var(--line);
+}
+
+.case-grid h2,
+.case-list-section h2 {
+  margin: 14px 0 0;
+  color: var(--text);
+  font-family: var(--heading-font);
+  font-size: clamp(2rem, 4vw, 3.7rem);
+  line-height: 1;
+}
+
+.case-grid > p {
+  margin: 0;
+  color: var(--muted-strong);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  font-weight: 500;
+  line-height: 1.75;
+}
+
+.case-list-section {
+  padding: clamp(46px, 7vw, 76px) 0;
+  border-top: 1px solid var(--line);
+}
+
+.case-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.case-note {
+  min-height: 190px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel);
+  padding: 22px;
+}
+
+.case-note span,
+.case-note svg {
+  color: var(--accent);
+}
+
+.case-note p {
+  margin: 18px 0 0;
+  color: var(--muted-strong);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.75;
+}
+
+.case-stack {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: clamp(46px, 7vw, 76px);
+  border-top: 1px solid var(--line);
 }
 
 .about-narrative p {
@@ -1236,12 +1385,23 @@ img {
   }
 
   .tags span,
-  .project-actions a {
+  .project-actions a,
+  .project-actions button {
     font-size: 10px;
   }
 
   .project-actions {
     padding-top: 10px;
+  }
+
+  .case-grid,
+  .case-list {
+    grid-template-columns: 1fr;
+  }
+
+  .case-stack {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 
@@ -1351,5 +1511,17 @@ img {
 
   .mini-card {
     min-height: 116px;
+  }
+
+  .case-study {
+    padding-top: 104px;
+  }
+
+  .case-hero {
+    margin-top: 48px;
+  }
+
+  .case-note {
+    min-height: 150px;
   }
 }
