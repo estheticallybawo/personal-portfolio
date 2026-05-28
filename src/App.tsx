@@ -426,9 +426,8 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
 
         <aside className="hero-side" data-reveal>
           <p>
-            I solve product problems with frontend engineering, product intuition,
-            and user empathy. Focused on building useful experiences that make complex
-            flows feel clear, reliable, and human.
+            Hi there, I'm a frontend developer from Nigeria who solves product problems with frontend engineering, product intuition,
+            and user empathy. I focus on building experiences that feels human and well thought out.
           </p>
           <div className="hero-actions">
             <a className="primary-button" href="#projects" onClick={() => onSoundCue("button")}>
