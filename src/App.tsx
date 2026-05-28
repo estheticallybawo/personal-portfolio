@@ -1,5 +1,4 @@
 import { type CSSProperties, type MouseEvent, useEffect, useMemo, useRef, useState } from "react";
-import { flushSync } from "react-dom";
 import {
   ArrowUpRight,
   ArrowLeft,
@@ -38,9 +37,6 @@ const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
 
 type SoundKind = "nav" | "theme" | "project" | "copy" | "contact" | "button";
 type ThemeRipple = { x: number; y: number; color: string; id: number } | null;
-type ViewTransitionDocument = Document & {
-  startViewTransition?: (callback: () => void) => { finished: Promise<void> };
-};
 
 function createAudioController() {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -142,6 +138,7 @@ function App() {
   const spotlightRef = useRef<HTMLDivElement | null>(null);
   const scrollProgressRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<ReturnType<typeof createAudioController> | null>(null);
+  const themeTimersRef = useRef<number[]>([]);
   const [themeRipple, setThemeRipple] = useState<ThemeRipple>(null);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem(soundStorageKey) === "on");
   const [copied, setCopied] = useState(false);
@@ -163,6 +160,7 @@ function App() {
   useEffect(() => {
     return () => {
       audioRef.current?.close();
+      themeTimersRef.current.forEach((timer) => window.clearTimeout(timer));
     };
   }, []);
 
@@ -171,6 +169,47 @@ function App() {
     window.addEventListener("popstate", updatePath);
     return () => window.removeEventListener("popstate", updatePath);
   }, []);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const updateProjectStack = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        const cards = Array.from(document.querySelectorAll<HTMLElement>(".project-feature"));
+        if (!cards.length) return;
+
+        cards.forEach((card, index) => {
+          const nextCard = cards[index + 1];
+          if (!nextCard) {
+            card.style.opacity = "1";
+            return;
+          }
+
+          const stickyTop = parseFloat(window.getComputedStyle(card).top || "76");
+          const nextTop = nextCard.getBoundingClientRect().top;
+          const fadeStart = stickyTop + 180;
+          const fadeEnd = stickyTop + 24;
+          const progress = Math.max(0, Math.min(1, (fadeStart - nextTop) / (fadeStart - fadeEnd)));
+          card.style.opacity = `${1 - progress * 0.42}`;
+        });
+      });
+    };
+
+    updateProjectStack();
+    window.addEventListener("scroll", updateProjectStack, { passive: true });
+    window.addEventListener("resize", updateProjectStack);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateProjectStack);
+      window.removeEventListener("resize", updateProjectStack);
+      document.querySelectorAll<HTMLElement>(".project-feature").forEach((card) => {
+        card.style.opacity = "";
+      });
+    };
+  }, [path]);
 
   useEffect(() => {
     let frame = 0;
@@ -311,7 +350,6 @@ function App() {
     const y = rect.top + rect.height / 2;
     const nextTheme = theme === "dark" ? "light" : "dark";
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     const root = document.documentElement;
 
     root.style.setProperty("--theme-x", `${x}px`);
@@ -322,15 +360,11 @@ function App() {
     );
     playSound("theme");
 
-    const applyTheme = () => {
-      flushSync(() => setTheme(nextTheme));
-    };
-    const transitionDocument = document as ViewTransitionDocument;
+    themeTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+    themeTimersRef.current = [];
 
-    if (transitionDocument.startViewTransition && !reduceMotion && finePointer) {
-      root.classList.add("theme-view-transition");
-      const transition = transitionDocument.startViewTransition(applyTheme);
-      void transition.finished.finally(() => root.classList.remove("theme-view-transition"));
+    if (reduceMotion) {
+      setTheme(nextTheme);
       return;
     }
 
@@ -340,8 +374,13 @@ function App() {
       color: nextTheme === "light" ? "#f5fbff" : "#01050f",
       id: Date.now(),
     });
-    setTheme(nextTheme);
-    window.setTimeout(() => setThemeRipple(null), 1050);
+    themeTimersRef.current = [
+      window.setTimeout(() => setTheme(nextTheme), 430),
+      window.setTimeout(() => {
+        setThemeRipple(null);
+        themeTimersRef.current = [];
+      }, 1040),
+    ];
   };
 
   const copyEmail = async () => {

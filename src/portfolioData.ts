@@ -307,7 +307,7 @@ export const resumeHighlights = [
   {
     type: "Volunteer",
     title: "Open Source Engineer",
-    org: "ADEN-HIVE (YC Backed)",
+    org: "ADEN-HIVE",
     period: "Mar 2026 - Present",
     copy:
       "Reviews pull requests and contributes JavaScript improvements to Hive open-source projects.",
