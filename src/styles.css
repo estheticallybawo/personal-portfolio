@@ -269,6 +269,7 @@ img {
 
 .theme-toggle,
 .sound-toggle {
+  position: relative;
   display: grid;
   place-items: center;
   border-color: transparent;
@@ -284,6 +285,28 @@ img {
 .sound-toggle:hover {
   border-color: var(--accent-line);
   background: var(--accent-soft);
+}
+
+.sound-toggle.needs-attention::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border: 1px solid var(--accent-line);
+  border-radius: inherit;
+  opacity: 0;
+  animation: sound-nudge 2.8s ease-in-out infinite;
+}
+
+.sound-toggle.needs-attention::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent);
 }
 
 .hero {
@@ -1110,6 +1133,23 @@ img {
   }
   to {
     transform: translateX(calc(-50% - 6px));
+  }
+}
+
+@keyframes sound-nudge {
+  0%,
+  62%,
+  100% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  18% {
+    opacity: 0.48;
+    transform: scale(1);
+  }
+  38% {
+    opacity: 0;
+    transform: scale(1.18);
   }
 }
 

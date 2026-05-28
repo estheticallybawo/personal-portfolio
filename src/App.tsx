@@ -390,7 +390,7 @@ function Nav({
       </nav>
       <div className="nav-controls">
         <button
-          className="sound-toggle"
+          className={soundEnabled ? "sound-toggle" : "sound-toggle needs-attention"}
           aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"}
           title={soundEnabled ? "Turn sound off" : "Turn sound on"}
           onClick={onSoundToggle}
@@ -445,7 +445,7 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
       <div className="hero-footnote" data-reveal>
         <div className="portrait-chip">
           <img src={profile.image} alt="Esther Bawo Tsotso" />
-          <span>I care about your product living a long lasting impression</span>
+          <span>I care about your product leaving a long lasting impression</span>
         </div>
         <a href={profile.cvUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
           <Download size={16} />
