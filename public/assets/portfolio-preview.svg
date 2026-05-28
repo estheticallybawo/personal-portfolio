@@ -1,0 +1,32 @@
+<svg width="1280" height="820" viewBox="0 0 1280 820" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="820" fill="#01050F"/>
+  <circle cx="1050" cy="140" r="260" fill="#0691C4" fill-opacity="0.16"/>
+  <circle cx="180" cy="220" r="300" fill="#3750F0" fill-opacity="0.12"/>
+  <g opacity="0.45">
+    <path d="M0 80H1280" stroke="#0B719A" stroke-opacity="0.2"/>
+    <path d="M0 160H1280" stroke="#0B719A" stroke-opacity="0.16"/>
+    <path d="M0 240H1280" stroke="#0B719A" stroke-opacity="0.12"/>
+  </g>
+  <rect x="96" y="78" width="1088" height="76" rx="38" fill="#0C111D" fill-opacity="0.88" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <text x="140" y="125" fill="#F5F7FB" font-family="Arial, sans-serif" font-size="24" font-weight="700">Esther Tsotso</text>
+  <text x="610" y="123" fill="#F5F7FB" fill-opacity="0.78" font-family="Arial, sans-serif" font-size="18">Projects</text>
+  <text x="735" y="123" fill="#F5F7FB" fill-opacity="0.78" font-family="Arial, sans-serif" font-size="18">About</text>
+  <text x="840" y="123" fill="#F5F7FB" fill-opacity="0.78" font-family="Arial, sans-serif" font-size="18">Resume</text>
+  <text x="970" y="123" fill="#F5F7FB" fill-opacity="0.78" font-family="Arial, sans-serif" font-size="18">Contact</text>
+  <text x="112" y="245" fill="#0691C4" font-family="Arial, sans-serif" font-size="18" letter-spacing="5">FRONTEND ENGINEER · PRODUCT THINKER</text>
+  <text x="108" y="365" fill="#F5F7FB" font-family="Arial, sans-serif" font-size="104" font-weight="900">Portfolio</text>
+  <text x="108" y="475" fill="#0691C4" font-family="Arial, sans-serif" font-size="104" font-weight="900">as product.</text>
+  <text x="112" y="555" fill="#C9D5E7" font-family="Arial, sans-serif" font-size="24">A narrative portfolio with case studies, motion, sound,</text>
+  <text x="112" y="590" fill="#C9D5E7" font-family="Arial, sans-serif" font-size="24">theme transitions, and problem-solving copy.</text>
+  <rect x="112" y="660" width="230" height="58" rx="29" fill="#F5F7FB"/>
+  <text x="162" y="697" fill="#02111B" font-family="Arial, sans-serif" font-size="20" font-weight="700">View work</text>
+  <g transform="translate(720 250)">
+    <rect x="0" y="0" width="420" height="330" rx="28" fill="#0C111D" stroke="#0691C4" stroke-opacity="0.35"/>
+    <rect x="24" y="28" width="168" height="18" rx="9" fill="#0691C4" fill-opacity="0.8"/>
+    <rect x="24" y="82" width="280" height="36" rx="18" fill="#F5F7FB" fill-opacity="0.9"/>
+    <rect x="24" y="140" width="360" height="16" rx="8" fill="#F5F7FB" fill-opacity="0.34"/>
+    <rect x="24" y="172" width="300" height="16" rx="8" fill="#F5F7FB" fill-opacity="0.24"/>
+    <rect x="24" y="230" width="120" height="42" rx="21" fill="#0691C4" fill-opacity="0.22" stroke="#0691C4" stroke-opacity="0.65"/>
+    <rect x="164" y="230" width="120" height="42" rx="21" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.1"/>
+  </g>
+</svg>

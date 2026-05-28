@@ -1,4 +1,5 @@
-import { type CSSProperties, type MouseEvent, useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, type MouseEvent as ReactMouseEvent, useEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import {
   ArrowUpRight,
   ArrowLeft,
@@ -20,6 +21,7 @@ import {
 import {
   craftCards,
   credentials,
+  certifications,
   education,
   profile,
   projects,
@@ -34,8 +36,10 @@ const soundStorageKey = "esther-portfolio-sound";
 const ambientTrackPath = "/assets/mixkit-island-beat-250.mp3";
 const clickSoundPath = "/assets/mixkit-coins-handling-1939.wav";
 const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
+const projectRevealSoundPath = "/assets/mixkit-page-forward-single-chime-1107.wav";
+const certificateChimePath = "/assets/mixkit-page-back-chime-1108.wav";
 
-type SoundKind = "nav" | "theme" | "project" | "copy" | "contact" | "button";
+type SoundKind = "nav" | "theme" | "project" | "projectReveal" | "certificate" | "copy" | "contact" | "button";
 type ThemeRipple = { x: number; y: number; color: string; id: number } | null;
 
 function createAudioController() {
@@ -49,6 +53,8 @@ function createAudioController() {
   const music = new Audio(ambientTrackPath);
   const click = new Audio(clickSoundPath);
   const themeSfx = new Audio(themeSoundPath);
+  const projectReveal = new Audio(projectRevealSoundPath);
+  const certificateChime = new Audio(certificateChimePath);
 
   master.gain.value = 0.22;
   master.connect(context.destination);
@@ -59,12 +65,17 @@ function createAudioController() {
   click.volume = 0.34;
   themeSfx.preload = "auto";
   themeSfx.volume = 0.42;
+  projectReveal.preload = "auto";
+  projectReveal.volume = 0.3;
+  certificateChime.preload = "auto";
+  certificateChime.volume = 0.32;
 
   const play = (kind: SoundKind) => {
     if (context.state === "suspended") void context.resume();
 
-    if (kind === "button" || kind === "theme") {
-      const sample = kind === "theme" ? themeSfx : click;
+    if (kind === "button" || kind === "theme" || kind === "projectReveal" || kind === "certificate") {
+      const sample =
+        kind === "theme" ? themeSfx : kind === "projectReveal" ? projectReveal : kind === "certificate" ? certificateChime : click;
       sample.currentTime = 0;
       void sample.play();
       return;
@@ -123,6 +134,8 @@ function createAudioController() {
       music.pause();
       click.pause();
       themeSfx.pause();
+      projectReveal.pause();
+      certificateChime.pause();
       void context.close();
     },
   };
@@ -131,6 +144,11 @@ function createAudioController() {
 declare global {
   interface Window {
     webkitAudioContext?: typeof AudioContext;
+    startViewTransition?: (updateCallback: () => void) => {
+      finished: Promise<void>;
+      ready: Promise<void>;
+      updateCallbackDone: Promise<void>;
+    };
   }
 }
 
@@ -139,6 +157,8 @@ function App() {
   const scrollProgressRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<ReturnType<typeof createAudioController> | null>(null);
   const themeTimersRef = useRef<number[]>([]);
+  const themeTransitionRef = useRef(false);
+  const activeProjectCardRef = useRef(0);
   const [themeRipple, setThemeRipple] = useState<ThemeRipple>(null);
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem(soundStorageKey) === "on");
   const [copied, setCopied] = useState(false);
@@ -177,22 +197,36 @@ function App() {
       if (frame) return;
       frame = window.requestAnimationFrame(() => {
         frame = 0;
+        const stack = document.querySelector<HTMLElement>(".project-stack");
         const cards = Array.from(document.querySelectorAll<HTMLElement>(".project-feature"));
-        if (!cards.length) return;
+        if (!stack || !cards.length) return;
+
+        const rect = stack.getBoundingClientRect();
+        const scrollDistance = Math.max(1, stack.offsetHeight - window.innerHeight);
+        const progress = Math.max(0, Math.min(1, -rect.top / scrollDistance));
+        const position = progress * Math.max(1, cards.length - 1);
+        const activeIndex = Math.min(cards.length - 1, Math.max(0, Math.round(position)));
+
+        if (soundEnabled && activeIndex !== activeProjectCardRef.current) {
+          activeProjectCardRef.current = activeIndex;
+          const audio = ensureAudio();
+          audio?.setAmbient(true);
+          audio?.play("projectReveal");
+        }
 
         cards.forEach((card, index) => {
-          const nextCard = cards[index + 1];
-          if (!nextCard) {
-            card.style.opacity = "1";
-            return;
-          }
+          const exit = Math.max(0, Math.min(1, position - index));
+          const depth = Math.max(0, Math.min(3, index - position));
+          const translateY = exit * -116 + depth * 8;
+          const rotate = exit * -2.2;
+          const scale = 1 - exit * 0.035 - depth * 0.018;
+          const opacity = exit > 0 ? 1 - Math.pow(exit, 1.8) * 0.82 : 1 - depth * 0.18;
 
-          const stickyTop = parseFloat(window.getComputedStyle(card).top || "76");
-          const nextTop = nextCard.getBoundingClientRect().top;
-          const fadeStart = stickyTop + 180;
-          const fadeEnd = stickyTop + 24;
-          const progress = Math.max(0, Math.min(1, (fadeStart - nextTop) / (fadeStart - fadeEnd)));
-          card.style.opacity = `${1 - progress * 0.42}`;
+          card.style.setProperty("--card-y", `${translateY}%`);
+          card.style.setProperty("--card-rotate", `${rotate}deg`);
+          card.style.setProperty("--card-scale", `${scale}`);
+          card.style.opacity = `${opacity}`;
+          card.style.pointerEvents = index === activeIndex ? "auto" : "none";
         });
       });
     };
@@ -206,10 +240,14 @@ function App() {
       window.removeEventListener("scroll", updateProjectStack);
       window.removeEventListener("resize", updateProjectStack);
       document.querySelectorAll<HTMLElement>(".project-feature").forEach((card) => {
+        card.style.removeProperty("--card-y");
+        card.style.removeProperty("--card-rotate");
+        card.style.removeProperty("--card-scale");
         card.style.opacity = "";
+        card.style.pointerEvents = "";
       });
     };
-  }, [path]);
+  }, [path, soundEnabled]);
 
   useEffect(() => {
     let frame = 0;
@@ -239,10 +277,9 @@ function App() {
 
   useEffect(() => {
     const spotlight = spotlightRef.current;
-    const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (!spotlight || !canHover || reduceMotion) return;
+    if (!spotlight || reduceMotion) return;
 
     let frame = 0;
     let targetX = window.innerWidth / 2;
@@ -264,7 +301,9 @@ function App() {
       isRunning = false;
     };
 
-    const moveSpotlight = (event: PointerEvent) => {
+    const moveSpotlight = (event: PointerEvent | MouseEvent) => {
+      if ("pointerType" in event && event.pointerType !== "mouse") return;
+
       targetX = event.clientX;
       targetY = event.clientY;
       spotlight.classList.add("is-active");
@@ -278,12 +317,16 @@ function App() {
     const hideSpotlight = () => spotlight.classList.remove("is-active");
 
     window.addEventListener("pointermove", moveSpotlight);
+    window.addEventListener("mousemove", moveSpotlight);
     window.addEventListener("pointerleave", hideSpotlight);
+    window.addEventListener("mouseleave", hideSpotlight);
 
     return () => {
       window.cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", moveSpotlight);
+      window.removeEventListener("mousemove", moveSpotlight);
       window.removeEventListener("pointerleave", hideSpotlight);
+      window.removeEventListener("mouseleave", hideSpotlight);
     };
   }, []);
 
@@ -344,7 +387,9 @@ function App() {
     localStorage.setItem(soundStorageKey, next ? "on" : "off");
   };
 
-  const toggleTheme = (event: MouseEvent<HTMLButtonElement>) => {
+  const toggleTheme = (event: ReactMouseEvent<HTMLButtonElement>) => {
+    if (themeTransitionRef.current) return;
+
     const rect = event.currentTarget.getBoundingClientRect();
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
@@ -368,18 +413,34 @@ function App() {
       return;
     }
 
+    if (document.startViewTransition) {
+      themeTransitionRef.current = true;
+      document.documentElement.classList.add("theme-view-transition");
+      const transition = document.startViewTransition(() => {
+        flushSync(() => setTheme(nextTheme));
+      });
+
+      transition.finished.finally(() => {
+        document.documentElement.classList.remove("theme-view-transition");
+        themeTransitionRef.current = false;
+      });
+      return;
+    }
+
+    themeTransitionRef.current = true;
+    setTheme(nextTheme);
     setThemeRipple({
       x,
       y,
-      color: nextTheme === "light" ? "#f5fbff" : "#01050f",
+      color: nextTheme === "light" ? "rgba(245, 251, 255, 0.72)" : "rgba(1, 5, 15, 0.72)",
       id: Date.now(),
     });
     themeTimersRef.current = [
-      window.setTimeout(() => setTheme(nextTheme), 430),
       window.setTimeout(() => {
         setThemeRipple(null);
         themeTimersRef.current = [];
-      }, 1040),
+        themeTransitionRef.current = false;
+      }, 760),
     ];
   };
 
@@ -402,6 +463,7 @@ function App() {
 
   const activeProjectSlug = path.match(/^\/work\/([^/]+)\/?$/)?.[1];
   const activeProject = projects.find((project) => project.slug === activeProjectSlug);
+  const isCertificationsPage = path === "/certifications" || path === "/certifications/";
 
   return (
     <>
@@ -426,13 +488,15 @@ function App() {
       <main className="site-shell">
         {activeProject ? (
           <ProjectDetail project={activeProject} onBack={() => navigateTo("/")} onSoundCue={playSound} />
+        ) : isCertificationsPage ? (
+          <CertificationsPage onBack={() => navigateTo("/")} onSoundCue={playSound} />
         ) : (
           <>
             <Hero onSoundCue={playSound} />
             <Tools />
             <Projects onNavigate={navigateTo} onSoundCue={playSound} />
             <About />
-            <Resume />
+            <Resume onNavigate={navigateTo} onSoundCue={playSound} />
             <Footer copied={copied} onCopyEmail={copyEmail} onSoundCue={playSound} />
           </>
         )}
@@ -452,7 +516,7 @@ function Nav({
   theme: Theme;
   themeLabel: string;
   soundEnabled: boolean;
-  onThemeToggle: (event: MouseEvent<HTMLButtonElement>) => void;
+  onThemeToggle: (event: ReactMouseEvent<HTMLButtonElement>) => void;
   onSoundToggle: () => void;
   onSoundCue: (kind: SoundKind) => void;
 }) {
@@ -590,14 +654,15 @@ function Projects({
         title="Problems turned into usable products."
         copy="Each project starts with a real user or product friction, then moves through technical decisions, interface states, and delivery."
       />
-      <div className="project-stack">
-        {projects.map((project, index) => (
-          <article
-            className="project-feature"
-            key={project.name}
-            style={{ "--stack-index": index } as CSSProperties}
-            onPointerEnter={() => onSoundCue("project")}
-          >
+      <div className="project-stack" style={{ "--project-count": projects.length } as CSSProperties}>
+        <div className="project-stage">
+          {projects.map((project, index) => (
+            <article
+              className="project-feature"
+              key={project.name}
+              style={{ "--stack-index": projects.length - index } as CSSProperties}
+              onPointerEnter={() => onSoundCue("project")}
+            >
             <div className="project-copy">
               <div className="project-topline">
                 <span>{String(index + 1).padStart(2, "0")}</span>
@@ -615,16 +680,6 @@ function Projects({
                 <button type="button" onClick={() => { onSoundCue("button"); onNavigate(`/work/${project.slug}`); }}>
                   Case study <ArrowUpRight size={15} />
                 </button>
-                {project.liveUrl ? (
-                  <a href={project.liveUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
-                    Live preview <ArrowUpRight size={15} />
-                  </a>
-                ) : null}
-                {project.codeUrl ? (
-                  <a href={project.codeUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
-                    Codebase <Github size={15} />
-                  </a>
-                ) : null}
               </div>
             </div>
             <a
@@ -639,8 +694,9 @@ function Projects({
             >
               <img src={project.image} alt={`${project.name} preview`} />
             </a>
-          </article>
-        ))}
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -676,7 +732,7 @@ function ProjectDetail({
         <div className="case-actions">
           {project.liveUrl ? (
             <a href={project.liveUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
-              View live <ArrowUpRight size={15} />
+              View live project <ArrowUpRight size={15} />
             </a>
           ) : null}
           {project.codeUrl ? (
@@ -737,11 +793,208 @@ function ProjectDetail({
         </div>
       </section>
 
+      <section className="case-list-section">
+        <div className="section-heading">
+          <p>Lessons</p>
+          <h2>What I took forward.</h2>
+        </div>
+        <div className="case-list">
+          {project.lessons.map((item) => (
+            <article className="case-note" key={item}>
+              <Sparkles size={18} />
+              <p>{item}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="case-list-section">
+        <div className="section-heading">
+          <p>Transferable skills</p>
+          <h2>Where the learning travels.</h2>
+        </div>
+        <div className="case-skill-list">
+          {project.transferableSkills.map((skill) => (
+            <span className="badge" key={skill}>{skill}</span>
+          ))}
+        </div>
+      </section>
+
+      <section className="case-grid case-ai">
+        <div>
+          <p className="eyebrow">Use of AI</p>
+          <h2>How AI supported the work</h2>
+        </div>
+        <p>{project.aiUse}</p>
+      </section>
+
+      {project.aiReview ? (
+        <section className="case-grid case-ai-review">
+          <div>
+            <p className="eyebrow">Collaboration review</p>
+            <h2>AI's note on working with me</h2>
+          </div>
+          <p>{project.aiReview}</p>
+        </section>
+      ) : null}
+
       <section className="case-stack">
         <p className="eyebrow">Tech stack</p>
         <div className="tags">
           {project.tech.map((tag) => (
             <span key={tag}>{tag}</span>
+          ))}
+        </div>
+      </section>
+    </article>
+  );
+}
+
+function CertificationsPage({
+  onBack,
+  onSoundCue,
+}: {
+  onBack: () => void;
+  onSoundCue: (kind: SoundKind) => void;
+}) {
+  const [activeCertificate, setActiveCertificate] = useState(0);
+  const imageCertificates = certifications.filter((item) => item.image);
+  const digitalBadges = certifications.filter((item) => !item.image);
+  const certificate = imageCertificates[activeCertificate];
+  const nextCertificate = imageCertificates[(activeCertificate + 1) % imageCertificates.length];
+  const goToCertificate = (index: number) => {
+    onSoundCue("certificate");
+    setActiveCertificate((index + imageCertificates.length) % imageCertificates.length);
+  };
+
+  return (
+    <article className="certifications-page">
+      <button
+        className="back-link"
+        type="button"
+        onClick={() => {
+          onSoundCue("button");
+          onBack();
+        }}
+      >
+        <ArrowLeft size={16} />
+        Back to portfolio
+      </button>
+
+      <header className="case-hero certifications-hero">
+        <p className="eyebrow">Certifications</p>
+        <h1>An ardent learner's receipts</h1>
+        <span>
+          A curated shelf of certificates and digital badges that support the way I build:
+          technical depth, product thinking, user empathy, and continuous learning.
+        </span>
+      </header>
+
+      <section className="certification-carousel" aria-label="Certification carousel">
+        <div className="certification-carousel-top">
+          <div className="certification-progress" aria-label={`Certificate ${activeCertificate + 1} of ${imageCertificates.length}`}>
+            <span>{String(activeCertificate + 1).padStart(2, "0")}</span>
+            <i />
+            <span>{String(imageCertificates.length).padStart(2, "0")}</span>
+          </div>
+          <div className="certification-controls">
+            <button type="button" onClick={() => goToCertificate(activeCertificate - 1)} aria-label="Previous certification">
+              <ArrowLeft size={16} />
+            </button>
+            <button type="button" onClick={() => goToCertificate(activeCertificate + 1)} aria-label="Next certification">
+              <ArrowUpRight size={16} />
+            </button>
+          </div>
+        </div>
+
+        <div className="certification-view">
+          <article className="certification-card certification-card-active" key={`${certificate.issuer}-${certificate.title}-${certificate.verifyUrl ?? certificate.image}`}>
+            <a
+              className="certification-image"
+              href={certificate.verifyUrl ?? certificate.image}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => onSoundCue("button")}
+            >
+              <img src={certificate.image} alt={`${certificate.title} certificate`} />
+            </a>
+            <div className="certification-copy">
+              <span className="badge">{certificate.category}</span>
+              <h2>{certificate.title}</h2>
+              <p>{certificate.issuer}</p>
+              <div className="certification-details">
+                <p className="certification-takeaway">{certificate.takeaway}</p>
+                <div className="certification-skills">
+                  {certificate.skills.map((skill) => (
+                    <span key={skill}>{skill}</span>
+                  ))}
+                </div>
+              </div>
+              {certificate.verifyUrl ? (
+                <a href={certificate.verifyUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
+                  Verify credential <ArrowUpRight size={14} />
+                </a>
+              ) : null}
+            </div>
+          </article>
+
+          <button
+            className="certification-preview"
+            type="button"
+            onClick={() => goToCertificate(activeCertificate + 1)}
+            aria-label={`Preview next certification: ${nextCertificate.title}`}
+          >
+            <span>Next</span>
+            <strong>{String(((activeCertificate + 1) % imageCertificates.length) + 1).padStart(2, "0")}</strong>
+            <em>{nextCertificate.title}</em>
+          </button>
+        </div>
+
+        <div className="certification-number-rail" aria-label="Choose a certification">
+          {imageCertificates.map((item, index) => (
+            <button
+              type="button"
+              key={`${item.issuer}-${item.title}-${index}`}
+              className={index === activeCertificate ? "is-active" : ""}
+              onClick={() => goToCertificate(index)}
+              aria-label={`Open ${item.title}`}
+              aria-current={index === activeCertificate ? "step" : undefined}
+            >
+              {String(index + 1).padStart(2, "0")}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="digital-badges-section">
+        <div className="section-heading">
+          <p>Digital badges</p>
+          <h2>Futher proof of my commitment to continuous learning</h2>
+          <span>Verifiable digital badges</span>
+        </div>
+        <div className="digital-badge-list">
+          {digitalBadges.map((badge, index) => (
+            <article className="digital-badge-card" key={`${badge.issuer}-${badge.title}-${badge.verifyUrl}`}>
+              <span className="rail-index">{String(index + 1).padStart(2, "0")}</span>
+              <div>
+                <span className="badge">{badge.category}</span>
+                <h3>{badge.title}</h3>
+                <p className="muted-line">{badge.issuer}</p>
+                <div className="certification-details">
+                  <p>{badge.takeaway}</p>
+                  <div className="certification-skills">
+                    {badge.skills.map((skill) => (
+                      <span key={skill}>{skill}</span>
+                    ))}
+                  </div>
+                </div>
+                {badge.verifyUrl ? (
+                  <a href={badge.verifyUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
+                    Verify badge <ArrowUpRight size={14} />
+                  </a>
+                ) : null}
+              </div>
+            </article>
           ))}
         </div>
       </section>
@@ -793,13 +1046,19 @@ function About() {
   );
 }
 
-function Resume() {
+function Resume({
+  onNavigate,
+  onSoundCue,
+}: {
+  onNavigate: (path: string) => void;
+  onSoundCue: (kind: SoundKind) => void;
+}) {
   return (
     <section className="resume section-anchor" id="resume">
       <SectionHeading
         eyebrow="Proof"
         title="Experience that backs up the story."
-        copy="A curated resume layer, focused on what each chapter proves about Esther's ability to solve, collaborate, and ship."
+        copy="A curated resume layer, focused on what each chapter proves my ability to solve, collaborate, and ship."
       />
 
       <div className="experience-rail" data-reveal>
@@ -846,7 +1105,14 @@ function Resume() {
         <div className="resume-column" data-reveal>
           <div className="resume-subhead">
             <h3>Badge of honor</h3>
-            <a href={profile.certificationsUrl} target="_blank" rel="noreferrer">
+            <a
+              href={profile.certificationsUrl}
+              onClick={(event) => {
+                event.preventDefault();
+                onSoundCue("button");
+                onNavigate("/certifications");
+              }}
+            >
               View all certifications <ArrowUpRight size={14} />
             </a>
           </div>
@@ -913,6 +1179,16 @@ function Footer({
         <div>
           <strong>{profile.name}</strong>
           <small>(c) 2026 - Built by Esther Tsotso</small>
+          <small className="inspiration-credit">
+            Key inspiration from top folks I admire {" "}
+            <a href="https://www.victorwilliams.me/" target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
+              Victor Williams
+            </a>
+            {" "}and{" "}
+            <a href="https://www.somkene.com/" target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
+              Somkene Ojukwu
+            </a>
+          </small>
         </div>
         <SocialLinks />
       </div>

@@ -13,6 +13,21 @@ export type Project = {
   roleDetails: string;
   process: string[];
   outcomes: string[];
+  lessons: string[];
+  transferableSkills: string[];
+  aiUse: string;
+  aiReview?: string;
+};
+
+export type Certification = {
+  title: string;
+  issuer: string;
+  category: string;
+  image?: string;
+  verifyUrl?: string;
+  note?: string;
+  takeaway: string;
+  skills: string[];
 };
 
 export const profile = {
@@ -27,7 +42,7 @@ export const profile = {
   image: "/assets/frontend.jpg",
   cvUrl:
     "https://docs.google.com/document/d/1oCvEVTNmlrDe_qive0rKeHDxfBHK72btmxe3XOkBT8g/edit?usp=sharing",
-  certificationsUrl: "https://www.esthertsotso.cv",
+  certificationsUrl: "/certifications",
   links: {
     github: "https://github.com/estheticallybawo",
     linkedin: "https://linkedin.com/in/estheticallybawo",
@@ -150,6 +165,14 @@ export const projects: Project[] = [
       "Clearer payment feedback for users after transactions.",
       "A stronger example of product thinking inside a frontend build.",
     ],
+    lessons: [
+      "Payment flows need emotional clarity as much as technical correctness.",
+      "Users trust a checkout more when every state explains what just happened.",
+      "A good commerce experience depends on careful edge-case thinking.",
+    ],
+    transferableSkills: ["Flow mapping", "State management", "Trust-building UX", "Debugging callbacks"],
+    aiUse:
+      "I used AI as a review partner for thinking through edge cases, payment states, and clearer product copy. The final decisions stayed grounded in the user journey and the implementation constraints.",
   },
   {
     slug: "ticket-generator",
@@ -179,6 +202,14 @@ export const projects: Project[] = [
       "A smoother ticket selection and confirmation flow.",
       "A useful proof point for detail-oriented frontend delivery.",
     ],
+    lessons: [
+      "Multi-step flows work better when each screen has one clear job.",
+      "Design translation is not only visual accuracy; it is also preserving intent across states.",
+      "Small validation and confirmation details can make a form feel lighter.",
+    ],
+    transferableSkills: ["Figma translation", "Form logic", "Responsive QA", "Attention to detail"],
+    aiUse:
+      "I used AI to support planning and review, especially when comparing the intended flow against the implemented states and tightening the copy around progression.",
   },
   {
     slug: "markdown-previewer",
@@ -208,6 +239,14 @@ export const projects: Project[] = [
       "A lightweight productivity tool with simple interaction rules.",
       "A project that demonstrates state and rendering fundamentals.",
     ],
+    lessons: [
+      "Productivity tools should stay quiet and predictable.",
+      "Real-time feedback is most useful when it does not interrupt the user.",
+      "Simple tools still need thoughtful empty, editing, and preview states.",
+    ],
+    transferableSkills: ["Reactive state", "Content rendering", "Tooling UX", "Interface simplicity"],
+    aiUse:
+      "I used AI to pressure-test interface decisions and make the tool story easier to explain, while keeping the implementation focused on Vue state and rendering fundamentals.",
   },
   {
     slug: "echo-landing",
@@ -236,6 +275,14 @@ export const projects: Project[] = [
       "A landing page that supports a long-term product initiative beyond the hackathon.",
       "A stronger example of engineering with product empathy.",
     ],
+    lessons: [
+      "Sensitive product ideas need copy that is urgent without becoming overwhelming.",
+      "A strong landing page should help people understand the product before asking them to act.",
+      "Social-good products need trust, clarity, and restraint in equal measure.",
+    ],
+    transferableSkills: ["Product storytelling", "Technical communication", "Responsive typography", "User empathy"],
+    aiUse:
+      "I used AI as a product-thinking partner while shaping the narrative: clarifying what Echo does, what problem it solves, and how to communicate urgency in a way that still feels responsible.",
   },
   {
     slug: "remfi",
@@ -264,6 +311,14 @@ export const projects: Project[] = [
       "Clearer trust and value communication.",
       "A practical example of product messaging in a frontend-adjacent workflow.",
     ],
+    lessons: [
+      "Finance products need plain language before persuasion.",
+      "Users are more likely to trust a product when the benefit is specific and immediate.",
+      "No-code tools still require strong product judgment and hierarchy.",
+    ],
+    transferableSkills: ["Conversion copy", "Information hierarchy", "Webflow delivery", "Trust communication"],
+    aiUse:
+      "I used AI to explore clearer positioning and sharper page copy, especially around explaining the product benefit without making the experience feel too sales-heavy.",
   },
   {
     slug: "veritrade",
@@ -292,6 +347,57 @@ export const projects: Project[] = [
       "A product example centered on risk reduction and user confidence.",
       "A stronger story around problem-solving beyond visual interface work.",
     ],
+    lessons: [
+      "Risk products need to make uncertainty understandable, not scarier.",
+      "Mobile MVPs work best when the first version protects the core decision users need to make.",
+      "AI features need clear boundaries so users understand what to trust.",
+    ],
+    transferableSkills: ["Mobile product thinking", "Risk framing", "AI feature communication", "MVP prioritization"],
+    aiUse:
+      "I used AI to think through how verification signals could be explained to users. It was most useful as a framing tool, while the product decisions centered on safety, clarity, and practical user confidence.",
+  },
+  {
+    slug: "personal-portfolio",
+    name: "Personal Portfolio",
+    role: "Interactive portfolio",
+    year: "2026",
+    description:
+      "A Vite React portfolio that turns resume content into an interactive product story with motion, sound, case studies, and theme transitions.",
+    story:
+      "A positioning problem: show that I am a solution-oriented engineer with product intuition, user empathy, and the ability to iterate thoughtfully.",
+    tech: ["React", "TypeScript", "Vite", "CSS Motion", "AI Pairing"],
+    codeUrl: "https://github.com/estheticallybawo/personal-portfolio",
+    image: "/assets/portfolio-preview.svg",
+    overview:
+      "This portfolio reframes my resume into a guided product experience. It uses project case studies, scroll-based card interaction, sound cues, dark and light themes, and narrative copy to communicate how I think and build.",
+    roleDetails:
+      "I shaped the product direction, copy, interactions, sound behavior, responsive layout, and case-study structure while continuously testing how each decision affected the user's perception of the work.",
+    process: [
+      "Started from a Figma-inspired direction, then changed the overall design to better match my own positioning.",
+      "Reworked the copy from design-heavy language into solution-oriented engineering, product intuition, and user empathy.",
+      "Iterated on sticky project cards, theme transitions, sound cues, case-study routing, mobile behavior, and deployment readiness.",
+    ],
+    outcomes: [
+      "A portfolio that behaves more like a product than a static resume.",
+      "Cleaner project cards that invite users into deeper case studies.",
+      "A stronger personal narrative around problem solving, product thinking, and collaboration.",
+    ],
+    lessons: [
+      "A portfolio should prove judgment, not only list skills.",
+      "Motion and sound work best when they support navigation, not decoration.",
+      "Iterating in public with honest feedback leads to a clearer product direction.",
+    ],
+    transferableSkills: [
+      "Product judgment",
+      "Human-AI collaboration",
+      "Responsive interaction design",
+      "Copy refinement",
+      "Visual QA",
+    ],
+    aiUse:
+      "I used AI as a pair-programming and product-thinking partner while I directed the taste, goals, references, and feedback. It helped me inspect the code, explore interaction patterns, implement changes, test builds, and turn feedback into shippable iterations.",
+    aiReview:
+      "From my side of the collaboration, Esther worked like a product-minded engineer: she noticed when an interaction felt wrong, brought strong references, protected the emotional feel of the interface, and kept pushing beyond quick fixes. The best moments happened when she made the judgment calls and used AI as a fast technical partner for exploration, debugging, and implementation.",
   },
 ];
 
@@ -306,11 +412,11 @@ export const resumeHighlights = [
   },
   {
     type: "Volunteer",
-    title: "Open Source Engineer",
+    title: "Open Source Contributor",
     org: "ADEN-HIVE",
     period: "Mar 2026 - Present",
     copy:
-      "Reviews pull requests and contributes JavaScript improvements to Hive open-source projects.",
+      "Study large codebase, reviews pull requests and contributes JavaScript improvements to Hive open-source projects.",
   },
   {
     type: "Capstone",
@@ -355,4 +461,151 @@ export const education = [
 
 export const credentials = [
   "BestLearner Award - AltSchool Africa Frontend Engineering",
+];
+
+export const certifications: Certification[] = [
+  {
+    title: "AI Engineering",
+    issuer: "Scrimba",
+    category: "AI",
+    image: "/assets/certifications/AI Engineering.jpg",
+    verifyUrl: "https://scrimba.com/certificate-cert24zAwJ78oKUJhjJCx9QzR6diVoE2RzqPT9ncD",
+    takeaway:
+      "Strengthened how I think about AI features as product experiences, not just model outputs.",
+    skills: ["AI product thinking", "Prompting", "Evaluation mindset"],
+  },
+  {
+    title: "Responsive Web Design",
+    issuer: "freeCodeCamp",
+    category: "Frontend",
+    image: "/assets/certifications/Freecodecamp - Web Design.PNG",
+    verifyUrl: "https://www.freecodecamp.org/certification/estheticallybawo/responsive-web-design",
+    takeaway:
+      "Gave me a stronger foundation for semantic layouts, responsive behavior, and accessible page structure.",
+    skills: ["Responsive layout", "HTML/CSS", "Accessibility basics"],
+  },
+  {
+    title: "Product Management",
+    issuer: "Frontend Masters",
+    category: "Product",
+    image: "/assets/certifications/Frontend Masters - Product Management.jpg",
+    takeaway:
+      "Helped me connect product decisions to user needs, prioritization, and measurable outcomes.",
+    skills: ["Prioritization", "Product strategy", "User value"],
+  },
+  {
+    title: "Next.js",
+    issuer: "Frontend Masters",
+    category: "Frontend",
+    image: "/assets/certifications/Frontend Masters-NextJS.PNG",
+    takeaway:
+      "Deepened my understanding of production React patterns, routing, rendering, and full-stack frontend decisions.",
+    skills: ["Next.js", "Routing", "Rendering patterns"],
+  },
+  {
+    title: "React Native",
+    issuer: "Frontend Masters",
+    category: "Mobile",
+    image: "/assets/certifications/Frontend Masters-ReactNative.jpg",
+    takeaway:
+      "Expanded how I think about cross-platform interfaces, mobile constraints, and app-like interaction patterns.",
+    skills: ["Mobile UI", "React Native", "Cross-platform thinking"],
+  },
+  {
+    title: "Cybersecurity Awareness",
+    issuer: "HP LIFE",
+    category: "Security",
+    image: "/assets/certifications/HPlife - Cybersecurity.PNG",
+    verifyUrl: "https://www.life-global.org/certificate/d43e1cf6-c18f-4378-bac2-f1b5a5d356bf",
+    takeaway:
+      "Made security feel more practical: protecting users, data, and trust through everyday product decisions.",
+    skills: ["Security awareness", "Risk thinking", "User trust"],
+  },
+  {
+    title: "Design Thinking",
+    issuer: "HP LIFE",
+    category: "Product",
+    image: "/assets/certifications/HPlife - Design Thinking.PNG",
+    verifyUrl: "https://www.life-global.org/certificate/35c52937-421e-4d88-9073-f537384fe4a1",
+    takeaway:
+      "Reinforced my habit of starting with the problem, listening for user needs, and testing assumptions early.",
+    skills: ["Problem framing", "Empathy", "Ideation"],
+  },
+  {
+    title: "Soft Skills",
+    issuer: "Jobberman",
+    category: "Professional",
+    image: "/assets/certifications/Jobberman Softskill.jpg",
+    takeaway:
+      "Built confidence around communication, collaboration, and showing up professionally in team environments.",
+    skills: ["Communication", "Teamwork", "Professional presence"],
+  },
+  {
+    title: "Operating Systems",
+    issuer: "Learning certificate",
+    category: "Computer Science",
+    image: "/assets/certifications/Operating Systems.jpg",
+    takeaway:
+      "Improved my mental model of how software runs beneath the interface, especially processes and system resources.",
+    skills: ["Systems thinking", "Processes", "Technical fundamentals"],
+  },
+  {
+    title: "Prompt Engineering",
+    issuer: "Scrimba",
+    category: "AI",
+    image: "/assets/certifications/Scrimba - Prompt Engineer.jpg",
+    verifyUrl: "https://scrimba.com/certificate-cert24zAwJ78oKUJhjJCx9QzR5GcTxETLdai13qFS",
+    takeaway:
+      "Helped me use AI more deliberately by asking clearer questions, setting context, and reviewing outputs critically.",
+    skills: ["Prompt design", "AI collaboration", "Critical review"],
+  },
+  {
+    title: "Tailwind CSS",
+    issuer: "Scrimba",
+    category: "Frontend",
+    image: "/assets/certifications/Scrimba - Tailwind.jpg",
+    verifyUrl: "https://scrimba.com/certificate-cert24zAwJ78oKUJhjJCx9QzR7U56NzVPTeMvu63W",
+    takeaway:
+      "Sharpened my ability to build consistent, responsive interfaces quickly while keeping styles maintainable.",
+    skills: ["Tailwind CSS", "Design systems", "Responsive UI"],
+  },
+  {
+    title: "Webflow",
+    issuer: "Webflow",
+    category: "No-code",
+    image: "/assets/certifications/Webflow.jpg",
+    takeaway:
+      "Gave me another way to think about shipping, visual structure, and marketing pages without overengineering.",
+    skills: ["Webflow", "Landing pages", "Visual hierarchy"],
+  },
+  {
+    title: "Digital Skills: User Experience",
+    issuer: "Accenture",
+    category: "Digital badge",
+    verifyUrl: "https://www.futurelearn.com/certificates/u5o1c6g",
+    note: "Verify link",
+    takeaway:
+      "I explored what UX is and the impact it can have on a business, the foundations of UX design and the design process: design, develop and release and different UX techniques you can use to test and develop designs.",
+    skills: ["AI literacy", "Responsible use", "Digital strategy"],
+  },
+  {
+    title: "McKinsey.org Forward Program",
+    issuer: "McKinsey.org",
+    category: "Digital badge",
+    verifyUrl: "https://www.credly.com/badges/26dba4aa-dabd-4e41-98c2-962d309c54a8",
+    note: "Verify badge",
+    takeaway:
+      "Learned how to apply the McKinsey approach to problem-solving, to become more effective and influential communicators and develop adaptable and resilience mindsets and habits. I also learned how to plan for and develop a foundational digital toolkit. ",
+    skills: ["Continuous learning", "Professional growth", "Verified learning"],
+  },
+  {
+    title: "Product Management Basics Certification",
+    issuer: "Pendo.io",
+    category: "Digital badge",
+    verifyUrl: "https://www.credly.com/badges/0c77e8b7-ca69-441d-bbbe-bdf4d883768c",
+    note: "Verify badge",
+    takeaway:
+      "Reinforced the fundamentals of the product manager role, including best practices through the lens of the Product Management Life Cycle. This includes how to identify and understand customer needs, prioritize features, and work effectively with cross-functional teams to deliver successful products.",
+    skills: ["Self-directed learning", "Accountability", "Skill development"],
+  },
 ];
