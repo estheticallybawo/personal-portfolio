@@ -445,7 +445,7 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
       <div className="hero-footnote" data-reveal>
         <div className="portrait-chip">
           <img src={profile.image} alt="Esther Bawo Tsotso" />
-          <span>I care about your product leaving a long lasting impression</span>
+          <span>I care about your product leeving a long lasting impression 😉😏</span>
         </div>
         <a href={profile.cvUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
           <Download size={16} />
