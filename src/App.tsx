@@ -262,9 +262,17 @@ function App() {
       { threshold: 0.16, rootMargin: "0px 0px -8% 0px" }
     );
 
-    revealItems.forEach((item) => observer.observe(item));
+    revealItems.forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.92 && rect.bottom > 0) {
+        item.classList.add("is-visible");
+        return;
+      }
+
+      observer.observe(item);
+    });
     return () => observer.disconnect();
-  }, []);
+  }, [path]);
 
   const themeLabel = useMemo(
     () => (theme === "dark" ? "Switch to light mode" : "Switch to dark mode"),
