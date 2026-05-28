@@ -311,6 +311,7 @@ function App() {
     const y = rect.top + rect.height / 2;
     const nextTheme = theme === "dark" ? "light" : "dark";
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     const root = document.documentElement;
 
     root.style.setProperty("--theme-x", `${x}px`);
@@ -326,7 +327,7 @@ function App() {
     };
     const transitionDocument = document as ViewTransitionDocument;
 
-    if (transitionDocument.startViewTransition && !reduceMotion) {
+    if (transitionDocument.startViewTransition && !reduceMotion && finePointer) {
       root.classList.add("theme-view-transition");
       const transition = transitionDocument.startViewTransition(applyTheme);
       void transition.finished.finally(() => root.classList.remove("theme-view-transition"));

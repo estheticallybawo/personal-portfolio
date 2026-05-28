@@ -1333,6 +1333,18 @@ img {
   .cursor-spotlight {
     display: none;
   }
+
+  .project-stack {
+    gap: 28px;
+  }
+
+  .project-feature {
+    position: relative;
+    top: auto;
+    height: auto;
+    min-height: 0;
+    z-index: auto;
+  }
 }
 
 @media (max-width: 760px) {
@@ -1353,9 +1365,7 @@ img {
   }
 
   .project-feature {
-    top: 74px;
-    height: min(680px, calc(100vh - 88px));
-    min-height: 560px;
+    min-height: 0;
   }
 
   .project-copy {
