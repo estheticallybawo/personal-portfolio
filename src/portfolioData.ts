@@ -299,10 +299,10 @@ export const resumeHighlights = [
   {
     type: "Hackathon",
     title: "Echo App",
-    org: "Gemma for Good / Long-term project",
+    org: "Exploration",
     period: "May 2026 - Present",
     copy:
-      "Restructuring Echo beyond the hackathon into an AI-powered emergency response product, with a Flutter MVP for alerts, location sharing, contact escalation, onboarding, and emergency-state flows.",
+      "Post Gemma 4 Good Hackathon exploration into what SafetyTech could look like in the age of AI and Edge computing.",
   },
   {
     type: "Volunteer",
