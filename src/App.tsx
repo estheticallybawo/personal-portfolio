@@ -570,10 +570,13 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
             <a className="primary-button" href="#projects" onClick={() => onSoundCue("button")}>
               View work
             </a>
-            <a className="secondary-button" href={`mailto:${profile.email}`} onClick={(e) => {
-              e.preventDefault();
-              onSoundCue("button");
-            }}>
+            <a
+              className="secondary-button"
+              href={profile.links.calendar}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => onSoundCue("button")}
+            >
               Get in touch
             </a>
           </div>
@@ -1237,7 +1240,7 @@ function Footer({
         </button>
         <a
           className="contact-secondary"
-          href={profile.links.linkedin}
+          href={profile.links.calendar}
           target="_blank"
           rel="noreferrer"
           onClick={() => onSoundCue("button")}

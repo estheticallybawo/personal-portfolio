@@ -460,24 +460,29 @@ img {
   justify-content: center;
   align-items: center;
   min-height: 42px;
+  border: 1px solid var(--accent-line);
   border-radius: 999px;
   font-size: 13px;
   font-weight: 700;
-  transition: transform 180ms ease, background 180ms ease;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
 }
 
 .primary-button {
-  color: var(--button-text);
-  background: var(--button-bg);
+  color: var(--text);
+  background: var(--accent-soft);
 }
 
 .primary-button:hover,
 .secondary-button:hover {
   transform: translateY(-2px);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
 }
 
 .secondary-button {
   color: var(--muted-strong);
+  background: var(--panel);
 }
 
 .social-links {
@@ -1484,18 +1489,14 @@ img {
 .craft-card,
 .experience-card,
 .mini-card,
-.tool-chip,
-.primary-button,
-.secondary-button {
+.tool-chip {
   position: relative;
 }
 
 .craft-card::after,
 .experience-card::after,
 .mini-card::after,
-.tool-chip::after,
-.primary-button::after,
-.secondary-button::after {
+.tool-chip::after {
   content: "";
   position: absolute;
   inset: -1px;
@@ -1509,9 +1510,7 @@ img {
 .craft-card:hover::after,
 .experience-card:hover::after,
 .mini-card:hover::after,
-.tool-chip:hover::after,
-.primary-button:hover::after,
-.secondary-button:hover::after {
+.tool-chip:hover::after {
   opacity: 1;
 }
 
@@ -1701,18 +1700,19 @@ img {
   align-items: center;
   justify-content: center;
   min-height: 54px;
+  border: 1px solid var(--accent-line);
   border-radius: 999px;
   font-size: 14px;
   font-weight: 800;
   cursor: pointer;
-  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
 }
 
 .contact-primary {
   gap: 14px;
   padding: 0 9px 0 26px;
-  color: var(--button-text);
-  background: var(--button-bg);
+  color: var(--text);
+  background: var(--accent-soft);
 }
 
 .contact-primary span {
@@ -1721,26 +1721,23 @@ img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  color: var(--button-bg);
-  background: var(--button-text);
+  color: var(--button-text);
+  background: var(--button-bg);
 }
 
 .contact-secondary {
   gap: 8px;
   padding: 0 20px;
   color: var(--muted-strong);
-  border: 1px solid var(--line);
   background: var(--panel);
 }
 
 .contact-primary:hover,
 .contact-secondary:hover {
   transform: translateY(-2px);
-}
-
-.contact-secondary:hover {
-  border-color: var(--accent-line);
+  border-color: var(--accent);
   background: var(--accent-soft);
+  color: var(--text);
 }
 
 .footer-bottom {

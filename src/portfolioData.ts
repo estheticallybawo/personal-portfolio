@@ -1,5 +1,3 @@
-import { Calendar } from "lucide-react";
-
 export type Project = {
   slug: string;
   name: string;
@@ -52,7 +50,7 @@ export const profile = {
     github: "https://github.com/estheticallybawo",
     linkedin: "https://linkedin.com/in/estheticallybawo",
     instagram: "https://instagram.com/bawocore",
-    Calendar: ""
+    calendar: "https://cal.com/estherbawot/15min"
   },
 };
 
