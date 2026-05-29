@@ -540,6 +540,69 @@ img {
   border: 1px solid var(--line);
 }
 
+.typo-reveal {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  display: inline-grid;
+  grid-template-areas: "word";
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: inherit;
+  vertical-align: baseline;
+  white-space: nowrap;
+}
+
+.typo-copy {
+  grid-area: word;
+  transition:
+    opacity 260ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 260ms ease;
+}
+
+.typo-copy-corrected {
+  opacity: 0;
+  transform: translateY(0.16em);
+  filter: blur(2px);
+}
+
+.typo-reveal.is-corrected .typo-copy-original {
+  opacity: 0;
+  transform: translateY(-0.12em);
+  filter: blur(2px);
+}
+
+.typo-reveal.is-corrected .typo-copy-corrected {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .typo-reveal:hover .typo-copy-original {
+    opacity: 0;
+    transform: translateY(-0.12em);
+    filter: blur(2px);
+  }
+
+  .typo-reveal:hover .typo-copy-corrected {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.typo-reveal:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 0.12em;
+  border-radius: 0.12em;
+}
+
 .tools-section,
 .projects,
 .about,
@@ -637,7 +700,7 @@ img {
   letter-spacing: 0;
 }
 
-.section-heading span {
+.section-heading > span {
   display: block;
   max-width: 540px;
   color: var(--muted);
@@ -1674,7 +1737,7 @@ img {
   letter-spacing: 0;
 }
 
-.footer h2 span {
+.footer h2 > span {
   display: block;
   color: var(--accent);
 }
@@ -1694,7 +1757,6 @@ img {
   gap: 12px;
 }
 
-.contact-primary,
 .contact-secondary {
   display: inline-flex;
   align-items: center;
@@ -1708,23 +1770,6 @@ img {
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, color 180ms ease;
 }
 
-.contact-primary {
-  gap: 14px;
-  padding: 0 9px 0 26px;
-  color: var(--text);
-  background: var(--accent-soft);
-}
-
-.contact-primary span {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  color: var(--button-text);
-  background: var(--button-bg);
-}
-
 .contact-secondary {
   gap: 8px;
   padding: 0 20px;
@@ -1732,7 +1777,6 @@ img {
   background: var(--panel);
 }
 
-.contact-primary:hover,
 .contact-secondary:hover {
   transform: translateY(-2px);
   border-color: var(--accent);

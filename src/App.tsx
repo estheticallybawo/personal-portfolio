@@ -1,4 +1,4 @@
-import { type CSSProperties, type MouseEvent as ReactMouseEvent, useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import {
   ArrowUpRight,
@@ -6,7 +6,6 @@ import {
   ArrowDown,
   Check,
   Code2,
-  Copy,
   Download,
   Github,
   Instagram,
@@ -190,7 +189,6 @@ function App() {
   });
   const soundEnabled = soundLevel > 0;
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [path, setPath] = useState(() => window.location.pathname);
   const [theme, setTheme] = useState<Theme>(() => {
     const requestedTheme = new URLSearchParams(window.location.search).get("theme");
@@ -420,17 +418,6 @@ function App() {
     ];
   };
 
-  const copyEmail = async () => {
-    playSound("button");
-    try {
-      await navigator.clipboard.writeText(profile.email);
-    } catch {
-      window.location.href = `mailto:${profile.email}`;
-    }
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
-  };
-
   const navigateTo = (nextPath: string) => {
     window.history.pushState({}, "", nextPath);
     setPath(nextPath);
@@ -474,7 +461,7 @@ function App() {
             <Projects onNavigate={navigateTo} onSoundCue={playSound} />
             <About />
             <Resume onNavigate={navigateTo} onSoundCue={playSound} />
-            <Footer copied={copied} onCopyEmail={copyEmail} onSoundCue={playSound} />
+            <Footer onSoundCue={playSound} />
           </>
         )}
       </main>
@@ -587,7 +574,11 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
       <div className="hero-footnote" data-reveal>
         <div className="portrait-chip">
           <img src={profile.image} alt="Esther Bawo Tsotso" />
-          <span>I care about your product leeving a long lasting impression 😉😏</span>
+          <span>
+            I care about your product{" "}
+            <PunWord mistake="leeving" correction="leaving" />{" "}
+            a long lasting impression 😉😏
+          </span>
         </div>
         <a href={profile.cvUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
           <Download size={16} />
@@ -1083,7 +1074,13 @@ function About() {
     <section className="about section-anchor" id="about">
       <SectionHeading
         eyebrow="About"
-        title="I care about the problem before the interface."
+        title={
+          <>
+            I care about building the{" "}
+            <PunWord mistake="write" correction="right" />{" "}
+            thing before writing code.
+          </>
+        }
         copy="The story is not just that I write codes. It is that I pay attention to the user, the product goal, the flow, and the technical path that makes a solution dependable."
       />
       <div className="about-grid">
@@ -1209,15 +1206,7 @@ function Resume({
   );
 }
 
-function Footer({
-  copied,
-  onCopyEmail,
-  onSoundCue,
-}: {
-  copied: boolean;
-  onCopyEmail: () => void;
-  onSoundCue: (kind: SoundKind) => void;
-}) {
+function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
   return (
     <footer className="footer section-anchor" id="contact">
       <p className="eyebrow" data-reveal>
@@ -1225,19 +1214,17 @@ function Footer({
       </p>
       <h2 data-reveal>
         Have a problem worth solving?
-        <span>Let&apos;s shape the product.</span>
+        <span>
+          Let&apos;s build something users{" "}
+          <PunWord mistake="rove" correction="love" />
+          .
+        </span>
       </h2>
       <p data-reveal>
         Open to frontend roles, product collaborations, and user-centered problems
         that need clear thinking, technical execution, and product care.
       </p>
       <div className="contact-actions" data-reveal>
-        <button className="contact-primary" type="button" onClick={onCopyEmail}>
-          {copied ? "Email copied" : "Copy email"}
-          <span>
-            {copied ? <Check size={17} /> : <Copy size={17} />}
-          </span>
-        </button>
         <a
           className="contact-secondary"
           href={profile.links.calendar}
@@ -1269,13 +1256,34 @@ function Footer({
   );
 }
 
+function PunWord({ mistake, correction }: { mistake: string; correction: string }) {
+  const [isCorrected, setIsCorrected] = useState(false);
+
+  return (
+    <button
+      type="button"
+      className={`typo-reveal${isCorrected ? " is-corrected" : ""}`}
+      aria-label={`${mistake}. Tap to reveal ${correction}.`}
+      aria-pressed={isCorrected}
+      onClick={() => setIsCorrected((current) => !current)}
+    >
+      <span className="typo-copy typo-copy-original" aria-hidden="true">
+        {mistake}
+      </span>
+      <span className="typo-copy typo-copy-corrected" aria-hidden="true">
+        {correction}
+      </span>
+    </button>
+  );
+}
+
 function SectionHeading({
   eyebrow,
   title,
   copy,
 }: {
   eyebrow: string;
-  title: string;
+  title: ReactNode;
   copy: string;
 }) {
   return (
