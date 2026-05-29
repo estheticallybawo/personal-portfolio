@@ -627,7 +627,7 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
 
         <aside className="hero-side" data-reveal>
           <p>
-            Hi there, I'm a frontend developer from Nigeria who solves product problems with frontend engineering, product intuition,
+            Hi there, I'm a frontend developer from Nigeria who solves product problems with frontend engineering skills, product intuition,
             and user empathy. I focus on building experiences that feels human and well thought out.
           </p>
           <div className="hero-actions">
