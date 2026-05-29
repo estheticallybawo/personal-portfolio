@@ -238,6 +238,7 @@ function App() {
         const progress = Math.max(0, Math.min(1, -rect.top / scrollDistance));
         const position = Math.round(progress * Math.max(1, cards.length - 1) * 1000) / 1000;
         const activeIndex = Math.min(cards.length - 1, Math.max(0, Math.round(position)));
+        const focusIndex = Math.min(cards.length - 1, Math.max(0, Math.ceil(position - 0.16)));
 
         if (soundEnabled && activeIndex !== activeProjectCardRef.current) {
           activeProjectCardRef.current = activeIndex;
@@ -254,12 +255,17 @@ function App() {
           const translateY = exitEase * -Math.min(stageHeight * 0.9, 620) + depth * 10;
           const rotate = exitEase * -0.45;
           const scale = 1 - exitEase * 0.025 - depth * 0.014;
-          const opacity = exit > 0 ? 1 - exitEase * 0.92 : 1 - depth * 0.26;
+          const baseOpacity = exit > 0 ? 1 - exitEase * 1.08 : 1 - depth * 0.26;
+          const pastFade = index < focusIndex ? Math.max(0, 1 - exitEase * 1.45) : 1;
+          const opacity = Math.max(0, baseOpacity * pastFade);
+          const layer = index === focusIndex ? 200 : 120 - Math.abs(index - focusIndex) * 8;
 
           card.style.setProperty("--card-y", `${translateY.toFixed(2)}px`);
           card.style.setProperty("--card-rotate", `${rotate}deg`);
           card.style.setProperty("--card-scale", `${scale}`);
-          card.style.opacity = `${Math.max(0.06, opacity)}`;
+          card.style.zIndex = `${layer}`;
+          card.style.opacity = `${opacity}`;
+          card.style.visibility = opacity < 0.035 ? "hidden" : "visible";
           card.style.pointerEvents = index === activeIndex ? "auto" : "none";
         });
       });
@@ -277,7 +283,9 @@ function App() {
         card.style.removeProperty("--card-y");
         card.style.removeProperty("--card-rotate");
         card.style.removeProperty("--card-scale");
+        card.style.zIndex = "";
         card.style.opacity = "";
+        card.style.visibility = "";
         card.style.pointerEvents = "";
       });
     };

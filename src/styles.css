@@ -1837,7 +1837,8 @@ img {
 
   .project-copy h3 {
     margin-top: 14px;
-    font-size: clamp(1.75rem, 8vw, 2.45rem);
+    font-size: clamp(1.35rem, 6vw, 1.75rem);
+    line-height: 1.06;
   }
 
   .project-copy p {
@@ -1885,6 +1886,28 @@ img {
 
   .certification-preview {
     display: none;
+  }
+
+  .case-hero h1 {
+    font-size: clamp(2.4rem, 12vw, 4.2rem);
+    line-height: 0.95;
+  }
+
+  .case-grid h2,
+  .case-list-section h2 {
+    font-size: clamp(1.55rem, 8vw, 2.2rem);
+    line-height: 1.06;
+  }
+
+  .certification-copy h2 {
+    margin-top: 12px;
+    font-size: clamp(1.25rem, 6.4vw, 1.75rem);
+    line-height: 1.08;
+  }
+
+  .certification-copy .certification-takeaway {
+    font-size: 0.95rem;
+    line-height: 1.55;
   }
 }
 
