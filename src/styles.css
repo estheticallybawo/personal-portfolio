@@ -726,7 +726,7 @@ img {
   will-change: transform, opacity;
   pointer-events: none;
   transition: transform 720ms cubic-bezier(0.22, 1, 0.36, 1), opacity 360ms ease,
-    border-color 220ms ease, background 220ms ease, box-shadow 220ms ease;
+    border-color 260ms ease, background 260ms ease, box-shadow 260ms ease;
 }
 
 .project-feature.is-active {
@@ -886,9 +886,18 @@ img {
 
 @media (hover: hover) and (pointer: fine) {
   .project-feature:hover {
-    border-color: var(--accent-line);
-    background: var(--project-card-hover);
-    box-shadow: var(--project-card-hover-shadow);
+    border-color: rgba(8, 182, 245, 0.38);
+    background: linear-gradient(145deg, rgba(8, 182, 245, 0.08), transparent 70%), var(--project-card-hover);
+    box-shadow: 0 18px 44px rgba(8, 182, 245, 0.08);
+    transform: translate3d(0, -4px, 0) scale(1.004);
+  }
+
+  .project-feature.is-prev:hover {
+    transform: translate3d(-34px, 14px, -50px) scale(0.958) rotate(-0.35deg);
+  }
+
+  .project-feature.is-next:hover {
+    transform: translate3d(34px, 14px, -40px) scale(0.968) rotate(0.35deg);
   }
 
   .project-feature:hover .project-image img {

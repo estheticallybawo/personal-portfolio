@@ -782,9 +782,8 @@ function Projects({
               </div>
               <h3>{project.name}</h3>
               <p>{project.description}</p>
-              <p className="story-caption">{project.story}</p>
               <div className="tags">
-                {project.tech.map((tag) => (
+                {project.tech.slice(0, 4).map((tag) => (
                   <span key={tag}>{tag}</span>
                 ))}
               </div>
