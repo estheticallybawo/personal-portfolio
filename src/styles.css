@@ -414,6 +414,30 @@ img {
   overflow-wrap: anywhere;
 }
 
+.rotating-eyebrow {
+  display: inline-grid;
+  grid-template-areas: "role";
+  min-height: 1.7em;
+}
+
+.rotating-eyebrow span {
+  grid-area: role;
+  opacity: 0;
+  transform: translateY(0.55em);
+  filter: blur(3px);
+  white-space: nowrap;
+  transition:
+    opacity 520ms ease,
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 520ms ease;
+}
+
+.rotating-eyebrow span.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
 .hero h1 {
   margin: 46px 0 0 -8px;
   color: var(--text);

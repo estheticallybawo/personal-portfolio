@@ -40,6 +40,15 @@ const clickSoundPath = "/assets/mixkit-coins-handling-1939.wav";
 const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
 const projectRevealSoundPath = "/assets/mixkit-page-forward-single-chime-1107.wav";
 const certificateChimePath = "/assets/mixkit-page-back-chime-1108.wav";
+const heroRoles = [
+  "Frontend Maestro",
+  "Problem Solver",
+  "Product Thinker",
+  "Solution Engineer",
+  "AI Product Builder",
+  "Mobile MVP Builder",
+  "Open Source Contributor",
+];
 
 type SoundKind = "nav" | "theme" | "project" | "projectReveal" | "certificate" | "copy" | "contact" | "button";
 type ThemeRipple = { x: number; y: number; color: string; id: number } | null;
@@ -539,9 +548,7 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
     <section className="hero section-anchor" id="home">
       <div className="hero-grid">
         <div className="hero-main">
-          <p className="eyebrow" data-reveal>
-            Frontend Maestro - Problem solver - Product thinker
-          </p>
+          <RotatingEyebrow />
           <h1 data-reveal>
             <span>Esther</span>
             <span className="accent-line">Tsotso.</span>
@@ -586,6 +593,28 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
         </a>
       </div>
     </section>
+  );
+}
+
+function RotatingEyebrow() {
+  const [activeRole, setActiveRole] = useState(0);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setActiveRole((current) => (current + 1) % heroRoles.length);
+    }, 2200);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  return (
+    <p className="eyebrow rotating-eyebrow" data-reveal aria-label={heroRoles.join(", ")}>
+      {heroRoles.map((role, index) => (
+        <span className={index === activeRole ? "is-active" : ""} aria-hidden={index !== activeRole} key={role}>
+          {role}
+        </span>
+      ))}
+    </p>
   );
 }
 
