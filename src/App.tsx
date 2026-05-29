@@ -183,6 +183,7 @@ function App() {
   const themeTimersRef = useRef<number[]>([]);
   const themeTransitionRef = useRef(false);
   const activeProjectCardRef = useRef(0);
+  const projectStackStepRef = useRef(-1);
   const [themeRipple, setThemeRipple] = useState<ThemeRipple>(null);
   const [soundLevel, setSoundLevel] = useState(() => {
     const savedLevel = Number(localStorage.getItem(soundLevelStorageKey));
@@ -222,6 +223,7 @@ function App() {
 
   useEffect(() => {
     let frame = 0;
+    projectStackStepRef.current = -1;
 
     const updateProjectStack = () => {
       if (frame) return;
@@ -233,12 +235,11 @@ function App() {
         if (!stack || !stage || !cards.length) return;
 
         const rect = stack.getBoundingClientRect();
-        const stageHeight = stage.getBoundingClientRect().height;
-        const scrollDistance = Math.max(1, stack.offsetHeight - stageHeight);
+        const scrollDistance = Math.max(1, stack.offsetHeight - window.innerHeight);
         const progress = Math.max(0, Math.min(1, -rect.top / scrollDistance));
-        const position = Math.round(progress * Math.max(1, cards.length - 1) * 1000) / 1000;
-        const activeIndex = Math.min(cards.length - 1, Math.max(0, Math.round(position)));
-        const focusIndex = Math.min(cards.length - 1, Math.max(0, Math.ceil(position - 0.16)));
+        const activeIndex = Math.min(cards.length - 1, Math.floor(progress * cards.length));
+        if (activeIndex === projectStackStepRef.current) return;
+        projectStackStepRef.current = activeIndex;
 
         if (soundEnabled && activeIndex !== activeProjectCardRef.current) {
           activeProjectCardRef.current = activeIndex;
@@ -249,23 +250,19 @@ function App() {
         }
 
         cards.forEach((card, index) => {
-          const exit = Math.max(0, Math.min(1, position - index));
-          const depth = Math.max(0, Math.min(3, index - position));
-          const exitEase = 1 - Math.pow(1 - exit, 3);
-          const translateY = exitEase * -Math.min(stageHeight * 0.9, 620) + depth * 10;
-          const rotate = exitEase * -0.45;
-          const scale = 1 - exitEase * 0.025 - depth * 0.014;
-          const baseOpacity = exit > 0 ? 1 - exitEase * 1.08 : 1 - depth * 0.26;
-          const pastFade = index < focusIndex ? Math.max(0, 1 - exitEase * 1.45) : 1;
-          const opacity = Math.max(0, baseOpacity * pastFade);
-          const layer = index === focusIndex ? 200 : 120 - Math.abs(index - focusIndex) * 8;
+          const nextDepth = Math.max(0, index - activeIndex);
+          const pastDepth = Math.max(0, activeIndex - index);
+          const isPast = index < activeIndex;
+          const isActive = index === activeIndex;
+          const visibleDepth = Math.min(nextDepth, 3);
 
-          card.style.setProperty("--card-y", `${translateY.toFixed(2)}px`);
-          card.style.setProperty("--card-rotate", `${rotate}deg`);
-          card.style.setProperty("--card-scale", `${scale}`);
-          card.style.zIndex = `${layer}`;
-          card.style.opacity = `${opacity}`;
-          card.style.visibility = opacity < 0.035 ? "hidden" : "visible";
+          card.classList.toggle("is-past", isPast);
+          card.classList.toggle("is-active", isActive);
+          card.classList.toggle("is-next", index > activeIndex);
+          card.style.setProperty("--card-y", `${visibleDepth * 8}px`);
+          card.style.setProperty("--card-scale", `${1 - visibleDepth * 0.01}`);
+          card.style.setProperty("--card-opacity", `${isPast ? 0 : 1 - visibleDepth * 0.06}`);
+          card.style.zIndex = isPast ? `${420 - pastDepth}` : `${360 - index}`;
           card.style.pointerEvents = index === activeIndex ? "auto" : "none";
         });
       });
@@ -280,12 +277,11 @@ function App() {
       window.removeEventListener("scroll", updateProjectStack);
       window.removeEventListener("resize", updateProjectStack);
       document.querySelectorAll<HTMLElement>(".project-feature").forEach((card) => {
+        card.classList.remove("is-past", "is-active", "is-next");
         card.style.removeProperty("--card-y");
-        card.style.removeProperty("--card-rotate");
         card.style.removeProperty("--card-scale");
+        card.style.removeProperty("--card-opacity");
         card.style.zIndex = "";
-        card.style.opacity = "";
-        card.style.visibility = "";
         card.style.pointerEvents = "";
       });
     };
@@ -635,14 +631,17 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
 
         <aside className="hero-side" data-reveal>
           <p>
-            Hi there, I'm a frontend developer from Nigeria who solves product problems with frontend engineering skills, product intuition,
+            Hi there, I'm a frontend developer from Nigeria who solves product problems with product intuition,
             and user empathy. I focus on building experiences that feels human and well thought out.
           </p>
           <div className="hero-actions">
             <a className="primary-button" href="#projects" onClick={() => onSoundCue("button")}>
               View work
             </a>
-            <a className="secondary-button" href={`mailto:${profile.email}`} onClick={() => onSoundCue("button")}>
+            <a className="secondary-button" href={`mailto:${profile.email}`} onClick={(e) => {
+              e.preventDefault();
+              onSoundCue("button");
+            }}>
               Get in touch
             </a>
           </div>
@@ -742,7 +741,7 @@ function Projects({
               </div>
               <div className="project-actions">
                 <button type="button" onClick={() => { onSoundCue("button"); onNavigate(`/work/${project.slug}`); }}>
-                  Case study <ArrowUpRight size={15} />
+                  Explore More <ArrowUpRight size={15} />
                 </button>
               </div>
             </div>
@@ -1149,7 +1148,7 @@ function Resume({
             <span className="rail-index">{String(index + 1).padStart(2, "0")}</span>
             <div>
               <span className="badge">{item.type}</span>
-              <h3>{item.title}</h3>
+              <h4>{item.title}</h4>
               <p className="muted-line">
                 {item.period} / {item.org}
               </p>
@@ -1253,7 +1252,7 @@ function Footer({
           rel="noreferrer"
           onClick={() => onSoundCue("button")}
         >
-          Connect on LinkedIn
+          Get in touch
           <ArrowUpRight size={15} />
         </a>
       </div>

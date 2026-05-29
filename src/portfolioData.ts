@@ -1,3 +1,5 @@
+import { Calendar } from "lucide-react";
+
 export type Project = {
   slug: string;
   name: string;
@@ -50,6 +52,7 @@ export const profile = {
     github: "https://github.com/estheticallybawo",
     linkedin: "https://linkedin.com/in/estheticallybawo",
     instagram: "https://instagram.com/bawocore",
+    Calendar: ""
   },
 };
 
@@ -398,7 +401,7 @@ export const projects: Project[] = [
       "Visual QA",
     ],
     aiUse:
-      "I used AI as a pair-programming and product-thinking partner while I directed the taste, goals, references, and feedback. It helped me inspect the code, explore interaction patterns, implement changes, test builds, and turn feedback into shippable iterations then forced it to give a structured review of what it felt like working with me. 🥰",
+      "I used AI as a pair-programming and product-thinking partner while I directed the taste, goals, references, and feedback. It helped me inspect the code, explore interaction patterns, implement changes, test builds, and turn feedback into shippable iterations then forced it to give a structured review of what it's like working with me. 🥰",
     aiReview: [
       {
         label: "Leadership",
@@ -444,8 +447,8 @@ export const resumeHighlights = [
   {
     type: "Capstone",
     title: "Mobile Development",
-    org: "WTFellowship",
-    period: "Aug 2025 - Aug 2026",
+    org: "Tech4dev",
+    period: "Aug 2025 - Present",
     copy:
       "Selected for a 52-week fellowship focused on Flutter, React Native, Firebase, APIs, and mobile MVP delivery.",
   },
@@ -459,7 +462,7 @@ export const resumeHighlights = [
   },
   {
     type: "Internship",
-    title: "Frontend Engineering Intern",
+    title: "Frontend Intern",
     org: "HNG Tech",
     period: "Dec 2024 - Apr 2025",
     copy:
