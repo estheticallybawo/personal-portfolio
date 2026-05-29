@@ -693,63 +693,31 @@ img {
   color: var(--text);
 }
 
-.project-stage {
+.project-carousel-dots button:hover,
+.project-carousel-dots button.is-active {
+  width: 58px;
+}
+
+.project-view {
   position: relative;
-  width: min(100%, 1040px);
-  height: min(590px, calc(100vh - 112px));
-  height: min(590px, calc(100svh - 112px));
-  min-height: 480px;
-  margin-inline: auto;
-  overflow: visible;
-  perspective: 1600px;
-  isolation: isolate;
-  border-radius: 24px;
-  contain: layout paint;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.28fr);
+  gap: clamp(18px, 4vw, 34px);
+  align-items: stretch;
 }
 
 .project-feature {
-  position: absolute;
-  inset: 0;
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.05fr);
-  height: 100%;
+  min-height: 540px;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 24px;
   background: var(--project-card-bg);
   box-shadow: var(--project-card-shadow);
-  opacity: 0;
-  transform: translate3d(0, 28px, -80px) scale(0.94);
-  transform-origin: center top;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  will-change: transform, opacity;
-  pointer-events: none;
-  transition: transform 720ms cubic-bezier(0.22, 1, 0.36, 1), opacity 360ms ease,
-    border-color 260ms ease, background 260ms ease, box-shadow 260ms ease;
-}
-
-.project-feature.is-active {
-  opacity: 1;
-  transform: translate3d(0, 0, 0) scale(1);
-  pointer-events: auto;
-  z-index: 4;
-}
-
-.project-feature.is-prev {
-  opacity: 0.34;
-  transform: translate3d(-34px, 18px, -50px) scale(0.955) rotate(-0.35deg);
-  z-index: 2;
-}
-
-.project-feature.is-next {
-  opacity: 0.48;
-  transform: translate3d(34px, 18px, -40px) scale(0.965) rotate(0.35deg);
-  z-index: 3;
-}
-
-.project-feature.is-hidden {
-  z-index: 1;
+  animation: certification-enter 860ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color 260ms ease, background 260ms ease, box-shadow 260ms ease;
 }
 
 .project-carousel-dots {
@@ -761,12 +729,58 @@ img {
 }
 
 .project-carousel-dots button {
-  min-width: 42px;
+  width: 42px;
   height: 34px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.08em;
+  transition: width 420ms ease, border-color 420ms ease, background 420ms ease, color 420ms ease;
+}
+
+.project-preview {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 540px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--panel);
+  color: var(--muted-strong);
+  padding: 24px;
+  text-align: left;
+  cursor: default;
+  transition: border-color 260ms ease, background 260ms ease, box-shadow 260ms ease;
+}
+
+.project-preview span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.project-preview strong {
+  display: block;
+  margin: 14px 0;
+  color: var(--accent);
+  font-family: var(--heading-font);
+  font-size: clamp(3rem, 7vw, 5.6rem);
+  line-height: 0.9;
+}
+
+.project-preview em {
+  color: var(--text);
+  font-style: normal;
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+.project-preview:hover {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--text);
 }
 
 .project-copy {
@@ -889,15 +903,6 @@ img {
     border-color: rgba(8, 182, 245, 0.38);
     background: linear-gradient(145deg, rgba(8, 182, 245, 0.08), transparent 70%), var(--project-card-hover);
     box-shadow: 0 18px 44px rgba(8, 182, 245, 0.08);
-    transform: translate3d(0, -4px, 0) scale(1.004);
-  }
-
-  .project-feature.is-prev:hover {
-    transform: translate3d(-34px, 14px, -50px) scale(0.958) rotate(-0.35deg);
-  }
-
-  .project-feature.is-next:hover {
-    transform: translate3d(34px, 14px, -40px) scale(0.968) rotate(0.35deg);
   }
 
   .project-feature:hover .project-image img {
@@ -1896,6 +1901,7 @@ img {
 
   .hero-grid,
   .project-feature,
+  .project-view,
   .about-grid,
   .resume-lower {
     grid-template-columns: 1fr;
@@ -1905,10 +1911,12 @@ img {
     max-width: 420px;
   }
 
-  .project-stage {
-    height: min(620px, calc(100vh - 98px));
-    height: min(620px, calc(100svh - 98px));
-    min-height: 500px;
+  .project-feature {
+    min-height: auto;
+  }
+
+  .project-preview {
+    display: none;
   }
 
   .project-copy {

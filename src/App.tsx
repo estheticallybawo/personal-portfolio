@@ -182,8 +182,6 @@ function App() {
   const audioRef = useRef<ReturnType<typeof createAudioController> | null>(null);
   const themeTimersRef = useRef<number[]>([]);
   const themeTransitionRef = useRef(false);
-  const activeProjectCardRef = useRef(0);
-  const projectStackStepRef = useRef(-1);
   const [themeRipple, setThemeRipple] = useState<ThemeRipple>(null);
   const [soundLevel, setSoundLevel] = useState(() => {
     const savedLevel = Number(localStorage.getItem(soundLevelStorageKey));
@@ -220,72 +218,6 @@ function App() {
     window.addEventListener("popstate", updatePath);
     return () => window.removeEventListener("popstate", updatePath);
   }, []);
-
-  useEffect(() => {
-    let frame = 0;
-    projectStackStepRef.current = -1;
-
-    const updateProjectStack = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        const stack = document.querySelector<HTMLElement>(".project-stack");
-        const stage = document.querySelector<HTMLElement>(".project-stage");
-        const cards = Array.from(document.querySelectorAll<HTMLElement>(".project-feature"));
-        if (!stack || !stage || !cards.length) return;
-
-        const rect = stack.getBoundingClientRect();
-        const scrollDistance = Math.max(1, stack.offsetHeight - window.innerHeight);
-        const progress = Math.max(0, Math.min(1, -rect.top / scrollDistance));
-        const activeIndex = Math.min(cards.length - 1, Math.floor(progress * cards.length));
-        if (activeIndex === projectStackStepRef.current) return;
-        projectStackStepRef.current = activeIndex;
-
-        if (soundEnabled && activeIndex !== activeProjectCardRef.current) {
-          activeProjectCardRef.current = activeIndex;
-          const audio = ensureAudio();
-          audio?.setVolume(soundLevel);
-          audio?.setAmbient(true);
-          audio?.play("projectReveal");
-        }
-
-        cards.forEach((card, index) => {
-          const nextDepth = Math.max(0, index - activeIndex);
-          const pastDepth = Math.max(0, activeIndex - index);
-          const isPast = index < activeIndex;
-          const isActive = index === activeIndex;
-          const visibleDepth = Math.min(nextDepth, 3);
-
-          card.classList.toggle("is-past", isPast);
-          card.classList.toggle("is-active", isActive);
-          card.classList.toggle("is-next", index > activeIndex);
-          card.style.setProperty("--card-y", `${visibleDepth * 8}px`);
-          card.style.setProperty("--card-scale", `${1 - visibleDepth * 0.01}`);
-          card.style.setProperty("--card-opacity", `${isPast ? 0 : 1 - visibleDepth * 0.06}`);
-          card.style.zIndex = isPast ? `${420 - pastDepth}` : `${360 - index}`;
-          card.style.pointerEvents = index === activeIndex ? "auto" : "none";
-        });
-      });
-    };
-
-    updateProjectStack();
-    window.addEventListener("scroll", updateProjectStack, { passive: true });
-    window.addEventListener("resize", updateProjectStack);
-
-    return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", updateProjectStack);
-      window.removeEventListener("resize", updateProjectStack);
-      document.querySelectorAll<HTMLElement>(".project-feature").forEach((card) => {
-        card.classList.remove("is-past", "is-active", "is-next");
-        card.style.removeProperty("--card-y");
-        card.style.removeProperty("--card-scale");
-        card.style.removeProperty("--card-opacity");
-        card.style.zIndex = "";
-        card.style.pointerEvents = "";
-      });
-    };
-  }, [path, soundEnabled, soundLevel]);
 
   useEffect(() => {
     let frame = 0;
@@ -712,6 +644,7 @@ function Projects({
 }) {
   const [activeProject, setActiveProject] = useState(0);
   const touchStartRef = useRef<number | null>(null);
+  const project = projects[activeProject];
 
   const moveProject = (direction: 1 | -1) => {
     onSoundCue("projectReveal");
@@ -747,37 +680,25 @@ function Projects({
             </button>
           </div>
         </div>
-        <div
-          className="project-stage"
-          onTouchStart={(event) => {
-            touchStartRef.current = event.touches[0]?.clientX ?? null;
-          }}
-          onTouchEnd={(event) => {
-            if (touchStartRef.current === null) return;
-            const distance = (event.changedTouches[0]?.clientX ?? touchStartRef.current) - touchStartRef.current;
-            touchStartRef.current = null;
-            if (Math.abs(distance) < 42) return;
-            moveProject(distance < 0 ? 1 : -1);
-          }}
-        >
-          {projects.map((project, index) => (
-            <article
-              className={
-                index === activeProject
-                  ? "project-feature is-active"
-                  : index === (activeProject + 1) % projects.length
-                    ? "project-feature is-next"
-                    : index === (activeProject - 1 + projects.length) % projects.length
-                      ? "project-feature is-prev"
-                      : "project-feature is-hidden"
-              }
-              key={project.name}
-              aria-hidden={index !== activeProject}
-              onPointerEnter={() => onSoundCue("project")}
-            >
+        <div className="project-view">
+          <article
+            className="project-feature"
+            key={project.slug}
+            onPointerEnter={() => onSoundCue("project")}
+            onTouchStart={(event) => {
+              touchStartRef.current = event.touches[0]?.clientX ?? null;
+            }}
+            onTouchEnd={(event) => {
+              if (touchStartRef.current === null) return;
+              const distance = (event.changedTouches[0]?.clientX ?? touchStartRef.current) - touchStartRef.current;
+              touchStartRef.current = null;
+              if (Math.abs(distance) < 42) return;
+              moveProject(distance < 0 ? 1 : -1);
+            }}
+          >
             <div className="project-copy">
               <div className="project-topline">
-                <span>{String(index + 1).padStart(2, "0")}</span>
+                <span>{String(activeProject + 1).padStart(2, "0")}</span>
                 <span>{project.role}</span>
               </div>
               <h3>{project.name}</h3>
@@ -805,8 +726,15 @@ function Projects({
             >
               <img src={project.image} alt={`${project.name} preview`} />
             </a>
-            </article>
-          ))}
+          </article>
+          <div
+            className="project-preview"
+            aria-label={`Current project: ${project.name}`}
+          >
+            <span>Current</span>
+            <strong>{String(activeProject + 1).padStart(2, "0")}</strong>
+            <em>{project.name}</em>
+          </div>
         </div>
         <div className="project-carousel-dots" aria-label="Project carousel navigation">
           {projects.map((project, index) => (
