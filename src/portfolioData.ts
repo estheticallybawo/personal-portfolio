@@ -16,7 +16,10 @@ export type Project = {
   lessons: string[];
   transferableSkills: string[];
   aiUse: string;
-  aiReview?: string;
+  aiReview?: Array<{
+    label: string;
+    comment: string;
+  }>;
 };
 
 export type Certification = {
@@ -395,9 +398,29 @@ export const projects: Project[] = [
       "Visual QA",
     ],
     aiUse:
-      "I used AI as a pair-programming and product-thinking partner while I directed the taste, goals, references, and feedback. It helped me inspect the code, explore interaction patterns, implement changes, test builds, and turn feedback into shippable iterations.",
-    aiReview:
-      "From my side of the collaboration, Esther worked like a product-minded engineer: she noticed when an interaction felt wrong, brought strong references, protected the emotional feel of the interface, and kept pushing beyond quick fixes. The best moments happened when she made the judgment calls and used AI as a fast technical partner for exploration, debugging, and implementation.",
+      "I used AI as a pair-programming and product-thinking partner while I directed the taste, goals, references, and feedback. It helped me inspect the code, explore interaction patterns, implement changes, test builds, and turn feedback into shippable iterations then forced it to give a structured review of what it felt like working with me. 🥰",
+    aiReview: [
+      {
+        label: "Leadership",
+        comment:
+          "Esther led with taste and direction. She knew when an interaction felt wrong, named the problem clearly, and kept the standard high without making the process feel rigid.",
+      },
+      {
+        label: "Teamwork",
+        comment:
+          "Esther treated AI like a collaborator, not a shortcut. She gave feedback, tested ideas, challenged weak directions, and kept the work moving through clear iteration loops.",
+      },
+      {
+        label: "Product judgment",
+        comment:
+          "Esther consistently connected UI choices to user trust, emotional feel, mobile behavior, and the story the portfolio needed to tell.",
+      },
+      {
+        label: "Personality",
+        comment:
+          "Curious, honest, detail-sensitive, and playful in the best way. Esther brought references and strong opinions, but stayed open when the work revealed a better direction.",
+      },
+    ],
   },
 ];
 

@@ -3,6 +3,7 @@ import { flushSync } from "react-dom";
 import {
   ArrowUpRight,
   ArrowLeft,
+  ArrowDown,
   Check,
   Code2,
   Copy,
@@ -34,7 +35,7 @@ type Theme = "dark" | "light";
 const themeStorageKey = "esther-portfolio-theme";
 const soundStorageKey = "esther-portfolio-sound";
 const soundLevelStorageKey = "esther-portfolio-sound-level";
-const soundLevels = [0, 0.35, 0.7, 1] as const;
+const soundLevels = [0, 0.2, 0.55, 1] as const;
 const ambientTrackPath = "/assets/mixkit-island-beat-250.mp3";
 const clickSoundPath = "/assets/mixkit-coins-handling-1939.wav";
 const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
@@ -61,11 +62,12 @@ function createAudioController() {
 
   const applyVolume = (level: number) => {
     volumeLevel = level;
-    master.gain.value = 0.22 * level;
-    click.volume = 0.34 * level;
-    themeSfx.volume = 0.42 * level;
-    projectReveal.volume = 0.3 * level;
-    certificateChime.volume = 0.32 * level;
+    const shapedLevel = level === 0 ? 0 : Math.max(0.035, Math.pow(level, 1.55));
+    master.gain.value = 0.24 * shapedLevel;
+    click.volume = 0.72 * shapedLevel;
+    themeSfx.volume = 0.78 * shapedLevel;
+    projectReveal.volume = 0.68 * shapedLevel;
+    certificateChime.volume = 0.7 * shapedLevel;
     if (level === 0) music.volume = 0;
   };
 
@@ -121,13 +123,13 @@ function createAudioController() {
     }
 
     if (!music.paused) {
-      music.volume = Math.min(music.volume, 0.28 * level);
+      music.volume = Math.min(music.volume, 0.3 * volumeLevel);
     }
   };
 
   const setAmbient = (enabled: boolean) => {
     if (context.state === "suspended") void context.resume();
-    const target = enabled ? 0.28 * volumeLevel : 0;
+    const target = enabled ? 0.3 * Math.pow(volumeLevel, 1.35) : 0;
     const step = enabled ? 0.018 : -0.022;
 
     if (enabled) {
@@ -185,9 +187,10 @@ function App() {
   const [soundLevel, setSoundLevel] = useState(() => {
     const savedLevel = Number(localStorage.getItem(soundLevelStorageKey));
     if (soundLevels.some((level) => level === savedLevel)) return savedLevel;
-    return localStorage.getItem(soundStorageKey) === "on" ? 0.7 : 0;
+    return localStorage.getItem(soundStorageKey) === "on" ? 0.55 : 0;
   });
   const soundEnabled = soundLevel > 0;
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const [copied, setCopied] = useState(false);
   const [path, setPath] = useState(() => window.location.pathname);
   const [theme, setTheme] = useState<Theme>(() => {
@@ -230,9 +233,10 @@ function App() {
         if (!stack || !stage || !cards.length) return;
 
         const rect = stack.getBoundingClientRect();
-        const scrollDistance = Math.max(1, stack.offsetHeight - stage.getBoundingClientRect().height);
+        const stageHeight = stage.getBoundingClientRect().height;
+        const scrollDistance = Math.max(1, stack.offsetHeight - stageHeight);
         const progress = Math.max(0, Math.min(1, -rect.top / scrollDistance));
-        const position = progress * Math.max(1, cards.length - 1);
+        const position = Math.round(progress * Math.max(1, cards.length - 1) * 1000) / 1000;
         const activeIndex = Math.min(cards.length - 1, Math.max(0, Math.round(position)));
 
         if (soundEnabled && activeIndex !== activeProjectCardRef.current) {
@@ -246,15 +250,16 @@ function App() {
         cards.forEach((card, index) => {
           const exit = Math.max(0, Math.min(1, position - index));
           const depth = Math.max(0, Math.min(3, index - position));
-          const translateY = exit * -116 + depth * 8;
-          const rotate = exit * -2.2;
-          const scale = 1 - exit * 0.035 - depth * 0.018;
-          const opacity = exit > 0 ? 1 - Math.pow(exit, 1.8) * 0.82 : 1 - depth * 0.18;
+          const exitEase = 1 - Math.pow(1 - exit, 3);
+          const translateY = exitEase * -Math.min(stageHeight * 0.9, 620) + depth * 10;
+          const rotate = exitEase * -0.45;
+          const scale = 1 - exitEase * 0.025 - depth * 0.014;
+          const opacity = exit > 0 ? 1 - exitEase * 0.92 : 1 - depth * 0.26;
 
-          card.style.setProperty("--card-y", `${translateY}%`);
+          card.style.setProperty("--card-y", `${translateY.toFixed(2)}px`);
           card.style.setProperty("--card-rotate", `${rotate}deg`);
           card.style.setProperty("--card-scale", `${scale}`);
-          card.style.opacity = `${opacity}`;
+          card.style.opacity = `${Math.max(0.06, opacity)}`;
           card.style.pointerEvents = index === activeIndex ? "auto" : "none";
         });
       });
@@ -289,7 +294,9 @@ function App() {
         if (!progress) return;
 
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-        progress.style.transform = `scaleX(${maxScroll > 0 ? window.scrollY / maxScroll : 0})`;
+        const scrollRatio = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+        progress.style.transform = `scaleX(${scrollRatio})`;
+        setShowBackToTop(scrollRatio > 0.72);
       });
     };
 
@@ -535,6 +542,18 @@ function App() {
           </>
         )}
       </main>
+      <button
+        className={showBackToTop ? "back-to-top is-visible" : "back-to-top"}
+        type="button"
+        onClick={() => {
+          playSound("button");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        aria-label="Back to top"
+        title="Back to top"
+      >
+        <ArrowUpRight size={16} />
+      </button>
     </>
   );
 }
@@ -767,6 +786,11 @@ function ProjectDetail({
         <h1>{project.name}</h1>
         <span>{project.description}</span>
         <div className="case-actions">
+          {project.aiReview ? (
+            <a href="#ai-collab-review" onClick={() => onSoundCue("button")}>
+              AI Collab Review <Sparkles size={15} />
+            </a>
+          ) : null}
           {project.liveUrl ? (
             <a href={project.liveUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
               View live project <ArrowUpRight size={15} />
@@ -857,21 +881,34 @@ function ProjectDetail({
         </div>
       </section>
 
-      <section className="case-grid case-ai">
+      <section className={project.aiReview ? "case-grid case-ai has-ai-review" : "case-grid case-ai"}>
         <div>
           <p className="eyebrow">Use of AI</p>
           <h2>How AI supported the work</h2>
+          {project.aiReview ? (
+            <a className="ai-note-jump" href="#ai-collab-review" onClick={() => onSoundCue("button")}>
+              <span>AI&apos;s note below</span>
+              <ArrowDown size={15} aria-hidden="true" />
+            </a>
+          ) : null}
         </div>
         <p>{project.aiUse}</p>
       </section>
 
       {project.aiReview ? (
-        <section className="case-grid case-ai-review">
+        <section className="case-grid case-ai-review" id="ai-collab-review">
           <div>
             <p className="eyebrow">Collaboration review</p>
             <h2>AI's note on working with me</h2>
           </div>
-          <p>{project.aiReview}</p>
+          <div className="ai-review-list">
+            {project.aiReview.map((item) => (
+              <article key={item.label}>
+                <strong>{item.label}:</strong>
+                <p>{item.comment}</p>
+              </article>
+            ))}
+          </div>
         </section>
       ) : null}
 
