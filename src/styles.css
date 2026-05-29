@@ -235,10 +235,18 @@ img {
 }
 
 .brand-mark {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0;
-  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  transform: translateY(1px);
+}
+
+.brand-mark img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
 }
 
 .nav-links {
@@ -305,13 +313,19 @@ img {
   background: var(--accent-soft);
 }
 
-.sound-toggle.needs-attention::before {
+.sound-toggle::before {
   content: "";
   position: absolute;
   inset: -4px;
-  border: 1px solid var(--accent-line);
   border-radius: inherit;
-  opacity: 0;
+  background: conic-gradient(var(--accent) var(--sound-level, 0%), rgba(255, 255, 255, 0.08) 0);
+  mask: radial-gradient(circle, transparent 58%, #000 60%);
+  opacity: 0.72;
+  transition: background 240ms ease, opacity 240ms ease;
+}
+
+.sound-toggle.needs-attention::before {
+  opacity: 0.28;
   animation: sound-nudge 2.8s ease-in-out infinite;
 }
 
@@ -591,6 +605,7 @@ img {
 .project-stack {
   position: relative;
   height: calc((var(--project-count, 6) - 1) * 92vh + min(590px, calc(100vh - 92px)));
+  height: calc((var(--project-count, 6) - 1) * 92svh + min(590px, calc(100svh - 92px)));
   min-height: calc((var(--project-count, 6) - 1) * 640px + 500px);
   padding-bottom: 0;
 }
@@ -599,6 +614,7 @@ img {
   position: sticky;
   top: 76px;
   height: min(590px, calc(100vh - 92px));
+  height: min(590px, calc(100svh - 92px));
   min-height: 500px;
   overflow: hidden;
   perspective: 1600px;
@@ -1546,14 +1562,8 @@ img {
   border-top: 1px solid var(--line);
 }
 
-.footer-bottom strong,
 .footer-bottom small {
   display: block;
-}
-
-.footer-bottom strong {
-  margin-bottom: 8px;
-  font-size: 14px;
 }
 
 .footer-bottom small {
@@ -1701,12 +1711,14 @@ img {
 
   .project-stack {
     height: calc((var(--project-count, 6) - 1) * 88vh + min(680px, calc(100vh - 88px)));
+    height: calc((var(--project-count, 6) - 1) * 88svh + min(680px, calc(100svh - 88px)));
     min-height: calc((var(--project-count, 6) - 1) * 560px + 560px);
   }
 
   .project-stage {
     top: 74px;
     height: min(680px, calc(100vh - 88px));
+    height: min(680px, calc(100svh - 88px));
     min-height: 560px;
   }
 
@@ -1786,8 +1798,13 @@ img {
   }
 
   .brand-mark {
-    max-width: 92px;
-    line-height: 1.15;
+    width: 46px;
+    height: 46px;
+  }
+
+  .brand-mark img {
+    width: 42px;
+    height: 42px;
   }
 
   .nav-links {

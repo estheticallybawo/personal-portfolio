@@ -33,6 +33,8 @@ type Theme = "dark" | "light";
 
 const themeStorageKey = "esther-portfolio-theme";
 const soundStorageKey = "esther-portfolio-sound";
+const soundLevelStorageKey = "esther-portfolio-sound-level";
+const soundLevels = [0, 0.35, 0.7, 1] as const;
 const ambientTrackPath = "/assets/mixkit-island-beat-250.mp3";
 const clickSoundPath = "/assets/mixkit-coins-handling-1939.wav";
 const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
@@ -55,20 +57,27 @@ function createAudioController() {
   const themeSfx = new Audio(themeSoundPath);
   const projectReveal = new Audio(projectRevealSoundPath);
   const certificateChime = new Audio(certificateChimePath);
+  let volumeLevel = 1;
 
-  master.gain.value = 0.22;
+  const applyVolume = (level: number) => {
+    volumeLevel = level;
+    master.gain.value = 0.22 * level;
+    click.volume = 0.34 * level;
+    themeSfx.volume = 0.42 * level;
+    projectReveal.volume = 0.3 * level;
+    certificateChime.volume = 0.32 * level;
+    if (level === 0) music.volume = 0;
+  };
+
   master.connect(context.destination);
   music.loop = true;
   music.preload = "auto";
   music.volume = 0;
   click.preload = "auto";
-  click.volume = 0.34;
   themeSfx.preload = "auto";
-  themeSfx.volume = 0.42;
   projectReveal.preload = "auto";
-  projectReveal.volume = 0.3;
   certificateChime.preload = "auto";
-  certificateChime.volume = 0.32;
+  applyVolume(volumeLevel);
 
   const play = (kind: SoundKind) => {
     if (context.state === "suspended") void context.resume();
@@ -104,9 +113,21 @@ function createAudioController() {
     osc.stop(now + settings.duration + 0.03);
   };
 
+  const setVolume = (level: number) => {
+    applyVolume(level);
+    if (level === 0) {
+      music.pause();
+      return;
+    }
+
+    if (!music.paused) {
+      music.volume = Math.min(music.volume, 0.28 * level);
+    }
+  };
+
   const setAmbient = (enabled: boolean) => {
     if (context.state === "suspended") void context.resume();
-    const target = enabled ? 0.28 : 0;
+    const target = enabled ? 0.28 * volumeLevel : 0;
     const step = enabled ? 0.018 : -0.022;
 
     if (enabled) {
@@ -129,6 +150,7 @@ function createAudioController() {
   return {
     context,
     play,
+    setVolume,
     setAmbient,
     close: () => {
       music.pause();
@@ -160,7 +182,12 @@ function App() {
   const themeTransitionRef = useRef(false);
   const activeProjectCardRef = useRef(0);
   const [themeRipple, setThemeRipple] = useState<ThemeRipple>(null);
-  const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem(soundStorageKey) === "on");
+  const [soundLevel, setSoundLevel] = useState(() => {
+    const savedLevel = Number(localStorage.getItem(soundLevelStorageKey));
+    if (soundLevels.some((level) => level === savedLevel)) return savedLevel;
+    return localStorage.getItem(soundStorageKey) === "on" ? 0.7 : 0;
+  });
+  const soundEnabled = soundLevel > 0;
   const [copied, setCopied] = useState(false);
   const [path, setPath] = useState(() => window.location.pathname);
   const [theme, setTheme] = useState<Theme>(() => {
@@ -198,11 +225,12 @@ function App() {
       frame = window.requestAnimationFrame(() => {
         frame = 0;
         const stack = document.querySelector<HTMLElement>(".project-stack");
+        const stage = document.querySelector<HTMLElement>(".project-stage");
         const cards = Array.from(document.querySelectorAll<HTMLElement>(".project-feature"));
-        if (!stack || !cards.length) return;
+        if (!stack || !stage || !cards.length) return;
 
         const rect = stack.getBoundingClientRect();
-        const scrollDistance = Math.max(1, stack.offsetHeight - window.innerHeight);
+        const scrollDistance = Math.max(1, stack.offsetHeight - stage.getBoundingClientRect().height);
         const progress = Math.max(0, Math.min(1, -rect.top / scrollDistance));
         const position = progress * Math.max(1, cards.length - 1);
         const activeIndex = Math.min(cards.length - 1, Math.max(0, Math.round(position)));
@@ -210,6 +238,7 @@ function App() {
         if (soundEnabled && activeIndex !== activeProjectCardRef.current) {
           activeProjectCardRef.current = activeIndex;
           const audio = ensureAudio();
+          audio?.setVolume(soundLevel);
           audio?.setAmbient(true);
           audio?.play("projectReveal");
         }
@@ -247,7 +276,7 @@ function App() {
         card.style.pointerEvents = "";
       });
     };
-  }, [path, soundEnabled]);
+  }, [path, soundEnabled, soundLevel]);
 
   useEffect(() => {
     let frame = 0;
@@ -373,18 +402,22 @@ function App() {
     if (!soundEnabled) return;
     const audio = ensureAudio();
     if (!audio) return;
+    audio.setVolume(soundLevel);
     audio.setAmbient(true);
     audio.play(kind);
   };
 
   const toggleSound = () => {
-    const next = !soundEnabled;
+    const currentIndex = soundLevels.findIndex((level) => level === soundLevel);
+    const next = soundLevels[(currentIndex + 1) % soundLevels.length];
     const audio = ensureAudio();
     if (!audio) return;
-    audio.setAmbient(next);
-    if (next) audio.play("button");
-    setSoundEnabled(next);
-    localStorage.setItem(soundStorageKey, next ? "on" : "off");
+    audio.setVolume(next);
+    audio.setAmbient(next > 0);
+    if (next > 0) audio.play("button");
+    setSoundLevel(next);
+    localStorage.setItem(soundLevelStorageKey, String(next));
+    localStorage.setItem(soundStorageKey, next > 0 ? "on" : "off");
   };
 
   const toggleTheme = (event: ReactMouseEvent<HTMLButtonElement>) => {
@@ -481,6 +514,7 @@ function App() {
         theme={theme}
         themeLabel={themeLabel}
         soundEnabled={soundEnabled}
+        soundLevel={soundLevel}
         onThemeToggle={toggleTheme}
         onSoundToggle={toggleSound}
         onSoundCue={playSound}
@@ -509,6 +543,7 @@ function Nav({
   theme,
   themeLabel,
   soundEnabled,
+  soundLevel,
   onThemeToggle,
   onSoundToggle,
   onSoundCue,
@@ -516,6 +551,7 @@ function Nav({
   theme: Theme;
   themeLabel: string;
   soundEnabled: boolean;
+  soundLevel: number;
   onThemeToggle: (event: ReactMouseEvent<HTMLButtonElement>) => void;
   onSoundToggle: () => void;
   onSoundCue: (kind: SoundKind) => void;
@@ -523,7 +559,7 @@ function Nav({
   return (
     <header className="nav-wrap">
       <a href="/" className="brand-mark" aria-label="Esther Tsotso home" onClick={() => onSoundCue("button")}>
-        {profile.shortName}
+        <img src="/assets/logo-e.png" alt="" aria-hidden="true" />
       </a>
       <nav className="nav-links" aria-label="Primary navigation">
         <a href="/#projects" onClick={() => onSoundCue("button")}>Projects</a>
@@ -536,9 +572,10 @@ function Nav({
       <div className="nav-controls">
         <button
           className={soundEnabled ? "sound-toggle" : "sound-toggle needs-attention"}
-          aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"}
-          title={soundEnabled ? "Turn sound off" : "Turn sound on"}
+          aria-label={`Sound volume ${Math.round(soundLevel * 100)} percent. Click to change volume.`}
+          title={`Sound volume ${Math.round(soundLevel * 100)}%`}
           onClick={onSoundToggle}
+          style={{ "--sound-level": `${soundLevel * 100}%` } as CSSProperties}
         >
           {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
         </button>
@@ -1177,7 +1214,6 @@ function Footer({
       </div>
       <div className="footer-bottom">
         <div>
-          <strong>{profile.name}</strong>
           <small>(c) 2026 - Built by Esther Tsotso</small>
           <small className="inspiration-credit">
             Key inspiration from top folks I admire {" "}
