@@ -437,8 +437,8 @@ export const resumeHighlights = [
       "Post Gemma 4 Good Hackathon exploration into what SafetyTech could look like in the age of AI and Edge computing.",
   },
   {
-    type: "Volunteer",
-    title: "Open Source Contributor",
+    type: "Open Source Volunteer",
+    title: "Contributor",
     org: "ADEN-HIVE",
     period: "Mar 2026 - Present",
     copy:

@@ -710,6 +710,20 @@ function Projects({
   onNavigate: (path: string) => void;
   onSoundCue: (kind: SoundKind) => void;
 }) {
+  const [activeProject, setActiveProject] = useState(0);
+  const touchStartRef = useRef<number | null>(null);
+
+  const moveProject = (direction: 1 | -1) => {
+    onSoundCue("projectReveal");
+    setActiveProject((current) => (current + direction + projects.length) % projects.length);
+  };
+
+  const showProject = (index: number) => {
+    if (index === activeProject) return;
+    onSoundCue("projectReveal");
+    setActiveProject(index);
+  };
+
   return (
     <section className="projects section-anchor" id="projects">
       <SectionHeading
@@ -717,13 +731,48 @@ function Projects({
         title="Problems turned into usable products."
         copy="Each project starts with a real user or product friction, then moves through technical decisions, interface states, and delivery."
       />
-      <div className="project-stack" style={{ "--project-count": projects.length } as CSSProperties}>
-        <div className="project-stage">
+      <div className="project-carousel" style={{ "--project-count": projects.length } as CSSProperties}>
+        <div className="project-carousel-top" data-reveal>
+          <div>
+            <span>{String(activeProject + 1).padStart(2, "0")}</span>
+            <span>/</span>
+            <span>{String(projects.length).padStart(2, "0")}</span>
+          </div>
+          <div className="project-carousel-controls">
+            <button type="button" onClick={() => moveProject(-1)} aria-label="Previous project">
+              <ArrowLeft size={16} />
+            </button>
+            <button type="button" onClick={() => moveProject(1)} aria-label="Next project">
+              <ArrowUpRight size={16} />
+            </button>
+          </div>
+        </div>
+        <div
+          className="project-stage"
+          onTouchStart={(event) => {
+            touchStartRef.current = event.touches[0]?.clientX ?? null;
+          }}
+          onTouchEnd={(event) => {
+            if (touchStartRef.current === null) return;
+            const distance = (event.changedTouches[0]?.clientX ?? touchStartRef.current) - touchStartRef.current;
+            touchStartRef.current = null;
+            if (Math.abs(distance) < 42) return;
+            moveProject(distance < 0 ? 1 : -1);
+          }}
+        >
           {projects.map((project, index) => (
             <article
-              className="project-feature"
+              className={
+                index === activeProject
+                  ? "project-feature is-active"
+                  : index === (activeProject + 1) % projects.length
+                    ? "project-feature is-next"
+                    : index === (activeProject - 1 + projects.length) % projects.length
+                      ? "project-feature is-prev"
+                      : "project-feature is-hidden"
+              }
               key={project.name}
-              style={{ "--stack-index": projects.length - index } as CSSProperties}
+              aria-hidden={index !== activeProject}
               onPointerEnter={() => onSoundCue("project")}
             >
             <div className="project-copy">
@@ -741,7 +790,7 @@ function Projects({
               </div>
               <div className="project-actions">
                 <button type="button" onClick={() => { onSoundCue("button"); onNavigate(`/work/${project.slug}`); }}>
-                  Explore More <ArrowUpRight size={15} />
+                  Case Study <ArrowUpRight size={15} />
                 </button>
               </div>
             </div>
@@ -758,6 +807,20 @@ function Projects({
               <img src={project.image} alt={`${project.name} preview`} />
             </a>
             </article>
+          ))}
+        </div>
+        <div className="project-carousel-dots" aria-label="Project carousel navigation">
+          {projects.map((project, index) => (
+            <button
+              type="button"
+              key={project.slug}
+              className={index === activeProject ? "is-active" : ""}
+              onClick={() => showProject(index)}
+              aria-label={`Show ${project.name}`}
+              aria-current={index === activeProject ? "true" : undefined}
+            >
+              {String(index + 1).padStart(2, "0")}
+            </button>
           ))}
         </div>
       </div>
@@ -1148,7 +1211,7 @@ function Resume({
             <span className="rail-index">{String(index + 1).padStart(2, "0")}</span>
             <div>
               <span className="badge">{item.type}</span>
-              <h4>{item.title}</h4>
+              <h3>{item.title}</h3>
               <p className="muted-line">
                 {item.period} / {item.org}
               </p>
