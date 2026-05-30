@@ -44,7 +44,7 @@ export const profile = {
   location: "Nigeria",
   image: "/assets/frontend.jpg",
   cvUrl:
-    "https://docs.google.com/document/d/1oCvEVTNmlrDe_qive0rKeHDxfBHK72btmxe3XOkBT8g/edit?usp=sharing",
+    "https://docs.google.com/document/d/1itqRE7tUgOmPEZfevQOhQMQyNemueKoPwKpWmuMzics/edit?usp=sharing",
   certificationsUrl: "/certifications",
   links: {
     github: "https://github.com/estheticallybawo",
