@@ -28,6 +28,7 @@
   --theme-radius: 120vmax;
   --theme-ripple-color: #f5fbff;
   --shadow: rgba(0, 0, 0, 0.34);
+  --player-bg: rgba(4, 10, 22, 0.88);
   --heading-font: "Outfit", "Comfortaa", system-ui, sans-serif;
   scroll-behavior: smooth;
 }
@@ -55,6 +56,7 @@
   --project-card-hover-shadow: 0 0 0 1px rgba(2, 127, 173, 0.06);
   --theme-ripple-color: #01050f;
   --shadow: rgba(5, 43, 68, 0.12);
+  --player-bg: rgba(238, 246, 255, 0.88);
 }
 
 * {
@@ -296,7 +298,6 @@ img {
 
 .nav-links a,
 .theme-toggle,
-.sound-toggle,
 .secondary-button,
 .project-actions a,
 .tool-chip,
@@ -332,8 +333,7 @@ img {
   gap: 8px;
 }
 
-.theme-toggle,
-.sound-toggle {
+.theme-toggle {
   position: relative;
   display: grid;
   place-items: center;
@@ -346,38 +346,9 @@ img {
   cursor: pointer;
 }
 
-.theme-toggle:hover,
-.sound-toggle:hover {
+.theme-toggle:hover {
   border-color: var(--accent-line);
   background: var(--accent-soft);
-}
-
-.sound-toggle::before {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border-radius: inherit;
-  background: conic-gradient(var(--accent) var(--sound-level, 0%), rgba(255, 255, 255, 0.08) 0);
-  mask: radial-gradient(circle, transparent 58%, #000 60%);
-  opacity: 0.72;
-  transition: background 240ms ease, opacity 240ms ease;
-}
-
-.sound-toggle.needs-attention::before {
-  opacity: 0.28;
-  animation: sound-nudge 2.8s ease-in-out infinite;
-}
-
-.sound-toggle.needs-attention::after {
-  content: "";
-  position: absolute;
-  top: 7px;
-  right: 7px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 12px var(--accent);
 }
 
 .hero {
@@ -2184,7 +2155,8 @@ img {
     min-height: 116px;
   }
 
-  .case-study {
+  .case-study,
+  .certifications-page {
     padding-top: 104px;
   }
 
@@ -2194,5 +2166,206 @@ img {
 
   .case-note {
     min-height: 150px;
+  }
+}
+
+/* Floating music player */
+.floating-player {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px 5px 5px;
+  border-radius: 100px;
+  border: 1px solid var(--line);
+  background: var(--player-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px var(--shadow);
+  transition: border-color 300ms ease, box-shadow 300ms ease;
+}
+
+.floating-player.is-playing {
+  border-color: var(--accent-line);
+  box-shadow: 0 8px 32px var(--shadow), 0 0 24px var(--accent-soft);
+}
+
+.floating-player-disc {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--panel-strong);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  border: 2px solid var(--line);
+  transition: border-color 300ms ease;
+}
+
+.floating-player.is-playing .floating-player-disc {
+  border-color: var(--accent-line);
+  animation: disc-spin 10s linear infinite;
+}
+
+.floating-player-disc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.floating-player-disc::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.52) 13%, transparent 14%);
+  pointer-events: none;
+}
+
+@keyframes disc-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.floating-player-body {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.floating-player-track {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  max-width: 200px;
+}
+
+.floating-player-title {
+  display: block;
+  font-size: 11px;
+  font-family: var(--heading-font);
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.floating-player-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-family: var(--heading-font);
+  color: var(--muted);
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+.floating-player-bar {
+  height: 2px;
+  background: var(--line);
+  border-radius: 1px;
+  overflow: hidden;
+  position: relative;
+}
+
+.floating-player-bar::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: var(--progress, 0%);
+  background: var(--accent);
+  border-radius: 1px;
+  transition: width 0.5s linear;
+}
+
+.floating-player-bar.is-loading::after {
+  width: 36%;
+  animation: bar-loading 1.3s ease-in-out infinite;
+}
+
+@keyframes bar-loading {
+  0%   { left: -36%; }
+  100% { left: 100%; }
+}
+
+.floating-player-shuffle {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  transition: color 160ms, border-color 160ms, background 160ms;
+}
+
+.floating-player-shuffle:hover,
+.floating-player-shuffle.is-active {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.floating-player-toggle {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  transition: color 160ms, border-color 160ms, background 160ms;
+}
+
+.floating-player-toggle:hover,
+.floating-player.is-playing .floating-player-toggle {
+  border-color: var(--accent-line);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+@media (max-width: 768px) {
+  /* Push back-to-top above the floating player */
+  .back-to-top {
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .floating-player {
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .floating-player-shuffle {
+    display: none;
+  }
+
+  .floating-player-track {
+    max-width: 120px;
+  }
+
+  .floating-player-disc {
+    width: 38px;
+    height: 38px;
   }
 }

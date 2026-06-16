@@ -11,11 +11,13 @@ import {
   Instagram,
   Linkedin,
   Moon,
+  Music2,
   Palette,
+  Pause,
+  Play,
+  Shuffle,
   Sparkles,
   Sun,
-  Volume2,
-  VolumeX,
   Zap,
 } from "lucide-react";
 import {
@@ -35,7 +37,7 @@ const themeStorageKey = "esther-portfolio-theme";
 const soundStorageKey = "esther-portfolio-sound";
 const soundLevelStorageKey = "esther-portfolio-sound-level";
 const soundLevels = [0, 0.2, 0.55, 1] as const;
-const ambientTrackPath = "/assets/mixkit-island-beat-250.mp3";
+const PLAYLIST_ID = "PLGHl5-LkFRpM";
 const clickSoundPath = "/assets/mixkit-coins-handling-1939.wav";
 const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
 const projectRevealSoundPath = "/assets/mixkit-page-forward-single-chime-1107.wav";
@@ -53,6 +55,19 @@ const heroRoles = [
 type SoundKind = "nav" | "theme" | "project" | "projectReveal" | "certificate" | "copy" | "contact" | "button";
 type ThemeRipple = { x: number; y: number; color: string; id: number } | null;
 
+interface YTPlayerInstance {
+  playVideo(): void;
+  pauseVideo(): void;
+  loadPlaylist(config: { list: string; listType: string }): void;
+  cuePlaylist(config: { list: string; listType: string }): void;
+  setShuffle(shuffle: boolean): void;
+  getCurrentTime(): number;
+  getDuration(): number;
+  getVideoData(): { title: string; video_id: string };
+  getPlayerState(): number;
+  destroy(): void;
+}
+
 function createAudioController() {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
   if (!AudioContextClass) {
@@ -61,7 +76,6 @@ function createAudioController() {
 
   const context = new AudioContextClass();
   const master = context.createGain();
-  const music = new Audio(ambientTrackPath);
   const click = new Audio(clickSoundPath);
   const themeSfx = new Audio(themeSoundPath);
   const projectReveal = new Audio(projectRevealSoundPath);
@@ -76,13 +90,9 @@ function createAudioController() {
     themeSfx.volume = 0.78 * shapedLevel;
     projectReveal.volume = 0.68 * shapedLevel;
     certificateChime.volume = 0.7 * shapedLevel;
-    if (level === 0) music.volume = 0;
   };
 
   master.connect(context.destination);
-  music.loop = true;
-  music.preload = "auto";
-  music.volume = 0;
   click.preload = "auto";
   themeSfx.preload = "auto";
   projectReveal.preload = "auto";
@@ -125,45 +135,13 @@ function createAudioController() {
 
   const setVolume = (level: number) => {
     applyVolume(level);
-    if (level === 0) {
-      music.pause();
-      return;
-    }
-
-    if (!music.paused) {
-      music.volume = Math.min(music.volume, 0.3 * volumeLevel);
-    }
-  };
-
-  const setAmbient = (enabled: boolean) => {
-    if (context.state === "suspended") void context.resume();
-    const target = enabled ? 0.3 * Math.pow(volumeLevel, 1.35) : 0;
-    const step = enabled ? 0.018 : -0.022;
-
-    if (enabled) {
-      void music.play();
-    }
-
-    const fade = window.setInterval(() => {
-      const next = Math.max(0, Math.min(target, music.volume + step));
-      music.volume = next;
-
-      if (next === target) {
-        window.clearInterval(fade);
-        if (!enabled) {
-          music.pause();
-        }
-      }
-    }, 35);
   };
 
   return {
     context,
     play,
     setVolume,
-    setAmbient,
     close: () => {
-      music.pause();
       click.pause();
       themeSfx.pause();
       projectReveal.pause();
@@ -176,6 +154,11 @@ function createAudioController() {
 declare global {
   interface Window {
     webkitAudioContext?: typeof AudioContext;
+    YT: {
+      Player: new (element: HTMLElement, config: object) => YTPlayerInstance;
+      PlayerState: { PLAYING: number; PAUSED: number; ENDED: number; BUFFERING: number; UNSTARTED: number };
+    };
+    onYouTubeIframeAPIReady: () => void;
     startViewTransition?: (updateCallback: () => void) => {
       finished: Promise<void>;
       ready: Promise<void>;
@@ -188,6 +171,8 @@ function App() {
   const spotlightRef = useRef<HTMLDivElement | null>(null);
   const scrollProgressRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<ReturnType<typeof createAudioController> | null>(null);
+  const ytPlayerRef = useRef<YTPlayerInstance | null>(null);
+  const progressIntervalRef = useRef<number>(0);
   const themeTimersRef = useRef<number[]>([]);
   const themeTransitionRef = useRef(false);
   const [themeRipple, setThemeRipple] = useState<ThemeRipple>(null);
@@ -207,6 +192,10 @@ function App() {
     const saved = localStorage.getItem(themeStorageKey);
     return saved === "light" ? "light" : "dark";
   });
+  const [trackTitle, setTrackTitle] = useState("");
+  const [trackProgress, setTrackProgress] = useState(0);
+  const [videoId, setVideoId] = useState("");
+  const [shuffleEnabled, setShuffleEnabled] = useState(false);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -217,14 +206,87 @@ function App() {
     return () => {
       audioRef.current?.close();
       themeTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+      window.clearInterval(progressIntervalRef.current);
+      ytPlayerRef.current?.destroy();
     };
   }, []);
+
+  // Load YouTube IFrame API and init player on mount
+  useEffect(() => {
+    const initPlayer = () => {
+      if (ytPlayerRef.current) return;
+      const mount = document.createElement("div");
+      mount.id = "yt-player-mount";
+      mount.style.cssText = "position:fixed;top:-300px;left:-300px;width:1px;height:1px;opacity:0;pointer-events:none;";
+      document.body.appendChild(mount);
+
+      ytPlayerRef.current = new window.YT.Player(mount, {
+        height: 1,
+        width: 1,
+        host: "https://www.youtube-nocookie.com",
+        playerVars: {
+          listType: "playlist",
+          list: PLAYLIST_ID,
+          autoplay: 0,
+          controls: 0,
+          playsinline: 1,
+          origin: window.location.origin,
+        },
+        events: {
+          onReady: () => {
+            ytPlayerRef.current?.setShuffle(false);
+          },
+          onStateChange: (event: { data: number }) => {
+            if (event.data === 1) {
+              if (!progressIntervalRef.current) {
+                progressIntervalRef.current = window.setInterval(() => {
+                  const player = ytPlayerRef.current;
+                  if (!player) return;
+                  try {
+                    const duration = player.getDuration();
+                    const current = player.getCurrentTime();
+                    if (duration > 0) setTrackProgress(current / duration);
+                    const data = player.getVideoData();
+                    if (data.title) setTrackTitle(data.title);
+                    if (data.video_id) setVideoId(data.video_id);
+                  } catch { /* player not ready */ }
+                }, 500);
+              }
+            } else {
+              window.clearInterval(progressIntervalRef.current);
+              progressIntervalRef.current = 0;
+              if (event.data === 0) setTrackProgress(0);
+            }
+          },
+          onError: () => {
+            setTrackTitle("");
+            setTrackProgress(0);
+          },
+        },
+      });
+    };
+
+    if (window.YT?.Player) {
+      initPlayer();
+    } else {
+      window.onYouTubeIframeAPIReady = initPlayer;
+      if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+        const script = document.createElement("script");
+        script.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(script);
+      }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const updatePath = () => setPath(window.location.pathname);
     window.addEventListener("popstate", updatePath);
     return () => window.removeEventListener("popstate", updatePath);
   }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [path]);
 
   useEffect(() => {
     let frame = 0;
@@ -353,21 +415,36 @@ function App() {
     const audio = ensureAudio();
     if (!audio) return;
     audio.setVolume(soundLevel);
-    audio.setAmbient(true);
+    try {
+      const state = ytPlayerRef.current?.getPlayerState();
+      if (state !== undefined && state !== 1) ytPlayerRef.current?.playVideo();
+    } catch { /* player not ready */ }
     audio.play(kind);
   };
 
   const toggleSound = () => {
-    const currentIndex = soundLevels.findIndex((level) => level === soundLevel);
-    const next = soundLevels[(currentIndex + 1) % soundLevels.length];
+    const next = soundEnabled ? 0 : 0.55;
     const audio = ensureAudio();
     if (!audio) return;
     audio.setVolume(next);
-    audio.setAmbient(next > 0);
-    if (next > 0) audio.play("button");
+    if (next > 0) {
+      audio.play("button");
+      try { ytPlayerRef.current?.playVideo(); } catch { /* not ready */ }
+    } else {
+      try { ytPlayerRef.current?.pauseVideo(); } catch { /* not ready */ }
+      setTrackTitle("");
+      setTrackProgress(0);
+      setVideoId("");
+    }
     setSoundLevel(next);
     localStorage.setItem(soundLevelStorageKey, String(next));
     localStorage.setItem(soundStorageKey, next > 0 ? "on" : "off");
+  };
+
+  const toggleShuffle = () => {
+    const next = !shuffleEnabled;
+    setShuffleEnabled(next);
+    try { ytPlayerRef.current?.setShuffle(next); } catch { /* not ready */ }
   };
 
   const toggleTheme = (event: ReactMouseEvent<HTMLButtonElement>) => {
@@ -430,7 +507,6 @@ function App() {
   const navigateTo = (nextPath: string) => {
     window.history.pushState({}, "", nextPath);
     setPath(nextPath);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const activeProjectSlug = path.match(/^\/work\/([^/]+)\/?$/)?.[1];
@@ -452,10 +528,7 @@ function App() {
       <Nav
         theme={theme}
         themeLabel={themeLabel}
-        soundEnabled={soundEnabled}
-        soundLevel={soundLevel}
         onThemeToggle={toggleTheme}
-        onSoundToggle={toggleSound}
         onSoundCue={playSound}
       />
       <main className="site-shell">
@@ -486,6 +559,15 @@ function App() {
       >
         <ArrowUpRight size={16} />
       </button>
+      <FloatingMusicPlayer
+        soundEnabled={soundEnabled}
+        trackTitle={trackTitle}
+        trackProgress={trackProgress}
+        videoId={videoId}
+        shuffleEnabled={shuffleEnabled}
+        onTogglePlay={toggleSound}
+        onShuffleToggle={toggleShuffle}
+      />
     </>
   );
 }
@@ -493,18 +575,12 @@ function App() {
 function Nav({
   theme,
   themeLabel,
-  soundEnabled,
-  soundLevel,
   onThemeToggle,
-  onSoundToggle,
   onSoundCue,
 }: {
   theme: Theme;
   themeLabel: string;
-  soundEnabled: boolean;
-  soundLevel: number;
   onThemeToggle: (event: ReactMouseEvent<HTMLButtonElement>) => void;
-  onSoundToggle: () => void;
   onSoundCue: (kind: SoundKind) => void;
 }) {
   return (
@@ -522,15 +598,6 @@ function Nav({
       </nav>
       <div className="nav-controls">
         <button
-          className={soundEnabled ? "sound-toggle" : "sound-toggle needs-attention"}
-          aria-label={`Sound volume ${Math.round(soundLevel * 100)} percent. Click to change volume.`}
-          title={`Sound volume ${Math.round(soundLevel * 100)}%`}
-          onClick={onSoundToggle}
-          style={{ "--sound-level": `${soundLevel * 100}%` } as CSSProperties}
-        >
-          {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
-        </button>
-        <button
           className="theme-toggle"
           aria-label={themeLabel}
           title={themeLabel}
@@ -540,6 +607,86 @@ function Nav({
         </button>
       </div>
     </header>
+  );
+}
+
+function FloatingMusicPlayer({
+  soundEnabled,
+  trackTitle,
+  trackProgress,
+  videoId,
+  shuffleEnabled,
+  onTogglePlay,
+  onShuffleToggle,
+}: {
+  soundEnabled: boolean;
+  trackTitle: string;
+  trackProgress: number;
+  videoId: string;
+  shuffleEnabled: boolean;
+  onTogglePlay: () => void;
+  onShuffleToggle: () => void;
+}) {
+  const [imgError, setImgError] = useState(false);
+  useEffect(() => { setImgError(false); }, [videoId]);
+
+  const thumbnailUrl = videoId && !imgError
+    ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+    : null;
+
+  return (
+    <div
+      className={`floating-player${soundEnabled ? " is-playing" : ""}`}
+      aria-label={soundEnabled && trackTitle ? `Now playing: ${trackTitle}` : "Music player"}
+    >
+      <div className={`floating-player-disc${soundEnabled ? " is-spinning" : ""}`}>
+        {thumbnailUrl ? (
+          <img src={thumbnailUrl} alt="" onError={() => setImgError(true)} />
+        ) : (
+          <Music2 size={16} aria-hidden="true" />
+        )}
+      </div>
+      <div className="floating-player-body">
+        {soundEnabled ? (
+          <div className="floating-player-track">
+            <span className="floating-player-title">{trackTitle || "Loading…"}</span>
+            <div
+              className={`floating-player-bar${soundEnabled && !trackTitle ? " is-loading" : ""}`}
+              role="progressbar"
+              aria-valuenow={Math.round(trackProgress * 100)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              style={{ "--progress": `${trackProgress * 100}%` } as CSSProperties}
+            />
+          </div>
+        ) : (
+        <span className="floating-player-hint">
+          <Music2 size={11} aria-hidden="true" />
+          click to listen
+        </span>
+        )}
+      </div>
+      {soundEnabled ? (
+        <button
+          className={`floating-player-shuffle${shuffleEnabled ? " is-active" : ""}`}
+          onClick={onShuffleToggle}
+          aria-label={shuffleEnabled ? "Shuffle on" : "Shuffle off"}
+          title={shuffleEnabled ? "Shuffle on" : "Shuffle off"}
+          type="button"
+        >
+          <Shuffle size={11} />
+        </button>
+      ) : null}
+      <button
+        className="floating-player-toggle"
+        onClick={onTogglePlay}
+        aria-label={soundEnabled ? "Pause music" : "Play music"}
+        title={soundEnabled ? "Pause" : "Play"}
+        type="button"
+      >
+        {soundEnabled ? <Pause size={13} /> : <Play size={13} />}
+      </button>
+    </div>
   );
 }
 
