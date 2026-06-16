@@ -2155,7 +2155,8 @@ img {
     min-height: 116px;
   }
 
-  .case-study {
+  .case-study,
+  .certifications-page {
     padding-top: 104px;
   }
 

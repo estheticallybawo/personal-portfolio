@@ -503,7 +503,7 @@ function App() {
   const navigateTo = (nextPath: string) => {
     window.history.pushState({}, "", nextPath);
     setPath(nextPath);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo(0, 0);
   };
 
   const activeProjectSlug = path.match(/^\/work\/([^/]+)\/?$/)?.[1];
