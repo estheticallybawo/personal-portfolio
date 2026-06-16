@@ -657,7 +657,10 @@ function FloatingMusicPlayer({
             />
           </div>
         ) : (
-          <span className="floating-player-hint">click to listen ♪</span>
+        <span className="floating-player-hint">
+          <Music2 size={11} aria-hidden="true" />
+          click to listen
+        </span>
         )}
       </div>
       {soundEnabled ? (
