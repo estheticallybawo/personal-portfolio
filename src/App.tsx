@@ -12,6 +12,7 @@ import {
   Linkedin,
   Moon,
   Palette,
+  Shuffle,
   Sparkles,
   Sun,
   Volume2,
@@ -35,7 +36,8 @@ const themeStorageKey = "esther-portfolio-theme";
 const soundStorageKey = "esther-portfolio-sound";
 const soundLevelStorageKey = "esther-portfolio-sound-level";
 const soundLevels = [0, 0.2, 0.55, 1] as const;
-const ambientTrackPath = "/assets/mixkit-island-beat-250.mp3";
+const PLAYLIST_DARK = "PLA8aNASBjLtE";
+const PLAYLIST_LIGHT = "PLGHl5-LkFRpM";
 const clickSoundPath = "/assets/mixkit-coins-handling-1939.wav";
 const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
 const projectRevealSoundPath = "/assets/mixkit-page-forward-single-chime-1107.wav";
@@ -53,6 +55,19 @@ const heroRoles = [
 type SoundKind = "nav" | "theme" | "project" | "projectReveal" | "certificate" | "copy" | "contact" | "button";
 type ThemeRipple = { x: number; y: number; color: string; id: number } | null;
 
+interface YTPlayerInstance {
+  playVideo(): void;
+  pauseVideo(): void;
+  loadPlaylist(config: { list: string; listType: string }): void;
+  cuePlaylist(config: { list: string; listType: string }): void;
+  setShuffle(shuffle: boolean): void;
+  getCurrentTime(): number;
+  getDuration(): number;
+  getVideoData(): { title: string };
+  getPlayerState(): number;
+  destroy(): void;
+}
+
 function createAudioController() {
   const AudioContextClass = window.AudioContext || window.webkitAudioContext;
   if (!AudioContextClass) {
@@ -61,7 +76,6 @@ function createAudioController() {
 
   const context = new AudioContextClass();
   const master = context.createGain();
-  const music = new Audio(ambientTrackPath);
   const click = new Audio(clickSoundPath);
   const themeSfx = new Audio(themeSoundPath);
   const projectReveal = new Audio(projectRevealSoundPath);
@@ -76,13 +90,9 @@ function createAudioController() {
     themeSfx.volume = 0.78 * shapedLevel;
     projectReveal.volume = 0.68 * shapedLevel;
     certificateChime.volume = 0.7 * shapedLevel;
-    if (level === 0) music.volume = 0;
   };
 
   master.connect(context.destination);
-  music.loop = true;
-  music.preload = "auto";
-  music.volume = 0;
   click.preload = "auto";
   themeSfx.preload = "auto";
   projectReveal.preload = "auto";
@@ -125,45 +135,13 @@ function createAudioController() {
 
   const setVolume = (level: number) => {
     applyVolume(level);
-    if (level === 0) {
-      music.pause();
-      return;
-    }
-
-    if (!music.paused) {
-      music.volume = Math.min(music.volume, 0.3 * volumeLevel);
-    }
-  };
-
-  const setAmbient = (enabled: boolean) => {
-    if (context.state === "suspended") void context.resume();
-    const target = enabled ? 0.3 * Math.pow(volumeLevel, 1.35) : 0;
-    const step = enabled ? 0.018 : -0.022;
-
-    if (enabled) {
-      void music.play();
-    }
-
-    const fade = window.setInterval(() => {
-      const next = Math.max(0, Math.min(target, music.volume + step));
-      music.volume = next;
-
-      if (next === target) {
-        window.clearInterval(fade);
-        if (!enabled) {
-          music.pause();
-        }
-      }
-    }, 35);
   };
 
   return {
     context,
     play,
     setVolume,
-    setAmbient,
     close: () => {
-      music.pause();
       click.pause();
       themeSfx.pause();
       projectReveal.pause();
@@ -176,6 +154,11 @@ function createAudioController() {
 declare global {
   interface Window {
     webkitAudioContext?: typeof AudioContext;
+    YT: {
+      Player: new (element: HTMLElement, config: object) => YTPlayerInstance;
+      PlayerState: { PLAYING: number; PAUSED: number; ENDED: number; BUFFERING: number; UNSTARTED: number };
+    };
+    onYouTubeIframeAPIReady: () => void;
     startViewTransition?: (updateCallback: () => void) => {
       finished: Promise<void>;
       ready: Promise<void>;
@@ -188,6 +171,8 @@ function App() {
   const spotlightRef = useRef<HTMLDivElement | null>(null);
   const scrollProgressRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<ReturnType<typeof createAudioController> | null>(null);
+  const ytPlayerRef = useRef<YTPlayerInstance | null>(null);
+  const progressIntervalRef = useRef<number>(0);
   const themeTimersRef = useRef<number[]>([]);
   const themeTransitionRef = useRef(false);
   const [themeRipple, setThemeRipple] = useState<ThemeRipple>(null);
@@ -207,6 +192,9 @@ function App() {
     const saved = localStorage.getItem(themeStorageKey);
     return saved === "light" ? "light" : "dark";
   });
+  const [trackTitle, setTrackTitle] = useState("");
+  const [trackProgress, setTrackProgress] = useState(0);
+  const [shuffleEnabled, setShuffleEnabled] = useState(false);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -217,8 +205,83 @@ function App() {
     return () => {
       audioRef.current?.close();
       themeTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+      window.clearInterval(progressIntervalRef.current);
+      ytPlayerRef.current?.destroy();
     };
   }, []);
+
+  // Load YouTube IFrame API and init player on mount
+  useEffect(() => {
+    if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+      const script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(script);
+    }
+
+    const initialPlaylistId = theme === "dark" ? PLAYLIST_DARK : PLAYLIST_LIGHT;
+
+    window.onYouTubeIframeAPIReady = () => {
+      const mount = document.createElement("div");
+      mount.id = "yt-player-mount";
+      mount.style.cssText = "position:fixed;top:-300px;left:-300px;width:1px;height:1px;opacity:0;pointer-events:none;";
+      document.body.appendChild(mount);
+
+      ytPlayerRef.current = new window.YT.Player(mount, {
+        height: 1,
+        width: 1,
+        playerVars: {
+          listType: "playlist",
+          list: initialPlaylistId,
+          autoplay: 0,
+          controls: 0,
+          playsinline: 1,
+          origin: window.location.origin,
+        },
+        events: {
+          onReady: () => {
+            ytPlayerRef.current?.setShuffle(false);
+          },
+          onStateChange: (event: { data: number }) => {
+            if (event.data === 1) {
+              if (!progressIntervalRef.current) {
+                progressIntervalRef.current = window.setInterval(() => {
+                  const player = ytPlayerRef.current;
+                  if (!player) return;
+                  try {
+                    const duration = player.getDuration();
+                    const current = player.getCurrentTime();
+                    if (duration > 0) setTrackProgress(current / duration);
+                    const data = player.getVideoData();
+                    if (data.title) setTrackTitle(data.title);
+                  } catch { /* player not ready */ }
+                }, 500);
+              }
+            } else {
+              window.clearInterval(progressIntervalRef.current);
+              progressIntervalRef.current = 0;
+              if (event.data === 0) setTrackProgress(0);
+            }
+          },
+        },
+      });
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Switch playlist when theme changes
+  useEffect(() => {
+    const player = ytPlayerRef.current;
+    if (!player) return;
+    const playlistId = theme === "dark" ? PLAYLIST_DARK : PLAYLIST_LIGHT;
+    try {
+      if (soundEnabled) {
+        player.loadPlaylist({ list: playlistId, listType: "playlist" });
+      } else {
+        player.cuePlaylist({ list: playlistId, listType: "playlist" });
+      }
+    } catch { /* player not ready */ }
+    setTrackTitle("");
+    setTrackProgress(0);
+  }, [theme]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const updatePath = () => setPath(window.location.pathname);
@@ -353,7 +416,10 @@ function App() {
     const audio = ensureAudio();
     if (!audio) return;
     audio.setVolume(soundLevel);
-    audio.setAmbient(true);
+    try {
+      const state = ytPlayerRef.current?.getPlayerState();
+      if (state !== undefined && state !== 1) ytPlayerRef.current?.playVideo();
+    } catch { /* player not ready */ }
     audio.play(kind);
   };
 
@@ -363,11 +429,21 @@ function App() {
     const audio = ensureAudio();
     if (!audio) return;
     audio.setVolume(next);
-    audio.setAmbient(next > 0);
-    if (next > 0) audio.play("button");
+    if (next > 0) {
+      audio.play("button");
+      try { ytPlayerRef.current?.playVideo(); } catch { /* not ready */ }
+    } else {
+      try { ytPlayerRef.current?.pauseVideo(); } catch { /* not ready */ }
+    }
     setSoundLevel(next);
     localStorage.setItem(soundLevelStorageKey, String(next));
     localStorage.setItem(soundStorageKey, next > 0 ? "on" : "off");
+  };
+
+  const toggleShuffle = () => {
+    const next = !shuffleEnabled;
+    setShuffleEnabled(next);
+    try { ytPlayerRef.current?.setShuffle(next); } catch { /* not ready */ }
   };
 
   const toggleTheme = (event: ReactMouseEvent<HTMLButtonElement>) => {
@@ -454,8 +530,12 @@ function App() {
         themeLabel={themeLabel}
         soundEnabled={soundEnabled}
         soundLevel={soundLevel}
+        trackTitle={trackTitle}
+        trackProgress={trackProgress}
+        shuffleEnabled={shuffleEnabled}
         onThemeToggle={toggleTheme}
         onSoundToggle={toggleSound}
+        onShuffleToggle={toggleShuffle}
         onSoundCue={playSound}
       />
       <main className="site-shell">
@@ -495,16 +575,24 @@ function Nav({
   themeLabel,
   soundEnabled,
   soundLevel,
+  trackTitle,
+  trackProgress,
+  shuffleEnabled,
   onThemeToggle,
   onSoundToggle,
+  onShuffleToggle,
   onSoundCue,
 }: {
   theme: Theme;
   themeLabel: string;
   soundEnabled: boolean;
   soundLevel: number;
+  trackTitle: string;
+  trackProgress: number;
+  shuffleEnabled: boolean;
   onThemeToggle: (event: ReactMouseEvent<HTMLButtonElement>) => void;
   onSoundToggle: () => void;
+  onShuffleToggle: () => void;
   onSoundCue: (kind: SoundKind) => void;
 }) {
   return (
@@ -521,6 +609,14 @@ function Nav({
         <a href="/#contact" onClick={() => onSoundCue("button")}>Contact</a>
       </nav>
       <div className="nav-controls">
+        {soundEnabled && trackTitle ? (
+          <MiniPlayer
+            title={trackTitle}
+            progress={trackProgress}
+            shuffleEnabled={shuffleEnabled}
+            onShuffleToggle={onShuffleToggle}
+          />
+        ) : null}
         <button
           className={soundEnabled ? "sound-toggle" : "sound-toggle needs-attention"}
           aria-label={`Sound volume ${Math.round(soundLevel * 100)} percent. Click to change volume.`}
@@ -540,6 +636,43 @@ function Nav({
         </button>
       </div>
     </header>
+  );
+}
+
+function MiniPlayer({
+  title,
+  progress,
+  shuffleEnabled,
+  onShuffleToggle,
+}: {
+  title: string;
+  progress: number;
+  shuffleEnabled: boolean;
+  onShuffleToggle: () => void;
+}) {
+  return (
+    <div className="mini-player" aria-label={`Now playing: ${title}`}>
+      <button
+        className={shuffleEnabled ? "mini-player-shuffle is-active" : "mini-player-shuffle"}
+        onClick={onShuffleToggle}
+        aria-label={shuffleEnabled ? "Disable shuffle" : "Enable shuffle"}
+        title={shuffleEnabled ? "Shuffle on" : "Shuffle off"}
+        type="button"
+      >
+        <Shuffle size={11} />
+      </button>
+      <div className="mini-player-info">
+        <span className="mini-player-title">{title}</span>
+        <div
+          className="mini-player-bar"
+          role="progressbar"
+          aria-valuenow={Math.round(progress * 100)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          style={{ "--progress": `${progress * 100}%` } as CSSProperties}
+        />
+      </div>
+    </div>
   );
 }
 
