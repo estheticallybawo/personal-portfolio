@@ -1257,20 +1257,25 @@ function About() {
             thing before writing code.
           </>
         }
-        copy="The story is not just that I write codes. It is that I pay attention to the user, the product goal, the flow, and the technical path that makes a solution dependable."
+        copy="Every product I touch starts with three questions: are people safer because of it? Can they earn more? Do they connect more meaningfully?"
       />
       <div className="about-grid">
         <div className="about-narrative" data-reveal>
           <p>
-            I started with curiosity about how useful digital products are built, then
-            learned to turn product requirements into frontend systems people can trust.
-            Today my work moves between problem framing, product thinking, user empathy,
-            and the engineering details that keep an experience reliable.
+            I take a people-first approach to building, starting with the users most often
+            overlooked by technology. When you design for the margins, you raise the floor
+            for everyone.
           </p>
           <p>
-            I like projects where the solution gets clearer as you use it. Whether it is
-            a checkout flow, a ticket generator, an AI interface, or a mobile verification
-            product, I want users to feel guided rather than dropped into a screen.
+            I work with AI as a core collaborator in my process. It's my multiplier — it
+            lets me take an idea from zero to testable faster than ever, close the gap
+            between what I can imagine and what I can ship, and move with confidence even
+            as I'm still growing.
+          </p>
+          <p>
+            My next chapter is design. Because I believe the most powerful builders of the
+            next decade will be designer-first engineers — people who lead with empathy,
+            and let AI handle the rest.
           </p>
         </div>
         <div className="craft-grid">
