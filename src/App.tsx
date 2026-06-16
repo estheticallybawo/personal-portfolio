@@ -14,6 +14,7 @@ import {
   Music2,
   Palette,
   Pause,
+  Play,
   Shuffle,
   Sparkles,
   Sun,
@@ -36,8 +37,7 @@ const themeStorageKey = "esther-portfolio-theme";
 const soundStorageKey = "esther-portfolio-sound";
 const soundLevelStorageKey = "esther-portfolio-sound-level";
 const soundLevels = [0, 0.2, 0.55, 1] as const;
-const PLAYLIST_DARK = "PLA8aNASBjLtE";
-const PLAYLIST_LIGHT = "PLGHl5-LkFRpM";
+const PLAYLIST_ID = "PLGHl5-LkFRpM";
 const clickSoundPath = "/assets/mixkit-coins-handling-1939.wav";
 const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
 const projectRevealSoundPath = "/assets/mixkit-page-forward-single-chime-1107.wav";
@@ -63,7 +63,7 @@ interface YTPlayerInstance {
   setShuffle(shuffle: boolean): void;
   getCurrentTime(): number;
   getDuration(): number;
-  getVideoData(): { title: string };
+  getVideoData(): { title: string; video_id: string };
   getPlayerState(): number;
   destroy(): void;
 }
@@ -194,6 +194,7 @@ function App() {
   });
   const [trackTitle, setTrackTitle] = useState("");
   const [trackProgress, setTrackProgress] = useState(0);
+  const [videoId, setVideoId] = useState("");
   const [shuffleEnabled, setShuffleEnabled] = useState(false);
 
   useEffect(() => {
@@ -212,8 +213,6 @@ function App() {
 
   // Load YouTube IFrame API and init player on mount
   useEffect(() => {
-    const initialPlaylistId = theme === "dark" ? PLAYLIST_DARK : PLAYLIST_LIGHT;
-
     const initPlayer = () => {
       if (ytPlayerRef.current) return;
       const mount = document.createElement("div");
@@ -227,7 +226,7 @@ function App() {
         host: "https://www.youtube-nocookie.com",
         playerVars: {
           listType: "playlist",
-          list: initialPlaylistId,
+          list: PLAYLIST_ID,
           autoplay: 0,
           controls: 0,
           playsinline: 1,
@@ -249,6 +248,7 @@ function App() {
                     if (duration > 0) setTrackProgress(current / duration);
                     const data = player.getVideoData();
                     if (data.title) setTrackTitle(data.title);
+                    if (data.video_id) setVideoId(data.video_id);
                   } catch { /* player not ready */ }
                 }, 500);
               }
@@ -277,22 +277,6 @@ function App() {
       }
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Switch playlist when theme changes
-  useEffect(() => {
-    const player = ytPlayerRef.current;
-    if (!player) return;
-    const playlistId = theme === "dark" ? PLAYLIST_DARK : PLAYLIST_LIGHT;
-    try {
-      if (soundEnabled) {
-        player.loadPlaylist({ list: playlistId, listType: "playlist" });
-      } else {
-        player.cuePlaylist({ list: playlistId, listType: "playlist" });
-      }
-    } catch { /* player not ready */ }
-    setTrackTitle("");
-    setTrackProgress(0);
-  }, [theme]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const updatePath = () => setPath(window.location.pathname);
@@ -446,6 +430,7 @@ function App() {
       try { ytPlayerRef.current?.pauseVideo(); } catch { /* not ready */ }
       setTrackTitle("");
       setTrackProgress(0);
+      setVideoId("");
     }
     setSoundLevel(next);
     localStorage.setItem(soundLevelStorageKey, String(next));
@@ -540,13 +525,7 @@ function App() {
       <Nav
         theme={theme}
         themeLabel={themeLabel}
-        soundEnabled={soundEnabled}
-        trackTitle={trackTitle}
-        trackProgress={trackProgress}
-        shuffleEnabled={shuffleEnabled}
         onThemeToggle={toggleTheme}
-        onTogglePlay={toggleSound}
-        onShuffleToggle={toggleShuffle}
         onSoundCue={playSound}
       />
       <main className="site-shell">
@@ -577,6 +556,15 @@ function App() {
       >
         <ArrowUpRight size={16} />
       </button>
+      <FloatingMusicPlayer
+        soundEnabled={soundEnabled}
+        trackTitle={trackTitle}
+        trackProgress={trackProgress}
+        videoId={videoId}
+        shuffleEnabled={shuffleEnabled}
+        onTogglePlay={toggleSound}
+        onShuffleToggle={toggleShuffle}
+      />
     </>
   );
 }
@@ -584,24 +572,12 @@ function App() {
 function Nav({
   theme,
   themeLabel,
-  soundEnabled,
-  trackTitle,
-  trackProgress,
-  shuffleEnabled,
   onThemeToggle,
-  onTogglePlay,
-  onShuffleToggle,
   onSoundCue,
 }: {
   theme: Theme;
   themeLabel: string;
-  soundEnabled: boolean;
-  trackTitle: string;
-  trackProgress: number;
-  shuffleEnabled: boolean;
   onThemeToggle: (event: ReactMouseEvent<HTMLButtonElement>) => void;
-  onTogglePlay: () => void;
-  onShuffleToggle: () => void;
   onSoundCue: (kind: SoundKind) => void;
 }) {
   return (
@@ -618,14 +594,6 @@ function Nav({
         <a href="/#contact" onClick={() => onSoundCue("button")}>Contact</a>
       </nav>
       <div className="nav-controls">
-        <MusicPlayer
-          soundEnabled={soundEnabled}
-          trackTitle={trackTitle}
-          trackProgress={trackProgress}
-          shuffleEnabled={shuffleEnabled}
-          onTogglePlay={onTogglePlay}
-          onShuffleToggle={onShuffleToggle}
-        />
         <button
           className="theme-toggle"
           aria-label={themeLabel}
@@ -639,10 +607,11 @@ function Nav({
   );
 }
 
-function MusicPlayer({
+function FloatingMusicPlayer({
   soundEnabled,
   trackTitle,
   trackProgress,
+  videoId,
   shuffleEnabled,
   onTogglePlay,
   onShuffleToggle,
@@ -650,46 +619,67 @@ function MusicPlayer({
   soundEnabled: boolean;
   trackTitle: string;
   trackProgress: number;
+  videoId: string;
   shuffleEnabled: boolean;
   onTogglePlay: () => void;
   onShuffleToggle: () => void;
 }) {
+  const [imgError, setImgError] = useState(false);
+  useEffect(() => { setImgError(false); }, [videoId]);
+
+  const thumbnailUrl = videoId && !imgError
+    ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+    : null;
+
   return (
     <div
-      className={`music-player${soundEnabled ? " is-active" : ""}`}
+      className={`floating-player${soundEnabled ? " is-playing" : ""}`}
       aria-label={soundEnabled && trackTitle ? `Now playing: ${trackTitle}` : "Music player"}
     >
-      <button
-        className="music-player-btn"
-        onClick={onTogglePlay}
-        aria-label={soundEnabled ? "Pause music" : "Play music"}
-        title={soundEnabled ? "Pause music" : "Play music"}
-        type="button"
-      >
-        {soundEnabled ? <Pause size={13} /> : <Music2 size={13} />}
-      </button>
-      <div className="music-player-expandable">
-        <div className="music-player-info">
-          <span className="music-player-title">{trackTitle || "Loading…"}</span>
-          <div
-            className={`music-player-bar${soundEnabled && !trackTitle ? " is-loading" : ""}`}
-            role="progressbar"
-            aria-valuenow={Math.round(trackProgress * 100)}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            style={{ "--progress": `${trackProgress * 100}%` } as CSSProperties}
-          />
-        </div>
+      <div className={`floating-player-disc${soundEnabled ? " is-spinning" : ""}`}>
+        {thumbnailUrl ? (
+          <img src={thumbnailUrl} alt="" onError={() => setImgError(true)} />
+        ) : (
+          <Music2 size={16} aria-hidden="true" />
+        )}
+      </div>
+      <div className="floating-player-body">
+        {soundEnabled ? (
+          <div className="floating-player-track">
+            <span className="floating-player-title">{trackTitle || "Loading…"}</span>
+            <div
+              className={`floating-player-bar${soundEnabled && !trackTitle ? " is-loading" : ""}`}
+              role="progressbar"
+              aria-valuenow={Math.round(trackProgress * 100)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              style={{ "--progress": `${trackProgress * 100}%` } as CSSProperties}
+            />
+          </div>
+        ) : (
+          <span className="floating-player-hint">click to listen ♪</span>
+        )}
+      </div>
+      {soundEnabled ? (
         <button
-          className={`music-player-shuffle${shuffleEnabled ? " is-active" : ""}`}
+          className={`floating-player-shuffle${shuffleEnabled ? " is-active" : ""}`}
           onClick={onShuffleToggle}
-          aria-label={shuffleEnabled ? "Shuffle on — click to disable" : "Shuffle off — click to enable"}
+          aria-label={shuffleEnabled ? "Shuffle on" : "Shuffle off"}
           title={shuffleEnabled ? "Shuffle on" : "Shuffle off"}
           type="button"
         >
           <Shuffle size={11} />
         </button>
-      </div>
+      ) : null}
+      <button
+        className="floating-player-toggle"
+        onClick={onTogglePlay}
+        aria-label={soundEnabled ? "Pause music" : "Play music"}
+        title={soundEnabled ? "Pause" : "Play"}
+        type="button"
+      >
+        {soundEnabled ? <Pause size={13} /> : <Play size={13} />}
+      </button>
     </div>
   );
 }

@@ -28,6 +28,7 @@
   --theme-radius: 120vmax;
   --theme-ripple-color: #f5fbff;
   --shadow: rgba(0, 0, 0, 0.34);
+  --player-bg: rgba(4, 10, 22, 0.88);
   --heading-font: "Outfit", "Comfortaa", system-ui, sans-serif;
   scroll-behavior: smooth;
 }
@@ -55,6 +56,7 @@
   --project-card-hover-shadow: 0 0 0 1px rgba(2, 127, 173, 0.06);
   --theme-ripple-color: #01050f;
   --shadow: rgba(5, 43, 68, 0.12);
+  --player-bg: rgba(238, 246, 255, 0.88);
 }
 
 * {
@@ -2166,87 +2168,107 @@ img {
   }
 }
 
-/* Music player widget */
-.music-player {
+/* Floating music player */
+.floating-player {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
   display: flex;
   align-items: center;
-  border: 1px solid var(--line);
+  gap: 10px;
+  padding: 5px 10px 5px 5px;
   border-radius: 100px;
-  background: var(--panel);
-  padding: 3px;
-  transition: border-color 250ms ease, background 250ms ease;
-  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--player-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 8px 32px var(--shadow);
+  transition: border-color 300ms ease, box-shadow 300ms ease;
 }
 
-.music-player.is-active {
+.floating-player.is-playing {
   border-color: var(--accent-line);
-  background: var(--panel-strong);
+  box-shadow: 0 8px 32px var(--shadow), 0 0 24px var(--accent-soft);
 }
 
-.music-player-btn {
+.floating-player-disc {
+  position: relative;
   flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--panel-strong);
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
-  background: transparent;
   color: var(--muted);
-  cursor: pointer;
-  padding: 0;
-  transition: color 160ms, border-color 160ms, background 160ms;
+  border: 2px solid var(--line);
+  transition: border-color 300ms ease;
 }
 
-.music-player-btn:hover,
-.music-player.is-active .music-player-btn {
+.floating-player.is-playing .floating-player-disc {
   border-color: var(--accent-line);
-  color: var(--accent);
-  background: var(--accent-soft);
+  animation: disc-spin 10s linear infinite;
 }
 
-.music-player-expandable {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 0;
-  padding-left: 0;
-  overflow: hidden;
-  transition: width 340ms cubic-bezier(0.4, 0, 0.2, 1), padding-left 340ms cubic-bezier(0.4, 0, 0.2, 1);
+.floating-player-disc img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-.music-player.is-active .music-player-expandable {
-  width: 168px;
-  padding-left: 8px;
+.floating-player-disc::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.52) 13%, transparent 14%);
+  pointer-events: none;
 }
 
-.music-player-info {
-  flex: 1;
+@keyframes disc-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.floating-player-body {
   min-width: 0;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
 }
 
-.music-player-title {
+.floating-player-track {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  max-width: 200px;
+}
+
+.floating-player-title {
   display: block;
-  font-size: 10px;
+  font-size: 11px;
+  font-family: var(--heading-font);
   color: var(--text);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   line-height: 1;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+}
+
+.floating-player-hint {
+  font-size: 11px;
   font-family: var(--heading-font);
-  opacity: 0;
-  transition: opacity 180ms ease 220ms;
+  color: var(--muted);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
 }
 
-.music-player.is-active .music-player-title {
-  opacity: 1;
-}
-
-.music-player-bar {
+.floating-player-bar {
   height: 2px;
   background: var(--line);
   border-radius: 1px;
@@ -2254,7 +2276,7 @@ img {
   position: relative;
 }
 
-.music-player-bar::after {
+.floating-player-bar::after {
   content: "";
   position: absolute;
   left: 0;
@@ -2266,47 +2288,66 @@ img {
   transition: width 0.5s linear;
 }
 
-.music-player-bar.is-loading::after {
-  width: 38%;
+.floating-player-bar.is-loading::after {
+  width: 36%;
   animation: bar-loading 1.3s ease-in-out infinite;
 }
 
 @keyframes bar-loading {
-  0%   { left: -38%; }
+  0%   { left: -36%; }
   100% { left: 100%; }
 }
 
-.music-player-shuffle {
+.floating-player-shuffle {
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: 1px solid transparent;
   background: transparent;
   color: var(--muted);
   cursor: pointer;
   padding: 0;
-  opacity: 0;
-  transform: scale(0.7);
-  transition: opacity 200ms ease 280ms, transform 200ms ease 280ms, color 160ms, border-color 160ms, background 160ms;
+  transition: color 160ms, border-color 160ms, background 160ms;
 }
 
-.music-player.is-active .music-player-shuffle {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.music-player-shuffle:hover,
-.music-player-shuffle.is-active {
+.floating-player-shuffle:hover,
+.floating-player-shuffle.is-active {
   color: var(--accent);
   border-color: var(--accent-line);
   background: var(--accent-soft);
 }
 
+.floating-player-toggle {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  transition: color 160ms, border-color 160ms, background 160ms;
+}
+
+.floating-player-toggle:hover,
+.floating-player.is-playing .floating-player-toggle {
+  border-color: var(--accent-line);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
 @media (max-width: 640px) {
-  .music-player.is-active .music-player-expandable {
-    display: none;
+  .floating-player {
+    bottom: 20px;
+  }
+
+  .floating-player-track {
+    max-width: 130px;
   }
 }
