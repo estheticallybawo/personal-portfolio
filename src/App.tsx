@@ -11,12 +11,12 @@ import {
   Instagram,
   Linkedin,
   Moon,
+  Music2,
   Palette,
+  Pause,
   Shuffle,
   Sparkles,
   Sun,
-  Volume2,
-  VolumeX,
   Zap,
 } from "lucide-react";
 import {
@@ -212,15 +212,10 @@ function App() {
 
   // Load YouTube IFrame API and init player on mount
   useEffect(() => {
-    if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
-      const script = document.createElement("script");
-      script.src = "https://www.youtube.com/iframe_api";
-      document.head.appendChild(script);
-    }
-
     const initialPlaylistId = theme === "dark" ? PLAYLIST_DARK : PLAYLIST_LIGHT;
 
-    window.onYouTubeIframeAPIReady = () => {
+    const initPlayer = () => {
+      if (ytPlayerRef.current) return;
       const mount = document.createElement("div");
       mount.id = "yt-player-mount";
       mount.style.cssText = "position:fixed;top:-300px;left:-300px;width:1px;height:1px;opacity:0;pointer-events:none;";
@@ -262,9 +257,24 @@ function App() {
               if (event.data === 0) setTrackProgress(0);
             }
           },
+          onError: () => {
+            setTrackTitle("");
+            setTrackProgress(0);
+          },
         },
       });
     };
+
+    if (window.YT?.Player) {
+      initPlayer();
+    } else {
+      window.onYouTubeIframeAPIReady = initPlayer;
+      if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+        const script = document.createElement("script");
+        script.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(script);
+      }
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Switch playlist when theme changes
@@ -424,8 +434,7 @@ function App() {
   };
 
   const toggleSound = () => {
-    const currentIndex = soundLevels.findIndex((level) => level === soundLevel);
-    const next = soundLevels[(currentIndex + 1) % soundLevels.length];
+    const next = soundEnabled ? 0 : 0.55;
     const audio = ensureAudio();
     if (!audio) return;
     audio.setVolume(next);
@@ -434,6 +443,8 @@ function App() {
       try { ytPlayerRef.current?.playVideo(); } catch { /* not ready */ }
     } else {
       try { ytPlayerRef.current?.pauseVideo(); } catch { /* not ready */ }
+      setTrackTitle("");
+      setTrackProgress(0);
     }
     setSoundLevel(next);
     localStorage.setItem(soundLevelStorageKey, String(next));
@@ -529,12 +540,11 @@ function App() {
         theme={theme}
         themeLabel={themeLabel}
         soundEnabled={soundEnabled}
-        soundLevel={soundLevel}
         trackTitle={trackTitle}
         trackProgress={trackProgress}
         shuffleEnabled={shuffleEnabled}
         onThemeToggle={toggleTheme}
-        onSoundToggle={toggleSound}
+        onTogglePlay={toggleSound}
         onShuffleToggle={toggleShuffle}
         onSoundCue={playSound}
       />
@@ -574,24 +584,22 @@ function Nav({
   theme,
   themeLabel,
   soundEnabled,
-  soundLevel,
   trackTitle,
   trackProgress,
   shuffleEnabled,
   onThemeToggle,
-  onSoundToggle,
+  onTogglePlay,
   onShuffleToggle,
   onSoundCue,
 }: {
   theme: Theme;
   themeLabel: string;
   soundEnabled: boolean;
-  soundLevel: number;
   trackTitle: string;
   trackProgress: number;
   shuffleEnabled: boolean;
   onThemeToggle: (event: ReactMouseEvent<HTMLButtonElement>) => void;
-  onSoundToggle: () => void;
+  onTogglePlay: () => void;
   onShuffleToggle: () => void;
   onSoundCue: (kind: SoundKind) => void;
 }) {
@@ -609,23 +617,14 @@ function Nav({
         <a href="/#contact" onClick={() => onSoundCue("button")}>Contact</a>
       </nav>
       <div className="nav-controls">
-        {soundEnabled && trackTitle ? (
-          <MiniPlayer
-            title={trackTitle}
-            progress={trackProgress}
-            shuffleEnabled={shuffleEnabled}
-            onShuffleToggle={onShuffleToggle}
-          />
-        ) : null}
-        <button
-          className={soundEnabled ? "sound-toggle" : "sound-toggle needs-attention"}
-          aria-label={`Sound volume ${Math.round(soundLevel * 100)} percent. Click to change volume.`}
-          title={`Sound volume ${Math.round(soundLevel * 100)}%`}
-          onClick={onSoundToggle}
-          style={{ "--sound-level": `${soundLevel * 100}%` } as CSSProperties}
-        >
-          {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
-        </button>
+        <MusicPlayer
+          soundEnabled={soundEnabled}
+          trackTitle={trackTitle}
+          trackProgress={trackProgress}
+          shuffleEnabled={shuffleEnabled}
+          onTogglePlay={onTogglePlay}
+          onShuffleToggle={onShuffleToggle}
+        />
         <button
           className="theme-toggle"
           aria-label={themeLabel}
@@ -639,38 +638,56 @@ function Nav({
   );
 }
 
-function MiniPlayer({
-  title,
-  progress,
+function MusicPlayer({
+  soundEnabled,
+  trackTitle,
+  trackProgress,
   shuffleEnabled,
+  onTogglePlay,
   onShuffleToggle,
 }: {
-  title: string;
-  progress: number;
+  soundEnabled: boolean;
+  trackTitle: string;
+  trackProgress: number;
   shuffleEnabled: boolean;
+  onTogglePlay: () => void;
   onShuffleToggle: () => void;
 }) {
   return (
-    <div className="mini-player" aria-label={`Now playing: ${title}`}>
+    <div
+      className={`music-player${soundEnabled ? " is-active" : ""}`}
+      aria-label={soundEnabled && trackTitle ? `Now playing: ${trackTitle}` : "Music player"}
+    >
       <button
-        className={shuffleEnabled ? "mini-player-shuffle is-active" : "mini-player-shuffle"}
-        onClick={onShuffleToggle}
-        aria-label={shuffleEnabled ? "Disable shuffle" : "Enable shuffle"}
-        title={shuffleEnabled ? "Shuffle on" : "Shuffle off"}
+        className="music-player-btn"
+        onClick={onTogglePlay}
+        aria-label={soundEnabled ? "Pause music" : "Play music"}
+        title={soundEnabled ? "Pause music" : "Play music"}
         type="button"
       >
-        <Shuffle size={11} />
+        {soundEnabled ? <Pause size={13} /> : <Music2 size={13} />}
       </button>
-      <div className="mini-player-info">
-        <span className="mini-player-title">{title}</span>
-        <div
-          className="mini-player-bar"
-          role="progressbar"
-          aria-valuenow={Math.round(progress * 100)}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          style={{ "--progress": `${progress * 100}%` } as CSSProperties}
-        />
+      <div className="music-player-expandable">
+        <div className="music-player-info">
+          <span className="music-player-title">{trackTitle || "Loading…"}</span>
+          <div
+            className={`music-player-bar${soundEnabled && !trackTitle ? " is-loading" : ""}`}
+            role="progressbar"
+            aria-valuenow={Math.round(trackProgress * 100)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            style={{ "--progress": `${trackProgress * 100}%` } as CSSProperties}
+          />
+        </div>
+        <button
+          className={`music-player-shuffle${shuffleEnabled ? " is-active" : ""}`}
+          onClick={onShuffleToggle}
+          aria-label={shuffleEnabled ? "Shuffle on — click to disable" : "Shuffle off — click to enable"}
+          title={shuffleEnabled ? "Shuffle on" : "Shuffle off"}
+          type="button"
+        >
+          <Shuffle size={11} />
+        </button>
       </div>
     </div>
   );
