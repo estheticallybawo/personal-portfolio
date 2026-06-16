@@ -633,3 +633,65 @@ export const certifications: Certification[] = [
     skills: ["Self-directed learning", "Accountability", "Skill development"],
   },
 ];
+
+export const whyCards = [
+  {
+    id: "africa",
+    label: "my africa",
+    detail: "Everything I build carries this — the textures, the rhythms, the people who raised me.",
+    photos: ["/assets/why/my-africa/africanaura.jpg"],
+    rotation: -5,
+  },
+  {
+    id: "brothers",
+    label: "my brothers",
+    detail: "The first people I ever wanted to build something useful for.",
+    photos: ["/assets/why/my-brothers/my-bros.png"],
+    rotation: 4,
+  },
+  {
+    id: "dad",
+    label: "my dad",
+    detail: "He taught me that showing up consistently is its own kind of craft.",
+    photos: [
+      "/assets/why/my-dad/dad.jpg",
+      "/assets/why/my-dad/dad.png",
+      "/assets/why/my-dad/daddy.png",
+    ],
+    rotation: -3,
+  },
+  {
+    id: "family",
+    label: "my family",
+    detail: "They remind me why the product has to work for people who don't have time to figure it out.",
+    photos: ["/assets/why/my-family/aunty-and-i.png"],
+    rotation: 6,
+  },
+  {
+    id: "friends",
+    label: "my friends",
+    detail: "The ones who beta test my ideas and tell me the hard truth when it's not working.",
+    photos: [
+      "/assets/why/my-friends/jane-and-ebere.jpg",
+      "/assets/why/my-friends/my-girls.png",
+    ],
+    rotation: -6,
+  },
+  {
+    id: "mum",
+    label: "my mum",
+    detail: "She is the reason I design for the people technology usually forgets.",
+    photos: [
+      "/assets/why/my-mum/mum.png",
+      "/assets/why/my-mum/mummy.png",
+    ],
+    rotation: 2,
+  },
+  {
+    id: "me",
+    label: "other versions of me",
+    detail: "Still becoming. The designer, the engineer, the builder — all at once.",
+    photos: [] as string[],
+    rotation: -4,
+  },
+];

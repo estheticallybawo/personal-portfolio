@@ -29,6 +29,7 @@ import {
   projects,
   resumeHighlights,
   tools,
+  whyCards,
 } from "./portfolioData";
 
 type Theme = "dark" | "light";
@@ -541,6 +542,7 @@ function App() {
             <Hero onSoundCue={playSound} />
             <Tools />
             <Projects onNavigate={navigateTo} onSoundCue={playSound} />
+            <WhySection />
             <About />
             <Resume onNavigate={navigateTo} onSoundCue={playSound} />
             <Footer onSoundCue={playSound} />
@@ -1240,6 +1242,70 @@ function CertificationsPage({
         </div>
       </section>
     </article>
+  );
+}
+
+function WhyCard({ card }: { card: (typeof whyCards)[number] }) {
+  const [active, setActive] = useState(false);
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (card.photos.length <= 1) return;
+    if (!active) {
+      intervalRef.current = setInterval(
+        () => setPhotoIndex((i) => (i + 1) % card.photos.length),
+        3000,
+      );
+    } else {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [active, card.photos.length]);
+
+  const src = card.photos[photoIndex] ?? null;
+
+  return (
+    <div
+      className={`why-card${active ? " is-active" : ""}`}
+      style={{ "--card-rotation": `${card.rotation}deg` } as CSSProperties}
+      onMouseEnter={() => setActive(true)}
+      onMouseLeave={() => setActive(false)}
+      onFocus={() => setActive(true)}
+      onBlur={() => setActive(false)}
+      tabIndex={0}
+      role="article"
+      aria-label={card.label}
+    >
+      <div className="why-card-photo">
+        {src ? (
+          <img key={src} src={src} alt={card.label} draggable={false} />
+        ) : (
+          <span className="why-card-placeholder" />
+        )}
+      </div>
+      <p className="why-card-label">{card.label}</p>
+      <p className="why-card-detail">{card.detail}</p>
+    </div>
+  );
+}
+
+function WhySection() {
+  return (
+    <section className="why-section section-anchor" id="why">
+      <SectionHeading
+        eyebrow="My Why"
+        title="The people behind every line of code."
+        copy="Grab a card. Each one is a reason the work matters."
+      />
+      <div className="why-cards-wrap" data-reveal>
+        {whyCards.map((card) => (
+          <WhyCard key={card.id} card={card} />
+        ))}
+      </div>
+    </section>
   );
 }
 
