@@ -1,4 +1,4 @@
-import { type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import {
   ArrowUpRight,
@@ -64,7 +64,7 @@ interface YTPlayerInstance {
   setShuffle(shuffle: boolean): void;
   getCurrentTime(): number;
   getDuration(): number;
-  getVideoData(): { title: string; video_id: string };
+  getVideoData(): { title: string; video_id: string; author: string };
   getPlayerState(): number;
   destroy(): void;
 }
@@ -197,6 +197,23 @@ function App() {
   const [trackProgress, setTrackProgress] = useState(0);
   const [videoId, setVideoId] = useState("");
   const [shuffleEnabled, setShuffleEnabled] = useState(false);
+  const musicPausedByVideoRef = useRef(false);
+  const soundEnabledRef = useRef(soundEnabled);
+  useEffect(() => { soundEnabledRef.current = soundEnabled; }, [soundEnabled]);
+
+  const handleVideoPlay = useCallback(() => {
+    if (soundEnabledRef.current && ytPlayerRef.current) {
+      ytPlayerRef.current.pauseVideo();
+      musicPausedByVideoRef.current = true;
+    }
+  }, []);
+
+  const handleVideoStop = useCallback(() => {
+    if (musicPausedByVideoRef.current && ytPlayerRef.current) {
+      ytPlayerRef.current.playVideo();
+      musicPausedByVideoRef.current = false;
+    }
+  }, []);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -542,7 +559,7 @@ function App() {
             <Hero onSoundCue={playSound} />
             <Tools />
             <Projects onNavigate={navigateTo} onSoundCue={playSound} />
-            <WhySection />
+            <WhySection onVideoPlay={handleVideoPlay} onVideoStop={handleVideoStop} />
             <About />
             <Resume onNavigate={navigateTo} onSoundCue={playSound} />
             <Footer onSoundCue={playSound} />
@@ -1245,7 +1262,99 @@ function CertificationsPage({
   );
 }
 
-function WhyCard({ card }: { card: (typeof whyCards)[number] }) {
+type WhyCardData = (typeof whyCards)[number];
+type VideoCardData = WhyCardData & { video: { youtubeId: string } };
+
+function WhyVideoCard({
+  card,
+  onVideoPlay,
+  onVideoStop,
+}: {
+  card: VideoCardData;
+  onVideoPlay: () => void;
+  onVideoStop: () => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<YTPlayerInstance | null>(null);
+  const [active, setActive] = useState(false);
+  const [credit, setCredit] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+    const init = () => {
+      if (!mounted || !containerRef.current || playerRef.current) return;
+      playerRef.current = new window.YT.Player(containerRef.current, {
+        videoId: card.video.youtubeId,
+        host: "https://www.youtube-nocookie.com",
+        playerVars: {
+          autoplay: 0,
+          controls: 1,
+          playsinline: 1,
+          modestbranding: 1,
+          rel: 0,
+          origin: window.location.origin,
+        },
+        events: {
+          onReady: () => {
+            if (!mounted) return;
+            const data = playerRef.current?.getVideoData();
+            if (data?.author) setCredit(data.author);
+          },
+          onStateChange: (event: { data: number }) => {
+            if (event.data === 1) {
+              onVideoPlay();
+            } else if (event.data === 2 || event.data === 0) {
+              onVideoStop();
+            }
+          },
+        },
+      });
+    };
+
+    if (window.YT?.Player) {
+      init();
+    } else {
+      const check = setInterval(() => {
+        if (window.YT?.Player) {
+          clearInterval(check);
+          init();
+        }
+      }, 150);
+      return () => { mounted = false; clearInterval(check); };
+    }
+
+    return () => {
+      mounted = false;
+      playerRef.current?.destroy();
+      playerRef.current = null;
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <div
+      className={`why-card why-card--video${active ? " is-active" : ""}`}
+      style={{ "--card-rotation": `${card.rotation}deg` } as CSSProperties}
+      onMouseEnter={() => setActive(true)}
+      onMouseLeave={() => setActive(false)}
+      role="article"
+      aria-label={card.label}
+    >
+      <div className="why-card-photo why-card-photo--video">
+        <div ref={containerRef} className="why-card-video-target" />
+      </div>
+      <p className="why-card-label">{card.label}</p>
+      {credit && (
+        <p className="why-card-credit">
+          <ArrowUpRight size={9} />
+          {credit}
+        </p>
+      )}
+      <p className="why-card-detail">{card.detail}</p>
+    </div>
+  );
+}
+
+function WhyCard({ card }: { card: WhyCardData }) {
   const [active, setActive] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -1292,7 +1401,13 @@ function WhyCard({ card }: { card: (typeof whyCards)[number] }) {
   );
 }
 
-function WhySection() {
+function WhySection({
+  onVideoPlay,
+  onVideoStop,
+}: {
+  onVideoPlay: () => void;
+  onVideoStop: () => void;
+}) {
   return (
     <section className="why-section section-anchor" id="why">
       <SectionHeading
@@ -1301,9 +1416,18 @@ function WhySection() {
         copy="Grab a card. Each one is a reason the work matters."
       />
       <div className="why-cards-wrap" data-reveal>
-        {whyCards.map((card) => (
-          <WhyCard key={card.id} card={card} />
-        ))}
+        {whyCards.map((card) =>
+          "video" in card && card.video ? (
+            <WhyVideoCard
+              key={card.id}
+              card={card as VideoCardData}
+              onVideoPlay={onVideoPlay}
+              onVideoStop={onVideoStop}
+            />
+          ) : (
+            <WhyCard key={card.id} card={card} />
+          ),
+        )}
       </div>
     </section>
   );

@@ -639,7 +639,8 @@ export const whyCards = [
     id: "africa",
     label: "my africa",
     detail: "Everything I build carries this — the textures, the rhythms, the people who raised me.",
-    photos: ["/assets/why/my-africa/africanaura.jpg"],
+    photos: [] as string[],
+    video: { youtubeId: "lugard7P0nw" },
     rotation: -5,
   },
   {
