@@ -285,6 +285,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [path]);
+
+  useEffect(() => {
     let frame = 0;
 
     const updateProgress = () => {
@@ -503,7 +507,6 @@ function App() {
   const navigateTo = (nextPath: string) => {
     window.history.pushState({}, "", nextPath);
     setPath(nextPath);
-    window.scrollTo(0, 0);
   };
 
   const activeProjectSlug = path.match(/^\/work\/([^/]+)\/?$/)?.[1];
