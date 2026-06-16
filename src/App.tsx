@@ -1267,14 +1267,14 @@ function About() {
             for everyone.
           </p>
           <p>
-            I work with AI as a core collaborator in my process. It's my multiplier — it
+            I work with AI as a core collaborator in my process. It's my multiplier, it
             lets me take an idea from zero to testable faster than ever, close the gap
             between what I can imagine and what I can ship, and move with confidence even
             as I'm still growing.
           </p>
           <p>
             My next chapter is design. Because I believe the most powerful builders of the
-            next decade will be designer-first engineers — people who lead with empathy,
+            next decade will be designer-first engineers, people who lead with empathy,
             and let AI handle the rest.
           </p>
         </div>
