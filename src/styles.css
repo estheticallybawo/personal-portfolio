@@ -1591,7 +1591,6 @@ img {
 .case-nav-btn--home {
   margin-left: auto;
   text-align: right;
-  flex-direction: row-reverse;
 }
 
 .case-nav-btn--home {
@@ -1605,7 +1604,6 @@ img {
   .case-nav-btn--next,
   .case-nav-btn--home {
     margin-left: 0;
-    flex-direction: row;
     text-align: left;
   }
 }

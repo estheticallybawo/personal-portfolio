@@ -1246,10 +1246,19 @@ function ProjectDetail({
             <ArrowRight size={18} />
           </button>
         ) : (
-          <button className="case-nav-btn case-nav-btn--home" onClick={() => { onSoundCue("button"); onBack(); }}>
+          <button
+            className="case-nav-btn case-nav-btn--home"
+            onClick={() => {
+              onSoundCue("button");
+              onBack();
+              setTimeout(() => {
+                document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+              }, 200);
+            }}
+          >
             <span>
               <small>That's all of them</small>
-              Back to portfolio
+              Back to projects
             </span>
             <ArrowRight size={18} />
           </button>
