@@ -56,27 +56,27 @@ const buildingPrompts = [
   {
     id: "building",
     q: "What are you currently building?",
-    a: "Right now I'm building out my design practice — creating product mockups in Figma, prototyping interactions, and learning how to hand off to myself as the engineer. It's a strange and exciting loop.",
+    a: "Flowst AI — a voice-first, visual-first learning platform for minds that think in pictures. It helps people build mental models, practice explaining things out loud, and move from passive familiarity to real understanding. Think: flow state as a product.",
   },
   {
-    id: "obsession",
-    q: "What's your current obsession?",
-    a: "Motion design. How a well-timed transition makes a user feel like the app understood them before they finished their thought.",
+    id: "how",
+    q: "How does it work?",
+    a: "It's powered by the Logios cognitive architecture and grounded in a learning doctrine called NeuroMap. Users interact by voice, get visual mental models generated in real time, and receive feedback from multi-agent guidance — all to make any subject click.",
   },
   {
     id: "problem",
     q: "What problem are you solving?",
-    a: "How to make complex financial and verification products feel simple for first-time users in emerging markets. Good UX shouldn't be a luxury.",
+    a: "Most AI tools are text-in, text-out. That works for some people. But a huge portion of learners think visually, learn by speaking, and retain through expression — not passive reading. Flowst AI is built for them.",
+  },
+  {
+    id: "tech",
+    q: "What's powering it?",
+    a: "Gemini at the core, with multi-agent orchestration for different learning modes — retrieval, explanation, feedback, and visual generation. The goal is a platform that feels like a thinking partner, not a search engine.",
   },
   {
     id: "available",
     q: "Are you available for work?",
-    a: "Yes — looking for a product-focused frontend or design engineering role. Especially interested in teams building for the users the rest of the industry keeps overlooking.",
-  },
-  {
-    id: "meaning",
-    q: "What does 'actively building' mean right now?",
-    a: "Shipping something small every week — a component, a prototype, a case study, or a concept. The goal is to make building a habit, not an event.",
+    a: "Yes — open to product-focused frontend or design engineering roles, especially at teams building tools for how people actually think and learn. If your users are often overlooked by tech, let's talk.",
   },
 ] as const;
 
