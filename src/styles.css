@@ -2489,8 +2489,3 @@ img {
   box-shadow: var(--neu-pressed);
 }
 
-/* ── Hero portrait chip ──────────────────────────────── */
-.portrait-chip {
-  background: var(--bg);
-  box-shadow: var(--neu-raised-sm);
-}
