@@ -983,7 +983,7 @@ img {
 }
 
 .about-narrative {
-  max-width: 680px;
+  max-width: 100%;
 }
 
 .about-narrative p {
