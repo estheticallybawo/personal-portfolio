@@ -2369,3 +2369,9 @@ img {
     height: 38px;
   }
 }
+
+/* ── Blue emoji ───────────────────────────────────────── */
+.emoji-blue {
+  display: inline-block;
+  filter: sepia(1) saturate(6) hue-rotate(170deg);
+}

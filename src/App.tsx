@@ -731,7 +731,7 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
           <span>
             I care about your product{" "}
             <PunWord mistake="leeving" correction="leaving" />{" "}
-            a long lasting impression 😉😏
+            a long lasting impression <span className="emoji-blue">😉😏</span>
           </span>
         </div>
         <a href={profile.cvUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
@@ -925,6 +925,15 @@ function Projects({
   );
 }
 
+function blueEmoji(text: string): ReactNode {
+  const parts = text.split(/([\u{1F000}-\u{1FFFF}])/gu);
+  return parts.map((part, i) =>
+    /[\u{1F000}-\u{1FFFF}]/u.test(part)
+      ? <span key={i} className="emoji-blue">{part}</span>
+      : part,
+  );
+}
+
 function ProjectDetail({
   project,
   onBack,
@@ -1059,7 +1068,7 @@ function ProjectDetail({
             </a>
           ) : null}
         </div>
-        <p>{project.aiUse}</p>
+        <p>{blueEmoji(project.aiUse)}</p>
       </section>
 
       {project.aiReview ? (
