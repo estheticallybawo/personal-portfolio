@@ -2,6 +2,7 @@ import { type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode,
 import { flushSync, createPortal } from "react-dom";
 import {
   ArrowUpRight,
+  ArrowRight,
   ArrowLeft,
   ArrowDown,
   Check,
@@ -570,7 +571,7 @@ function App() {
       {showChat && <ActivelyBuildingModal onClose={() => setShowChat(false)} onSoundCue={playSound} />}
       <main className="site-shell">
         {activeProject ? (
-          <ProjectDetail project={activeProject} onBack={() => navigateTo("/")} onSoundCue={playSound} />
+          <ProjectDetail project={activeProject} onBack={() => navigateTo("/")} onNavigate={navigateTo} onSoundCue={playSound} />
         ) : isCertificationsPage ? (
           <CertificationsPage onBack={() => navigateTo("/")} onSoundCue={playSound} />
         ) : (
@@ -1054,12 +1055,23 @@ function Projects({
 function ProjectDetail({
   project,
   onBack,
+  onNavigate,
   onSoundCue,
 }: {
   project: (typeof projects)[number];
   onBack: () => void;
+  onNavigate: (path: string) => void;
   onSoundCue: (kind: SoundKind) => void;
 }) {
+  const currentIndex = projects.findIndex((p) => p.slug === project.slug);
+  const prevProject = currentIndex > 0 ? projects[currentIndex - 1] : null;
+  const nextProject = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : null;
+
+  const goTo = (slug: string) => {
+    onSoundCue("button");
+    onNavigate(`/work/${slug}`);
+  };
+
   return (
     <article className="case-study">
       <button
@@ -1213,6 +1225,36 @@ function ProjectDetail({
           ))}
         </div>
       </section>
+
+      <nav className="case-project-nav" aria-label="Project navigation">
+        {prevProject ? (
+          <button className="case-nav-btn" onClick={() => goTo(prevProject.slug)}>
+            <ArrowLeft size={18} />
+            <span>
+              <small>Previous</small>
+              {prevProject.name}
+            </span>
+          </button>
+        ) : <div />}
+
+        {nextProject ? (
+          <button className="case-nav-btn case-nav-btn--next" onClick={() => goTo(nextProject.slug)}>
+            <span>
+              <small>Next project</small>
+              {nextProject.name}
+            </span>
+            <ArrowRight size={18} />
+          </button>
+        ) : (
+          <button className="case-nav-btn case-nav-btn--home" onClick={() => { onSoundCue("button"); onBack(); }}>
+            <span>
+              <small>That's all of them</small>
+              Back to portfolio
+            </span>
+            <ArrowRight size={18} />
+          </button>
+        )}
+      </nav>
     </article>
   );
 }

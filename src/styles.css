@@ -1530,6 +1530,86 @@ img {
   border-top: 1px solid var(--line);
 }
 
+/* ── Case study project navigation ───────────────────── */
+.case-project-nav {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: clamp(48px, 8vw, 80px);
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+
+.case-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  max-width: 280px;
+  transition: border-color 220ms ease, background 220ms ease,
+              transform 220ms ease, box-shadow 220ms ease;
+  box-shadow: var(--neu-raised-sm);
+}
+
+.case-nav-btn:hover {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  transform: translateY(-2px);
+  box-shadow: var(--neu-raised-sm), 0 8px 28px rgba(6, 145, 196, 0.12);
+}
+
+.case-nav-btn small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.case-nav-btn > span {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.case-nav-btn > svg {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.case-nav-btn--next,
+.case-nav-btn--home {
+  margin-left: auto;
+  text-align: right;
+  flex-direction: row-reverse;
+}
+
+.case-nav-btn--home {
+  border-color: var(--accent-line);
+  background: linear-gradient(135deg, var(--accent-soft), transparent 80%), var(--panel);
+}
+
+@media (max-width: 640px) {
+  .case-project-nav { flex-direction: column; }
+  .case-nav-btn { max-width: 100%; }
+  .case-nav-btn--next,
+  .case-nav-btn--home {
+    margin-left: 0;
+    flex-direction: row;
+    text-align: left;
+  }
+}
+
 .about-narrative p {
   margin: 0 0 26px;
   color: var(--muted-strong);
