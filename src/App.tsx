@@ -852,14 +852,20 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
             a long lasting impression 😉😏
           </span>
         </div>
-        <button
-          className="actively-building-btn"
-          onClick={() => { onSoundCue("button"); setShowChat(true); }}
-          aria-haspopup="dialog"
-        >
-          <span className="ab-orb" aria-hidden="true" />
-          Actively Building
-        </button>
+        <div className="ab-cue-wrap">
+          <span className="ab-cue" aria-hidden="true">
+            <span className="ab-cue-text">click here</span>
+            <span className="ab-cue-arrow">↩</span>
+          </span>
+          <button
+            className="actively-building-btn"
+            onClick={() => { onSoundCue("button"); setShowChat(true); }}
+            aria-haspopup="dialog"
+          >
+            <span className="ab-orb" aria-hidden="true" />
+            Actively Building
+          </button>
+        </div>
       </div>
       {showChat && (
         <ActivelyBuildingModal onClose={() => setShowChat(false)} onSoundCue={onSoundCue} />
