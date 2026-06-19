@@ -361,9 +361,9 @@ img {
 
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 230px;
-  gap: clamp(36px, 7vw, 96px);
-  align-items: end;
+  grid-template-columns: 1fr;
+  gap: clamp(24px, 4vw, 48px);
+  align-items: start;
 }
 
 .hero-main,
@@ -434,6 +434,7 @@ img {
   flex-direction: column;
   gap: 22px;
   min-width: 0;
+  max-width: 540px;
 }
 
 .hero-side p {
@@ -511,7 +512,7 @@ img {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  margin-top: 144px;
+  margin-top: 80px;
   padding-top: 36px;
   border-top: 1px solid var(--line);
 }
@@ -1935,7 +1936,6 @@ img {
     padding-inline: 24px;
   }
 
-  .hero-grid,
   .project-feature,
   .project-view,
   .about-grid,
@@ -2115,6 +2115,10 @@ img {
   .footer-bottom {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .hero-footnote {
+    margin-top: 64px;
   }
 
   .project-copy {
