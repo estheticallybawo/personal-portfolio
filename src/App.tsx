@@ -56,32 +56,32 @@ const buildingPrompts = [
   {
     id: "building",
     q: "What are you currently building?",
-    a: "Flowst AI — a voice-first, visual-first learning platform for minds that think in pictures. It helps people build mental models, practice explaining things out loud, and move from passive familiarity to real understanding. Think: flow state as a product.",
+    a: "Flowst AI, a voice-first, visual-first learning platform for minds that think in pictures. It helps people build mental models, practice explaining things out loud, and move from passive familiarity to real understanding. Think: flow state as a product.",
   },
   {
     id: "how",
     q: "How does it work?",
-    a: "It's powered by the Logios cognitive architecture and grounded in a learning doctrine called NeuroMap. Users interact by voice, get visual mental models generated in real time, and receive feedback from multi-agent guidance — all to make any subject click.",
+    a: "It's powered by the Logios cognitive architecture and grounded in a learning doctrine called NeuroMap. Users interact by voice, get visual mental models generated in real time, and receive feedback from multi-agent guidance, all to make any subject click.",
   },
   {
     id: "problem",
     q: "What problem are you solving?",
-    a: "Most AI tools are text-in, text-out. That works for some people. But a huge portion of learners think visually, learn by speaking, and retain through expression — not passive reading. Flowst AI is built for them.",
+    a: "Most AI tools are text-in, text-out. That works for some people. But a huge portion of learners think visually, learn by speaking, and retain through expression, not passive reading. Flowst AI is built for them.",
   },
   {
     id: "tech",
     q: "What's powering it?",
-    a: "Gemini at the core, with multi-agent orchestration for different learning modes — retrieval, explanation, feedback, and visual generation. The goal is a platform that feels like a thinking partner, not a search engine.",
+    a: "Gemini at the core, with multi-agent orchestration for different learning modes: retrieval, explanation, feedback, and visual generation. The goal is a platform that feels like a thinking partner, not a search engine.",
   },
   {
     id: "available",
     q: "Are you available for work?",
-    a: "Yes — open to product-focused frontend or design engineering roles, especially at teams building tools for how people actually think and learn. If your users are often overlooked by tech, let's talk.",
+    a: "Yes, open to product-focused frontend or design engineering roles, especially at teams building tools for how people actually think and learn. If your users are often overlooked by tech, let's talk.",
   },
   {
     id: "join",
     q: "How can I be a part?",
-    a: "Send me a DM — let's talk.",
+    a: "Send me a DM, let's talk.",
     cta: { label: "DM on Instagram", href: "https://instagram.com/bawocore" },
   },
 ] as const;
@@ -1385,40 +1385,38 @@ function About() {
         }
         copy="Every product I touch starts with three questions: are people safer because of it? Can they earn more? Do they connect more meaningfully?"
       />
-      <div className="about-grid">
-        <div className="about-narrative" data-reveal>
-          <p>
-            I take a people-first approach to building, starting with the users most often
-            overlooked by technology. When you design for the margins, you raise the floor
-            for everyone.
-          </p>
-          <p>
-            I work with AI as a core collaborator in my process. It's my multiplier, it
-            lets me take an idea from zero to testable faster than ever, close the gap
-            between what I can imagine and what I can ship, and move with confidence even
-            as I'm still growing.
-          </p>
-          <p>
-            My next chapter is design. Because I believe the most powerful builders of the
-            next decade will be designer-first engineers, people who lead with empathy,
-            and let AI handle the rest.
-          </p>
-        </div>
-        <div className="craft-grid">
-          {craftCards.map((card, index) => {
-            const Icon = icons[index];
-            return (
-              <article className="craft-card" key={card.title} data-reveal>
-                <Icon size={22} />
-                <div>
-                  <h3>{card.title}</h3>
-                  <p>{card.copy}</p>
-                  <span>{card.detail}</span>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+      <div className="about-narrative" data-reveal>
+        <p>
+          I take a people-first approach to building, starting with the users most often
+          overlooked by technology. When you design for the margins, you raise the floor
+          for everyone.
+        </p>
+        <p>
+          I work with AI as a core collaborator in my process. It's my multiplier, it
+          lets me take an idea from zero to testable faster than ever, close the gap
+          between what I can imagine and what I can ship, and move with confidence even
+          as I'm still growing.
+        </p>
+        <p>
+          My next chapter is design. Because I believe the most powerful builders of the
+          next decade will be designer-first engineers, people who lead with empathy,
+          and let AI handle the rest.
+        </p>
+      </div>
+      <div className="craft-grid">
+        {craftCards.map((card, index) => {
+          const Icon = icons[index];
+          return (
+            <article className="craft-card" key={card.title} data-reveal>
+              <Icon size={20} />
+              <div>
+                <h3>{card.title}</h3>
+                <p>{card.copy}</p>
+                <span>{card.detail}</span>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );

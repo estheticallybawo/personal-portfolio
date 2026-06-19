@@ -982,10 +982,27 @@ img {
   }
 }
 
-.about-grid {
+.about-narrative {
+  max-width: 680px;
+}
+
+.about-narrative p {
+  margin: 0 0 18px;
+  color: var(--muted-strong);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.8;
+}
+
+.about-narrative p:last-child {
+  margin-bottom: 0;
+}
+
+.craft-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
-  gap: clamp(36px, 6vw, 72px);
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 40px;
 }
 
 .case-study,
@@ -1522,11 +1539,6 @@ img {
   letter-spacing: 0;
 }
 
-.craft-grid {
-  display: grid;
-  gap: 12px;
-}
-
 .craft-card,
 .experience-card,
 .mini-card {
@@ -1545,10 +1557,10 @@ img {
 
 .craft-card {
   display: grid;
-  grid-template-columns: 42px 1fr;
-  gap: 18px;
-  padding: 22px;
-  border-radius: 18px;
+  grid-template-columns: 36px 1fr;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 16px;
 }
 
 .craft-card,
@@ -1584,21 +1596,22 @@ img {
 }
 
 .craft-card h3 {
-  margin: 0 0 8px;
+  margin: 0 0 5px;
   color: var(--text);
-  font-size: 18px;
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .craft-card p {
-  margin: 0 0 12px;
+  margin: 0 0 8px;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.7;
+  font-size: 12px;
+  line-height: 1.65;
 }
 
 .craft-card span {
   color: var(--accent);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -1822,15 +1835,24 @@ img {
 
 [data-reveal] {
   opacity: 0;
-  transform: translateY(26px);
-  transition: opacity 760ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(28px) scale(0.98);
+  transition:
+    opacity  880ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 880ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-reveal].is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
+
+/* Staggered reveal for craft cards */
+.craft-card:nth-child(2)[data-reveal] { transition-delay:  80ms; }
+.craft-card:nth-child(3)[data-reveal] { transition-delay: 160ms; }
+.craft-card:nth-child(4)[data-reveal] { transition-delay: 240ms; }
+
+/* Staggered reveal for resume columns */
+.resume-column:nth-child(2)[data-reveal] { transition-delay: 100ms; }
 
 @keyframes theme-ripple {
   0% {
@@ -1945,7 +1967,6 @@ img {
   .hero-grid,
   .project-feature,
   .project-view,
-  .about-grid,
   .resume-lower {
     grid-template-columns: 1fr;
   }
@@ -2156,6 +2177,11 @@ img {
 
   .experience-rail {
     grid-auto-columns: minmax(280px, 84vw);
+  }
+
+  .craft-grid {
+    grid-template-columns: 1fr;
+    margin-top: 28px;
   }
 
   .craft-card {
