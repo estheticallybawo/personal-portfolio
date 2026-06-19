@@ -78,6 +78,12 @@ const buildingPrompts = [
     q: "Are you available for work?",
     a: "Yes — open to product-focused frontend or design engineering roles, especially at teams building tools for how people actually think and learn. If your users are often overlooked by tech, let's talk.",
   },
+  {
+    id: "join",
+    q: "How can I be a part?",
+    a: "Send me a DM — let's talk.",
+    cta: { label: "DM on Instagram", href: "https://instagram.com/bawocore" },
+  },
 ] as const;
 
 type SoundKind = "nav" | "theme" | "project" | "projectReveal" | "certificate" | "copy" | "contact" | "button";
@@ -718,7 +724,7 @@ function FloatingMusicPlayer({
   );
 }
 
-type BuildMessage = { from: "user" | "bot"; text: string };
+type BuildMessage = { from: "user" | "bot"; text: string; cta?: { label: string; href: string } };
 
 function ActivelyBuildingModal({
   onClose,
@@ -751,7 +757,7 @@ function ActivelyBuildingModal({
     setMessages((prev) => [...prev, { from: "user", text: prompt.q }]);
     setPending(true);
     setTimeout(() => {
-      setMessages((prev) => [...prev, { from: "bot", text: prompt.a }]);
+      setMessages((prev) => [...prev, { from: "bot", text: prompt.a, ...("cta" in prompt ? { cta: prompt.cta } : {}) }]);
       setPending(false);
     }, 720);
   };
@@ -766,7 +772,15 @@ function ActivelyBuildingModal({
         </div>
         <div className="ab-messages">
           {messages.map((msg, i) => (
-            <div key={i} className={`ab-bubble ab-bubble--${msg.from}`}>{msg.text}</div>
+            <div key={i} className={`ab-bubble ab-bubble--${msg.from}`}>
+              {msg.text}
+              {msg.cta && (
+                <a className="ab-cta" href={msg.cta.href} target="_blank" rel="noreferrer">
+                  <Instagram size={13} />
+                  {msg.cta.label}
+                </a>
+              )}
+            </div>
           ))}
           {pending && (
             <div className="ab-bubble ab-bubble--bot ab-bubble--typing">

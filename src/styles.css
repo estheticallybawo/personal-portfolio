@@ -2599,3 +2599,24 @@ img {
 @media (max-width: 640px) {
   .ab-modal { border-radius: 16px; }
 }
+
+/* ── Chat CTA button (inside bot bubble) ─────────────── */
+.ab-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #fff;
+  color: #07111f;
+  font-size: 0.76rem;
+  font-weight: 600;
+  transition: background 180ms, transform 150ms;
+  text-decoration: none;
+}
+
+.ab-cta:hover {
+  background: #f0f0f0;
+  transform: translateY(-1px);
+}
