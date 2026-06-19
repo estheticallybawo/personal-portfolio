@@ -1,5 +1,5 @@
 import { type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { flushSync } from "react-dom";
+import { flushSync, createPortal } from "react-dom";
 import {
   ArrowUpRight,
   ArrowLeft,
@@ -51,6 +51,34 @@ const heroRoles = [
   "Mobile MVP Builder",
   "Open Source Contributor",
 ];
+
+const buildingPrompts = [
+  {
+    id: "building",
+    q: "What are you currently building?",
+    a: "Right now I'm building out my design practice — creating product mockups in Figma, prototyping interactions, and learning how to hand off to myself as the engineer. It's a strange and exciting loop.",
+  },
+  {
+    id: "obsession",
+    q: "What's your current obsession?",
+    a: "Motion design. How a well-timed transition makes a user feel like the app understood them before they finished their thought.",
+  },
+  {
+    id: "problem",
+    q: "What problem are you solving?",
+    a: "How to make complex financial and verification products feel simple for first-time users in emerging markets. Good UX shouldn't be a luxury.",
+  },
+  {
+    id: "available",
+    q: "Are you available for work?",
+    a: "Yes — looking for a product-focused frontend or design engineering role. Especially interested in teams building for the users the rest of the industry keeps overlooking.",
+  },
+  {
+    id: "meaning",
+    q: "What does 'actively building' mean right now?",
+    a: "Shipping something small every week — a component, a prototype, a case study, or a concept. The goal is to make building a habit, not an event.",
+  },
+] as const;
 
 type SoundKind = "nav" | "theme" | "project" | "projectReveal" | "certificate" | "copy" | "contact" | "button";
 type ThemeRipple = { x: number; y: number; color: string; id: number } | null;
@@ -690,7 +718,83 @@ function FloatingMusicPlayer({
   );
 }
 
+type BuildMessage = { from: "user" | "bot"; text: string };
+
+function ActivelyBuildingModal({
+  onClose,
+  onSoundCue,
+}: {
+  onClose: () => void;
+  onSoundCue: (kind: SoundKind) => void;
+}) {
+  const [messages, setMessages] = useState<BuildMessage[]>([
+    { from: "bot", text: "Hey! Tap any question below to see what I'm up to right now." },
+  ]);
+  const [pending, setPending] = useState(false);
+  const [usedIds, setUsedIds] = useState<Set<string>>(new Set());
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, pending]);
+
+  const handlePrompt = (prompt: (typeof buildingPrompts)[number]) => {
+    if (pending || usedIds.has(prompt.id)) return;
+    onSoundCue("button");
+    setUsedIds((prev) => new Set(prev).add(prompt.id));
+    setMessages((prev) => [...prev, { from: "user", text: prompt.q }]);
+    setPending(true);
+    setTimeout(() => {
+      setMessages((prev) => [...prev, { from: "bot", text: prompt.a }]);
+      setPending(false);
+    }, 720);
+  };
+
+  return createPortal(
+    <div className="ab-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-label="Actively building chat">
+      <div className="ab-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="ab-header">
+          <span className="ab-orb" aria-hidden="true" />
+          <span className="ab-header-title">Esther's Build Log</span>
+          <button className="ab-close" onClick={onClose} aria-label="Close chat">✕</button>
+        </div>
+        <div className="ab-messages">
+          {messages.map((msg, i) => (
+            <div key={i} className={`ab-bubble ab-bubble--${msg.from}`}>{msg.text}</div>
+          ))}
+          {pending && (
+            <div className="ab-bubble ab-bubble--bot ab-bubble--typing">
+              <span /><span /><span />
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+        <div className="ab-prompts">
+          {buildingPrompts.map((prompt) => (
+            <button
+              key={prompt.id}
+              className={`ab-prompt${usedIds.has(prompt.id) ? " is-used" : ""}`}
+              onClick={() => handlePrompt(prompt)}
+              disabled={pending}
+            >
+              {prompt.q}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
 function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
+  const [showChat, setShowChat] = useState(false);
   return (
     <section className="hero section-anchor" id="home">
       <div className="hero-grid">
@@ -734,11 +838,18 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
             a long lasting impression 😉😏
           </span>
         </div>
-        <a href={profile.cvUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
-          <Download size={16} />
-          Download CV
-        </a>
+        <button
+          className="actively-building-btn"
+          onClick={() => { onSoundCue("button"); setShowChat(true); }}
+          aria-haspopup="dialog"
+        >
+          <span className="ab-orb" aria-hidden="true" />
+          Actively Building
+        </button>
       </div>
+      {showChat && (
+        <ActivelyBuildingModal onClose={() => setShowChat(false)} onSoundCue={onSoundCue} />
+      )}
     </section>
   );
 }
