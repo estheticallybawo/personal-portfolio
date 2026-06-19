@@ -361,9 +361,9 @@ img {
 
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: clamp(24px, 4vw, 48px);
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) 230px;
+  gap: clamp(36px, 7vw, 96px);
+  align-items: end;
 }
 
 .hero-main,
@@ -434,7 +434,6 @@ img {
   flex-direction: column;
   gap: 22px;
   min-width: 0;
-  max-width: 540px;
 }
 
 .hero-side p {
@@ -1936,6 +1935,7 @@ img {
     padding-inline: 24px;
   }
 
+  .hero-grid,
   .project-feature,
   .project-view,
   .about-grid,
