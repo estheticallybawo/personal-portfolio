@@ -217,6 +217,7 @@ function App() {
   });
   const soundEnabled = soundLevel > 0;
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const [path, setPath] = useState(() => window.location.pathname);
   const [theme, setTheme] = useState<Theme>(() => {
     const requestedTheme = new URLSearchParams(window.location.search).get("theme");
@@ -564,7 +565,9 @@ function App() {
         themeLabel={themeLabel}
         onThemeToggle={toggleTheme}
         onSoundCue={playSound}
+        onOpenChat={() => { playSound("button"); setShowChat(true); }}
       />
+      {showChat && <ActivelyBuildingModal onClose={() => setShowChat(false)} onSoundCue={playSound} />}
       <main className="site-shell">
         {activeProject ? (
           <ProjectDetail project={activeProject} onBack={() => navigateTo("/")} onSoundCue={playSound} />
@@ -611,11 +614,13 @@ function Nav({
   themeLabel,
   onThemeToggle,
   onSoundCue,
+  onOpenChat,
 }: {
   theme: Theme;
   themeLabel: string;
   onThemeToggle: (event: ReactMouseEvent<HTMLButtonElement>) => void;
   onSoundCue: (kind: SoundKind) => void;
+  onOpenChat: () => void;
 }) {
   return (
     <header className="nav-wrap">
@@ -631,6 +636,14 @@ function Nav({
         <a href="/#contact" onClick={() => onSoundCue("button")}>Contact</a>
       </nav>
       <div className="nav-controls">
+        <button
+          className="actively-building-btn"
+          onClick={onOpenChat}
+          aria-haspopup="dialog"
+        >
+          <span className="ab-orb" aria-hidden="true" />
+          Actively Building
+        </button>
         <button
           className="theme-toggle"
           aria-label={themeLabel}
@@ -808,7 +821,6 @@ function ActivelyBuildingModal({
 }
 
 function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
-  const [showChat, setShowChat] = useState(false);
   return (
     <section className="hero section-anchor" id="home">
       <div className="hero-grid">
@@ -852,27 +864,7 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
             a long lasting impression 😉😏
           </span>
         </div>
-        <div className="ab-cue-wrap">
-          <span className="ab-cue" aria-hidden="true">
-            <span className="ab-cue-text">click here</span>
-            <svg className="ab-cue-svg" width="26" height="38" viewBox="0 0 26 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path className="ab-cue-path" d="M 20 3 C 25 5 25 16 18 24 C 13 30 6 32 8 36" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              <polyline className="ab-cue-head" points="4,33 8,36 12,33" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-            </svg>
-          </span>
-          <button
-            className="actively-building-btn"
-            onClick={() => { onSoundCue("button"); setShowChat(true); }}
-            aria-haspopup="dialog"
-          >
-            <span className="ab-orb" aria-hidden="true" />
-            Actively Building
-          </button>
-        </div>
       </div>
-      {showChat && (
-        <ActivelyBuildingModal onClose={() => setShowChat(false)} onSoundCue={onSoundCue} />
-      )}
     </section>
   );
 }

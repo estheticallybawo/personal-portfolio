@@ -2067,6 +2067,11 @@ img {
     display: none;
   }
 
+  .actively-building-btn {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+  }
+
   .hero {
     padding-top: 110px;
   }
@@ -2402,14 +2407,16 @@ img {
 .actively-building-btn {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  padding: 10px 22px;
+  gap: 8px;
+  padding: 8px 16px;
   border: 1px solid var(--accent-line);
   border-radius: 999px;
   background: var(--panel);
   color: var(--text);
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
   transition: border-color 220ms ease, background 220ms ease,
               transform 220ms ease, box-shadow 220ms ease;
 }
@@ -2625,68 +2632,3 @@ img {
   transform: translateY(-1px);
 }
 
-/* ── Actively Building click cue ─────────────────────── */
-.ab-cue-wrap {
-  position: relative;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0;
-}
-
-.ab-cue {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-bottom: 6px;
-  color: var(--muted);
-  font-size: 0.72rem;
-  pointer-events: none;
-  animation: cue-float 2.6s ease-in-out infinite;
-  transform-origin: bottom right;
-}
-
-.ab-cue-text {
-  font-style: italic;
-}
-
-.ab-cue-svg {
-  flex-shrink: 0;
-  overflow: visible;
-}
-
-.ab-cue-path {
-  stroke-dasharray: 62;
-  stroke-dashoffset: 62;
-  animation:
-    ab-draw-path 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-    ab-path-pulse 2.8s 1.05s ease-in-out infinite;
-}
-
-.ab-cue-head {
-  stroke-dasharray: 12;
-  stroke-dashoffset: 12;
-  animation: ab-draw-head 0.28s 0.94s ease forwards;
-}
-
-@keyframes cue-float {
-  0%, 100% { opacity: 0.5;  transform: translateY(0);    }
-  50%       { opacity: 0.95; transform: translateY(-4px); }
-}
-
-@keyframes ab-draw-path {
-  to { stroke-dashoffset: 0; }
-}
-
-@keyframes ab-draw-head {
-  to { stroke-dashoffset: 0; }
-}
-
-@keyframes ab-path-pulse {
-  0%, 100% { opacity: 0.45; }
-  50%       { opacity: 1;    }
-}
-
-@media (max-width: 640px) {
-  .ab-cue { font-size: 0.68rem; }
-}
