@@ -855,7 +855,10 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
         <div className="ab-cue-wrap">
           <span className="ab-cue" aria-hidden="true">
             <span className="ab-cue-text">click here</span>
-            <span className="ab-cue-arrow">↩</span>
+            <svg className="ab-cue-svg" width="26" height="38" viewBox="0 0 26 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path className="ab-cue-path" d="M 20 3 C 25 5 25 16 18 24 C 13 30 6 32 8 36" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              <polyline className="ab-cue-head" points="4,33 8,36 12,33" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+            </svg>
           </span>
           <button
             className="actively-building-btn"
