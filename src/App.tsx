@@ -244,9 +244,8 @@ function App() {
       ytPlayerRef.current = new window.YT.Player(mount, {
         height: 1,
         width: 1,
-        host: "https://www.youtube-nocookie.com",
+        videoId: PORTFOLIO_VIDEO_ID,
         playerVars: {
-          videoId: PORTFOLIO_VIDEO_ID,
           autoplay: 0,
           controls: 0,
           playsinline: 1,
