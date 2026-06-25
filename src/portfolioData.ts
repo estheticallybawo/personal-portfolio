@@ -772,7 +772,7 @@ export const earlyHer = {
     {
       number: "03",
       title: "The App Experience",
-      desc: "The first full version of the app experience , cycle tracking, phase understanding, symptom logging, self-examination guidance, health information preparation, and a path toward doctor support when needed.",
+      desc: "The first version of the app experience , cycle tracking, phase understanding, symptom logging, self-examination guidance, health information preparation, and a path toward doctor support when needed.",
     },
     {
       number: "04",
@@ -808,7 +808,7 @@ export const earlyHer = {
   ],
 
   importantNotes: [
-    "This quote covers the product foundation and first full version of EarlyHer.",
+    "This quote covers the product foundation and first version of EarlyHer.",
     "Specialist costs outside the product build , legal representation, formal medical review, clinical validation, formal GDPR compliance certification, NHS approval, or external medical board review , are not included unless separately agreed in writing.",
     "Because EarlyHer is a women's health product, any medical or clinical recommendations should be reviewed by a qualified healthcare professional before public release.",
     "The AI-assisted layer is intended to support health-information organisation and user guidance. It should not be presented as a replacement for doctors, diagnosis, treatment, or emergency medical care.",
