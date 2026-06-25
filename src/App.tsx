@@ -1393,9 +1393,6 @@ function EarlyHerPage({
         <p className="eh-pitch">{earlyHer.pitch}</p>
       </header>
 
-      {/* Photo carousel */}
-      <EarlyHerPhotoCarousel />
-
       {/* Problem */}
       <section className="case-list-section">
         <div className="section-heading" data-reveal>
@@ -1427,6 +1424,15 @@ function EarlyHerPage({
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Photo carousel — The Vision */}
+      <section className="case-list-section">
+        <div className="section-heading" data-reveal>
+          <p>The vision</p>
+          <h2>What EarlyHer looks like in the world.</h2>
+        </div>
+        <EarlyHerPhotoCarousel />
       </section>
 
       {/* Approach */}
