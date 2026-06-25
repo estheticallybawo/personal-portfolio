@@ -1430,7 +1430,7 @@ function EarlyHerPage({
       <section className="case-list-section">
         <div className="section-heading" data-reveal>
           <p>The vision</p>
-          <h2>What EarlyHer looks like in the world.</h2>
+          <h2>What EarlyHer could look like in the world.</h2>
         </div>
         <EarlyHerPhotoCarousel />
       </section>
