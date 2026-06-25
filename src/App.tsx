@@ -24,6 +24,7 @@ import {
   craftCards,
   credentials,
   certifications,
+  earlyHer,
   education,
   profile,
   projects,
@@ -530,6 +531,20 @@ function App() {
   const activeProjectSlug = path.match(/^\/work\/([^/]+)\/?$/)?.[1];
   const activeProject = projects.find((project) => project.slug === activeProjectSlug);
   const isCertificationsPage = path === "/certifications" || path === "/certifications/";
+  const isEarlyHerPage = path === "/earlyher" || path === "/earlyher/";
+
+  // Switch playlist when navigating to/from the EarlyHer page
+  useEffect(() => {
+    const playlistId = isEarlyHerPage ? earlyHer.playlistId : PLAYLIST_ID;
+    if (!ytPlayerRef.current) return;
+    try {
+      if (soundEnabled) {
+        ytPlayerRef.current.loadPlaylist({ list: playlistId, listType: "playlist" });
+      } else {
+        ytPlayerRef.current.cuePlaylist({ list: playlistId, listType: "playlist" });
+      }
+    } catch { /* player not ready */ }
+  }, [isEarlyHerPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -554,6 +569,8 @@ function App() {
           <ProjectDetail project={activeProject} onBack={() => navigateTo("/")} onSoundCue={playSound} />
         ) : isCertificationsPage ? (
           <CertificationsPage onBack={() => navigateTo("/")} onSoundCue={playSound} />
+        ) : isEarlyHerPage ? (
+          <EarlyHerPage onBack={() => navigateTo("/")} onSoundCue={playSound} />
         ) : (
           <>
             <Hero onSoundCue={playSound} />
@@ -1257,6 +1274,291 @@ function CertificationsPage({
             </article>
           ))}
         </div>
+      </section>
+    </article>
+  );
+}
+
+// ── EarlyHer Engagement Page ──────────────────────────────────────────────────
+
+function EarlyHerPhotoCarousel() {
+  const [activePhoto, setActivePhoto] = useState(0);
+  const touchStartRef = useRef<number | null>(null);
+  const photos = earlyHer.photos;
+
+  const movePhoto = (direction: 1 | -1) => {
+    setActivePhoto((i) => (i + direction + photos.length) % photos.length);
+  };
+
+  return (
+    <div className="eh-photo-carousel" data-reveal>
+      <div className="project-carousel-top">
+        <div>
+          <span>{String(activePhoto + 1).padStart(2, "0")}</span>
+          <span>/</span>
+          <span>{String(photos.length).padStart(2, "0")}</span>
+        </div>
+        <div className="project-carousel-controls">
+          <button type="button" onClick={() => movePhoto(-1)} aria-label="Previous photo">
+            <ArrowLeft size={16} />
+          </button>
+          <button type="button" onClick={() => movePhoto(1)} aria-label="Next photo">
+            <ArrowUpRight size={16} />
+          </button>
+        </div>
+      </div>
+
+      <div
+        className="eh-photo-view"
+        onTouchStart={(e) => { touchStartRef.current = e.touches[0]?.clientX ?? null; }}
+        onTouchEnd={(e) => {
+          if (touchStartRef.current === null) return;
+          const dist = (e.changedTouches[0]?.clientX ?? touchStartRef.current) - touchStartRef.current;
+          touchStartRef.current = null;
+          if (Math.abs(dist) < 42) return;
+          movePhoto(dist < 0 ? 1 : -1);
+        }}
+      >
+        {photos.map((photo, index) => (
+          <figure
+            key={photo.src}
+            className={`eh-photo-card${index === activePhoto ? " is-active" : ""}`}
+            aria-hidden={index !== activePhoto}
+          >
+            <img src={photo.src} alt={photo.caption} />
+            <figcaption>{photo.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+
+      <div className="project-carousel-dots" aria-label="Photo navigation">
+        {photos.map((photo, index) => (
+          <button
+            type="button"
+            key={photo.src}
+            className={index === activePhoto ? "is-active" : ""}
+            onClick={() => setActivePhoto(index)}
+            aria-label={`Show ${photo.caption}`}
+            aria-current={index === activePhoto ? "true" : undefined}
+          >
+            {String(index + 1).padStart(2, "0")}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EarlyHerPage({
+  onBack,
+  onSoundCue,
+}: {
+  onBack: () => void;
+  onSoundCue: (kind: SoundKind) => void;
+}) {
+  return (
+    <article className="case-study eh-page">
+      {/* Top bar */}
+      <div className="eh-topbar no-print">
+        <button
+          className="back-link"
+          type="button"
+          onClick={() => { onSoundCue("button"); onBack(); }}
+        >
+          <ArrowLeft size={16} />
+          Back to portfolio
+        </button>
+        <button
+          className="eh-download-btn"
+          type="button"
+          onClick={() => { onSoundCue("button"); window.print(); }}
+          title="Save as PDF"
+        >
+          <Download size={15} />
+          Save as PDF
+        </button>
+      </div>
+
+      {/* Hero */}
+      <header className="case-hero eh-hero">
+        <p className="eyebrow">Engagement Proposal · {earlyHer.prepared}</p>
+        <h1>{earlyHer.product}</h1>
+        <span>{earlyHer.tagline}</span>
+        <p className="eh-pitch">{earlyHer.pitch}</p>
+      </header>
+
+      {/* Photo carousel */}
+      <EarlyHerPhotoCarousel />
+
+      {/* Problem */}
+      <section className="case-list-section">
+        <div className="section-heading" data-reveal>
+          <p>The problem</p>
+          <h2>{earlyHer.problem.headline}</h2>
+          <span>{earlyHer.problem.subheadline}</span>
+        </div>
+        <div className="case-list" data-reveal>
+          {earlyHer.problem.points.map((point) => (
+            <article className="case-note" key={point}>
+              <Check size={18} />
+              <p>{point}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* Market */}
+      <section className="case-list-section">
+        <div className="section-heading" data-reveal>
+          <p>Market opportunity</p>
+          <h2>{earlyHer.market.headline}</h2>
+        </div>
+        <div className="eh-stat-grid" data-reveal>
+          {earlyHer.market.stats.map((stat) => (
+            <div className="eh-stat-card" key={stat.label}>
+              <strong>{stat.value}</strong>
+              <span>{stat.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Approach */}
+      <section className="case-grid" data-reveal>
+        <div>
+          <p className="eyebrow">The engagement</p>
+          <h2>How I'm approaching this</h2>
+        </div>
+        <p>{earlyHer.intro}</p>
+      </section>
+
+      {/* Market context */}
+      <section className="case-grid" data-reveal>
+        <div>
+          <p className="eyebrow">Market context</p>
+          <h2>What this really costs</h2>
+        </div>
+        <div>
+          <p>{earlyHer.marketContext.body}</p>
+          <div className="eh-market-range" data-reveal>
+            <span>{earlyHer.marketContext.rangeLabel}</span>
+            <strong>{earlyHer.marketContext.range}</strong>
+          </div>
+        </div>
+      </section>
+
+      {/* Investor prep */}
+      <section className="case-list-section">
+        <div className="section-heading" data-reveal>
+          <p>Investor readiness</p>
+          <h2>{earlyHer.investorPrep.headline}</h2>
+        </div>
+        <div className="case-list" data-reveal>
+          <article className="case-note">
+            <Sparkles size={18} />
+            <p>{earlyHer.investorPrep.forCustomers}</p>
+          </article>
+          <article className="case-note">
+            <Sparkles size={18} />
+            <p>{earlyHer.investorPrep.forInvestors}</p>
+          </article>
+        </div>
+      </section>
+
+      {/* Deliverables */}
+      <section className="case-list-section">
+        <div className="section-heading" data-reveal>
+          <p>Scope of work</p>
+          <h2>What gets delivered.</h2>
+        </div>
+        <div className="eh-deliverables-grid" data-reveal>
+          {earlyHer.deliverables.map((d) => (
+            <article className="eh-deliverable-card" key={d.number}>
+              <span className="eh-deliverable-num">{d.number}</span>
+              <strong>{d.title}</strong>
+              <p>{d.desc}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="case-list-section eh-pricing-section">
+        <div className="section-heading" data-reveal>
+          <p>Investment</p>
+          <h2>The breakdown.</h2>
+        </div>
+        <div className="eh-pricing-cards" data-reveal>
+          <div className="eh-price-card">
+            <span>{earlyHer.founderRateLabel}</span>
+            <strong>{earlyHer.founderRate}</strong>
+            <p>{earlyHer.founderRateNote}</p>
+          </div>
+          <div className="eh-price-card eh-price-card--deduct">
+            <span>{earlyHer.referralLabel}</span>
+            <strong>{earlyHer.referralDeduction}</strong>
+            <p>{earlyHer.referralNote}</p>
+          </div>
+          <div className="eh-price-card eh-price-card--final">
+            <span>{earlyHer.finalRateLabel}</span>
+            <strong>{earlyHer.finalRate}</strong>
+            <p>{earlyHer.finalRateNote}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Payment stages */}
+      <section className="case-list-section">
+        <div className="section-heading" data-reveal>
+          <p>Payment structure</p>
+          <h2>Eight milestones. Pay as we build.</h2>
+        </div>
+        <div className="eh-stages" data-reveal>
+          {earlyHer.stages.map((stage) => (
+            <div className="eh-stage-row" key={stage.stage}>
+              <span className="eh-stage-num">{stage.stage}</span>
+              <div className="eh-stage-body">
+                <strong>{stage.title}</strong>
+                <p>{stage.trigger}</p>
+              </div>
+              <span className="eh-stage-amount">{stage.amount}</span>
+            </div>
+          ))}
+          <div className="eh-stage-total">
+            <span>Total</span>
+            <strong>{earlyHer.finalRate}</strong>
+          </div>
+        </div>
+      </section>
+
+      {/* Important notes */}
+      <section className="case-list-section">
+        <div className="section-heading" data-reveal>
+          <p>To note</p>
+          <h2>Important to understand.</h2>
+        </div>
+        <div className="case-list" data-reveal>
+          {earlyHer.importantNotes.map((note) => (
+            <article className="case-note" key={note}>
+              <Check size={18} />
+              <p>{note}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="eh-cta no-print" data-reveal>
+        <p>Ready to move forward?</p>
+        <a
+          href={profile.links.calendar}
+          target="_blank"
+          rel="noreferrer"
+          className="primary-button"
+          onClick={() => onSoundCue("button")}
+        >
+          Book a call <ArrowUpRight size={15} />
+        </a>
       </section>
     </article>
   );
