@@ -797,14 +797,14 @@ export const earlyHer = {
   ],
 
   stages: [
-    { stage: "01", title: "Project Activation & Team Setup", amount: "£6,900", trigger: "Paid to begin" },
-    { stage: "02", title: "Product Clarity & Direction", amount: "£2,300", trigger: "After first major direction is presented and agreed" },
-    { stage: "03", title: "Look, Feel & User Experience Direction", amount: "£1,700", trigger: "After visual and experience direction is approved" },
-    { stage: "04", title: "Core App Structure & User Flow", amount: "£2,300", trigger: "After main app structure and user journey direction are approved" },
-    { stage: "05", title: "Technical Foundation", amount: "£3,200", trigger: "After behind-the-scenes system and first technical foundation are completed" },
-    { stage: "06", title: "AI-Assisted Support Layer", amount: "£2,700", trigger: "After AI-assisted support layer direction and first integration structure are completed" },
-    { stage: "07", title: "First Version Build & Connection", amount: "£2,900", trigger: "After main app build and key connections are completed and reviewed" },
-    { stage: "08", title: "Launch Readiness & Final Handover", amount: "£1,000", trigger: "After launch support materials, final checks, and handover are completed" },
+    { stage: "01", title: "Project Activation & Team Setup", amount: "£6,900", trigger: "30% committment deposit to begin, Team formation, research, sprint planning and Internal docs" },
+    { stage: "02", title: "Product Clarity & Direction", amount: "£2,300", trigger: "After first major direction is presented and agreed. Branding, Product positioning and Visual identity Essentials" },
+    { stage: "03", title: "Look, Feel & User Experience Direction", amount: "£1,700", trigger: "After visual and experience direction is approved. App's visuals" },
+    { stage: "04", title: "Core App Structure & User Flow", amount: "£2,300", trigger: "After main app structure and user journey direction are approved.  app's core functionality and user flow" },
+    { stage: "05", title: "Technical Foundation", amount: "£3,200", trigger: "After behind-the-scenes system and first technical foundation are completed. Backend, Database, Encryption, Auth and Paywall" },
+    { stage: "06", title: "AI-Assisted Support Layer", amount: "£2,700", trigger: "After AI-assisted support layer direction and first integration structure are completed. Healthcare's Safe zone AI Integration" },
+    { stage: "07", title: "First Version Build & Connection", amount: "£2,900", trigger: "After main app build and key connections are completed and reviewed. App Stores readiness and Essentials" },
+    { stage: "08", title: "Launch Readiness & Final Handover", amount: "£1,000", trigger: "After launch support materials, final checks, and handover are completed. Live product webpage with Marketing essentials " },
   ],
 
   importantNotes: [
