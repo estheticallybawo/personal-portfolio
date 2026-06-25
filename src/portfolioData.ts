@@ -822,4 +822,47 @@ export const earlyHer = {
   ],
 
   playlistId: "PLLmemQh3Fs0s",
+
+  competitorStatement: "EarlyHer sits at the intersection of women's health tracking, symptom awareness, AI-assisted health preparation, and doctor-readiness. While apps like Flo, Clue, Natural Cycles, Ada, Hertility, and Oura solve parts of the journey, EarlyHer's opportunity is to help women turn personal health patterns into organised, appointment-ready evidence so they can advocate for themselves earlier and more confidently.",
+
+  competitors: [
+    {
+      name: "Flo",
+      category: "Cycle tracking",
+      solves: "Period prediction, symptom logging, and personalised health content — 300M+ users globally.",
+      gap: "Tracks the cycle. Doesn't help women turn what they're tracking into evidence they can take to a doctor.",
+    },
+    {
+      name: "Clue",
+      category: "Cycle & health",
+      solves: "Science-backed period and symptom tracking, with research partnerships and detailed health data.",
+      gap: "Excellent at collection. Silent on what to do with the data when it matters most — a clinical conversation.",
+    },
+    {
+      name: "Natural Cycles",
+      category: "Fertility",
+      solves: "FDA-cleared contraception and fertility planning through basal body temperature tracking.",
+      gap: "Narrowly focused on fertility. No layer for ongoing symptom advocacy or appointment preparation.",
+    },
+    {
+      name: "Ada",
+      category: "Symptom checker",
+      solves: "AI-powered symptom assessment that triages users toward the appropriate level of care.",
+      gap: "Built for one-off check-ins. Not designed for tracking patterns over time or building a personal health case.",
+    },
+    {
+      name: "Hertility",
+      category: "Hormone health",
+      solves: "At-home hormone and fertility testing with personalised clinical reports and care pathways.",
+      gap: "Lab-first. Built around a single test moment, not the continuous day-to-day health journey.",
+    },
+    {
+      name: "Oura",
+      category: "Wearable health",
+      solves: "Ring-based biometric tracking for sleep, recovery, and cycle prediction through passive sensing.",
+      gap: "Hardware-dependent and general wellness. Not designed to help women advocate for themselves with clinicians.",
+    },
+  ],
+
+  positioningNote: "Every one of these companies is collecting data — not building advocacy. The risk for EarlyHer isn't direct competition. It's invisibility. Without a distinct position, Flo can copy the symptom log. Ada can add a history view. Clue can add a 'share with doctor' button. EarlyHer's defensible ground is the full arc: from daily patterns, to organised evidence, to confident clinical conversations. That is not a feature. That is the product.",
 };

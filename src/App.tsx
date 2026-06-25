@@ -1570,6 +1570,33 @@ function EarlyHerPage({
         </div>
       </section>
 
+      {/* Competitor landscape */}
+      <section className="case-list-section">
+        <div className="section-heading" data-reveal>
+          <p>The landscape</p>
+          <h2>Who else is in the room.</h2>
+        </div>
+        <p className="eh-competitor-statement" data-reveal>{earlyHer.competitorStatement}</p>
+        <div className="eh-competitor-grid" data-reveal>
+          {earlyHer.competitors.map((c) => (
+            <div className="eh-competitor-card" key={c.name}>
+              <div className="eh-competitor-header">
+                <strong className="eh-competitor-name">{c.name}</strong>
+                <span className="eh-competitor-category">{c.category}</span>
+              </div>
+              <p className="eh-competitor-solves">{c.solves}</p>
+              <div className="eh-competitor-gap">
+                <span>The gap</span>
+                <p>{c.gap}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="eh-positioning-note" data-reveal>
+          <p>{earlyHer.positioningNote}</p>
+        </div>
+      </section>
+
       {/* Photo carousel — The Vision */}
       <section className="case-list-section">
         <div className="section-heading" data-reveal>

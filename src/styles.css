@@ -2766,6 +2766,93 @@ img {
   margin: 0;
 }
 
+/* Competitor section */
+.eh-competitor-statement {
+  font-size: clamp(15px, 1.6vw, 17px);
+  color: var(--text);
+  line-height: 1.75;
+  max-width: 72ch;
+  margin: 0 0 40px;
+}
+.eh-competitor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.eh-competitor-card {
+  padding: 22px 20px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 200ms ease;
+}
+.eh-competitor-card:hover { border-color: var(--eh-berry-line); }
+.eh-competitor-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.eh-competitor-name {
+  font-family: var(--heading-font);
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--text);
+}
+.eh-competitor-category {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  background: var(--line);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.eh-competitor-solves {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+}
+.eh-competitor-gap {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--eh-berry-line);
+}
+.eh-competitor-gap > span {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--eh-berry);
+  display: block;
+  margin-bottom: 5px;
+}
+.eh-competitor-gap > p {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.55;
+  margin: 0;
+}
+.eh-positioning-note {
+  padding: 28px 32px;
+  border-radius: 20px;
+  background: var(--eh-berry-soft);
+  border: 1px solid var(--eh-berry-line);
+}
+.eh-positioning-note > p {
+  font-size: clamp(15px, 1.6vw, 17px);
+  color: var(--text);
+  line-height: 1.8;
+  margin: 0;
+  max-width: 80ch;
+}
+
 /* Pricing cards */
 .eh-pricing-cards {
   display: grid;
@@ -2926,6 +3013,7 @@ img {
   /* Grids , single column for print */
   .eh-stat-grid,
   .eh-deliverables-grid,
+  .eh-competitor-grid,
   .eh-pricing-cards { grid-template-columns: 1fr 1fr; }
 
   /* Break pages nicely */
@@ -2936,8 +3024,10 @@ img {
 @media (max-width: 760px) {
   .eh-topbar { flex-wrap: wrap; gap: 10px; }
   .eh-stat-grid { grid-template-columns: 1fr 1fr; }
+  .eh-competitor-grid { grid-template-columns: 1fr 1fr; }
   .eh-deliverables-grid { grid-template-columns: 1fr; }
   .eh-pricing-cards { grid-template-columns: 1fr; }
+  .eh-positioning-note { padding: 20px; }
   .eh-stage-row { grid-template-columns: 36px 1fr auto; }
   .eh-cta { flex-direction: column; align-items: flex-start; }
   .eh-photo-view { aspect-ratio: 4 / 3; }
