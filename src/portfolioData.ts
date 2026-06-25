@@ -829,14 +829,14 @@ export const earlyHer = {
     {
       name: "Flo",
       category: "Cycle tracking",
-      solves: "Period prediction, symptom logging, and personalised health content — 300M+ users globally.",
+      solves: "Period prediction, symptom logging, and personalised health content, 300M+ users globally.",
       gap: "Tracks the cycle. Doesn't help women turn what they're tracking into evidence they can take to a doctor.",
     },
     {
       name: "Clue",
       category: "Cycle & health",
       solves: "Science-backed period and symptom tracking, with research partnerships and detailed health data.",
-      gap: "Excellent at collection. Silent on what to do with the data when it matters most — a clinical conversation.",
+      gap: "Excellent at collection. Silent on what to do with the data when it matters most, a clinical conversation.",
     },
     {
       name: "Natural Cycles",
@@ -864,5 +864,5 @@ export const earlyHer = {
     },
   ],
 
-  positioningNote: "Every one of these companies is collecting data — not building advocacy. The risk for EarlyHer isn't direct competition. It's invisibility. Without a distinct position, Flo can copy the symptom log. Ada can add a history view. Clue can add a 'share with doctor' button. EarlyHer's defensible ground is the full arc: from daily patterns, to organised evidence, to confident clinical conversations. That is not a feature. That is the product.",
+  positioningNote: "Every one of these companies is collecting data, not building advocacy. With Earlyher users have full power and control over their data, with zero external storage or data collection as the key differentiator. The risk for EarlyHer isn't direct competition. It's invisibility and without a distinct position, Flo can copy the symptom log, Ada can add a history view, Clue can add a 'share with doctor' button but EarlyHer's defensible ground is the full arc: from daily patterns, to organised evidence, to confident clinical conversations. Which is why early positioning is non-negotiable.",
 };

@@ -179,7 +179,7 @@ function App() {
   const [soundLevel, setSoundLevel] = useState(() => {
     const savedLevel = Number(localStorage.getItem(soundLevelStorageKey));
     if (soundLevels.some((level) => level === savedLevel)) return savedLevel;
-    // default ON — off only if user explicitly turned it off before
+    // default ON, off only if user explicitly turned it off before
     return localStorage.getItem(soundStorageKey) === "off" ? 0 : 0.55;
   });
   const soundEnabled = soundLevel > 0;
@@ -1597,7 +1597,7 @@ function EarlyHerPage({
         </div>
       </section>
 
-      {/* Photo carousel — The Vision */}
+      {/* Photo carousel, The Vision */}
       <section className="case-list-section">
         <div className="section-heading" data-reveal>
           <p>The vision</p>
