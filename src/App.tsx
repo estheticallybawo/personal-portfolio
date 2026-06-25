@@ -39,7 +39,7 @@ const themeStorageKey = "esther-portfolio-theme";
 const soundStorageKey = "esther-portfolio-sound";
 const soundLevelStorageKey = "esther-portfolio-sound-level";
 const soundLevels = [0, 0.2, 0.55, 1] as const;
-const PLAYLIST_ID = "https://youtu.be/qzyl0f3mRG0?si=-eXE0bWifGiA59U_";
+const PORTFOLIO_VIDEO_ID = "qzyl0f3mRG0"; // single-video mode for the main portfolio
 const clickSoundPath = "/assets/mixkit-coins-handling-1939.wav";
 const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
 const projectRevealSoundPath = "/assets/mixkit-page-forward-single-chime-1107.wav";
@@ -60,6 +60,8 @@ type ThemeRipple = { x: number; y: number; color: string; id: number } | null;
 interface YTPlayerInstance {
   playVideo(): void;
   pauseVideo(): void;
+  loadVideoById(videoId: string): void;
+  cueVideoById(videoId: string): void;
   loadPlaylist(config: { list: string; listType: string }): void;
   cuePlaylist(config: { list: string; listType: string }): void;
   setShuffle(shuffle: boolean): void;
@@ -244,17 +246,14 @@ function App() {
         width: 1,
         host: "https://www.youtube-nocookie.com",
         playerVars: {
-          listType: "playlist",
-          list: PLAYLIST_ID,
+          videoId: PORTFOLIO_VIDEO_ID,
           autoplay: 0,
           controls: 0,
           playsinline: 1,
           origin: window.location.origin,
         },
         events: {
-          onReady: () => {
-            ytPlayerRef.current?.setShuffle(false);
-          },
+          onReady: () => { /* single-video mode — no shuffle needed */ },
           onStateChange: (event: { data: number }) => {
             if (event.data === 1) {
               if (!progressIntervalRef.current) {
@@ -533,15 +532,22 @@ function App() {
   const isCertificationsPage = path === "/certifications" || path === "/certifications/";
   const isEarlyHerPage = path === "/earlyher" || path === "/earlyher/";
 
-  // Switch playlist when navigating to/from the EarlyHer page
+  // Switch between EarlyHer playlist and portfolio single-video when navigating
   useEffect(() => {
-    const playlistId = isEarlyHerPage ? earlyHer.playlistId : PLAYLIST_ID;
     if (!ytPlayerRef.current) return;
     try {
-      if (soundEnabled) {
-        ytPlayerRef.current.loadPlaylist({ list: playlistId, listType: "playlist" });
+      if (isEarlyHerPage) {
+        if (soundEnabled) {
+          ytPlayerRef.current.loadPlaylist({ list: earlyHer.playlistId, listType: "playlist" });
+        } else {
+          ytPlayerRef.current.cuePlaylist({ list: earlyHer.playlistId, listType: "playlist" });
+        }
       } else {
-        ytPlayerRef.current.cuePlaylist({ list: playlistId, listType: "playlist" });
+        if (soundEnabled) {
+          ytPlayerRef.current.loadVideoById(PORTFOLIO_VIDEO_ID);
+        } else {
+          ytPlayerRef.current.cueVideoById(PORTFOLIO_VIDEO_ID);
+        }
       }
     } catch { /* player not ready */ }
   }, [isEarlyHerPage]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -1704,13 +1710,13 @@ function WhyCard({ card }: { card: WhyCardData }) {
 }
 
 function WhySection({
-  onVideoPlay,
-  onVideoStop,
+  onVideoPlay: _onVideoPlay,
+  onVideoStop: _onVideoStop,
 }: {
   onVideoPlay: () => void;
   onVideoStop: () => void;
 }) {
-  
+  return null;
 }
 
 function About() {

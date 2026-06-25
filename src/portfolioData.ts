@@ -821,6 +821,5 @@ export const earlyHer = {
     { src: "/assets/earlyher/popup.png", caption: "EarlyHer University Pop-Up" },
   ],
 
-  // YouTube playlist ID for this page , update when you have the right one
-  playlistId: "https://youtube.com/playlist?list=PLLmemQh3Fs0s&si=BiPSJjZ7WszuJP6Y",
+  playlistId: "PLLmemQh3Fs0s",
 };
