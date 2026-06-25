@@ -1355,6 +1355,80 @@ function EarlyHerPhotoCarousel() {
   );
 }
 
+function EarlyHerDeliverablesCarousel() {
+  const deliverables = earlyHer.deliverables;
+  const [active, setActive] = useState(0);
+  const touchStartRef = useRef<number | null>(null);
+
+  const move = (dir: 1 | -1) =>
+    setActive((i) => (i + dir + deliverables.length) % deliverables.length);
+
+  const d = deliverables[active];
+
+  return (
+    <section className="case-list-section eh-deliverables-carousel">
+      <div className="section-heading" data-reveal>
+        <p>Scope of work</p>
+        <h2>What gets delivered.</h2>
+      </div>
+
+      <div className="eh-del-wrap" data-reveal>
+        {/* Counter + controls */}
+        <div className="project-carousel-top">
+          <div>
+            <span>{String(active + 1).padStart(2, "0")}</span>
+            <span>/</span>
+            <span>{String(deliverables.length).padStart(2, "0")}</span>
+          </div>
+          <div className="project-carousel-controls">
+            <button type="button" onClick={() => move(-1)} aria-label="Previous deliverable">
+              <ArrowLeft size={16} />
+            </button>
+            <button type="button" onClick={() => move(1)} aria-label="Next deliverable">
+              <ArrowUpRight size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Card */}
+        <div
+          className="eh-del-stage"
+          onTouchStart={(e) => { touchStartRef.current = e.touches[0]?.clientX ?? null; }}
+          onTouchEnd={(e) => {
+            if (touchStartRef.current === null) return;
+            const dist = (e.changedTouches[0]?.clientX ?? touchStartRef.current) - touchStartRef.current;
+            touchStartRef.current = null;
+            if (Math.abs(dist) < 42) return;
+            move(dist < 0 ? 1 : -1);
+          }}
+        >
+          <article className="eh-del-card" key={d.number}>
+            <span className="eh-del-num">{d.number}</span>
+            <strong className="eh-del-title">{d.title}</strong>
+            <p className="eh-del-desc">{d.desc}</p>
+          </article>
+        </div>
+
+        {/* Dot nav */}
+        <div className="project-carousel-dots" aria-label="Deliverable navigation">
+          {deliverables.map((item, i) => (
+            <button
+              type="button"
+              key={item.number}
+              className={i === active ? "is-active" : ""}
+              onClick={() => setActive(i)}
+              aria-label={`View deliverable ${item.number}`}
+              aria-current={i === active ? "true" : undefined}
+            >
+              {item.number}
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function EarlyHerPage({
   onBack,
   onSoundCue,
@@ -1477,22 +1551,8 @@ function EarlyHerPage({
         </div>
       </section>
 
-      {/* Deliverables */}
-      <section className="case-list-section">
-        <div className="section-heading" data-reveal>
-          <p>Scope of work</p>
-          <h2>What gets delivered.</h2>
-        </div>
-        <div className="eh-deliverables-grid" data-reveal>
-          {earlyHer.deliverables.map((d) => (
-            <article className="eh-deliverable-card" key={d.number}>
-              <span className="eh-deliverable-num">{d.number}</span>
-              <strong>{d.title}</strong>
-              <p>{d.desc}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      {/* Deliverables carousel */}
+      <EarlyHerDeliverablesCarousel />
 
       {/* Pricing */}
       <section className="case-list-section eh-pricing-section">
