@@ -633,3 +633,166 @@ export const certifications: Certification[] = [
     skills: ["Self-directed learning", "Accountability", "Skill development"],
   },
 ];
+
+// ── Proposals ────────────────────────────────────────────────────────────────
+
+export type ProposalFeature = {
+  icon: string;
+  title: string;
+  desc: string;
+};
+
+export type ProposalSegment = {
+  title: string;
+  desc: string;
+};
+
+export type ProposalRevenue = {
+  stream: string;
+  type: "B2C" | "B2B" | "Partnerships" | "Licensing";
+  desc: string;
+};
+
+export type ProposalMetric = {
+  value: string;
+  label: string;
+  context: string;
+};
+
+export type Proposal = {
+  slug: string;
+  clientName: string;
+  productName: string;
+  tagline: string;
+  pitch: string;
+  accentPrimary: string;
+  accentSecondary: string;
+  prepared: string;
+  problem: {
+    headline: string;
+    subheadline: string;
+    points: string[];
+  };
+  solution: {
+    headline: string;
+    copy: string;
+    features: ProposalFeature[];
+  };
+  uvp: string;
+  market: {
+    headline: string;
+    stats: Array<{ value: string; label: string }>;
+  };
+  segments: ProposalSegment[];
+  revenue: ProposalRevenue[];
+  metrics: ProposalMetric[];
+  channels: string[];
+  cta: {
+    headline: string;
+    copy: string;
+  };
+};
+
+export const proposals: Proposal[] = [
+  {
+    slug: "earlyher",
+    clientName: "Yinka",
+    productName: "EarlyHer",
+    tagline: "Smart Health. Early Insight.",
+    pitch:
+      "A women's health intelligence platform that uses AI to surface early warning signals, personalise health guidance, and close the diagnostic gap that has long left women's symptoms unheard.",
+    accentPrimary: "#2dd4bf",
+    accentSecondary: "#a855f7",
+    prepared: "June 2025",
+    problem: {
+      headline: "Women's health has always been an afterthought.",
+      subheadline: "The gap is real, measurable, and costly.",
+      points: [
+        "Women are 50% more likely than men to be misdiagnosed after a cardiac event.",
+        "Conditions like endometriosis take an average of 7–10 years to diagnose.",
+        "Most health tech tools are built on male-centric datasets, leaving women underserved.",
+        "There is no centralised, intelligent platform helping women connect their own health dots.",
+      ],
+    },
+    solution: {
+      headline: "EarlyHer connects the dots your doctor might miss.",
+      copy: "A personal health intelligence layer for women — powered by AI, grounded in medical research, and designed for real life.",
+      features: [
+        {
+          icon: "🧠",
+          title: "Intelligent Symptom Tracking",
+          desc: "Log symptoms over time and let EarlyHer's AI surface patterns, correlations, and early signals before they escalate.",
+        },
+        {
+          icon: "🔬",
+          title: "Personalised Health Insights",
+          desc: "Contextualised reports that translate your health data into language you can take to a doctor — or act on yourself.",
+        },
+        {
+          icon: "⚡",
+          title: "Early Warning Alerts",
+          desc: "Real-time nudges when patterns in your data suggest something worth investigating — before it becomes a crisis.",
+        },
+        {
+          icon: "🌍",
+          title: "Culturally-Aware Guidance",
+          desc: "Health content and recommendations that account for the specific realities of African women and women of colour.",
+        },
+      ],
+    },
+    uvp: "EarlyHer is the only women's health platform that combines AI-powered early detection with culturally-aware, personalised health intelligence — built specifically for women the medical system has historically overlooked.",
+    market: {
+      headline: "The market is ready. The timing is now.",
+      stats: [
+        { value: "$60B", label: "Global femtech market by 2027" },
+        { value: "3.9B", label: "Women globally underserved by health tech" },
+        { value: "7–10 yrs", label: "Average delay to diagnose endometriosis" },
+        { value: "50%", label: "Higher misdiagnosis rate for women in cardiac care" },
+      ],
+    },
+    segments: [
+      {
+        title: "Health-Conscious Professionals (25–40)",
+        desc: "Urban, tech-literate women managing busy lives who want data-driven clarity on their health without the overwhelm.",
+      },
+      {
+        title: "Women with Chronic or Undiagnosed Conditions",
+        desc: "Women navigating unexplained symptoms, PCOS, endometriosis, or autoimmune conditions who need a trusted tracking companion.",
+      },
+      {
+        title: "Healthcare Providers & Clinics",
+        desc: "Gynaecologists, GPs, and women's health clinics who want richer patient health histories coming into consultations.",
+      },
+      {
+        title: "Employers & HR Teams",
+        desc: "Organisations investing in women's wellbeing benefits as a retention and productivity lever.",
+      },
+    ],
+    revenue: [
+      { stream: "B2C Subscriptions", type: "B2C", desc: "Monthly and annual individual plans for core AI features and personalised health reports." },
+      { stream: "B2B Licensing", type: "B2B", desc: "White-label platform access for healthcare providers and hospital networks." },
+      { stream: "Employer Wellness Packages", type: "Partnerships", desc: "Corporate health benefit bundles sold directly to HR teams." },
+      { stream: "Health Insurance Partnerships", type: "Partnerships", desc: "Co-branded data insights tools integrated with insurers." },
+      { stream: "University Licensing", type: "Licensing", desc: "Campus wellness programmes for female students and staff." },
+      { stream: "Affiliate & Referral", type: "Partnerships", desc: "Partnerships with pharmacies, diagnostic labs, and telehealth providers." },
+      { stream: "In-App Purchases", type: "B2C", desc: "Premium reports, specialist consult booking, and advanced analytics add-ons." },
+    ],
+    metrics: [
+      { value: "DAU/MAU", label: "Engagement Rate", context: "Target > 40% — indicating genuine daily health habit formation" },
+      { value: "NPS > 50", label: "Net Promoter Score", context: "Driven by user trust, outcome quality, and symptom insight accuracy" },
+      { value: "< 30 days", label: "Time to First Insight", context: "How quickly a new user receives a meaningful, actionable health signal" },
+      { value: "6-month", label: "Retention Target", context: "Primary indicator of long-term product-market fit" },
+    ],
+    channels: [
+      "iOS & Android App Stores",
+      "Instagram & TikTok (organic + paid)",
+      "Gynaecology & women's health clinic referrals",
+      "University health centres and student wellness programs",
+      "Employer wellness program catalogs and HR platforms",
+    ],
+    cta: {
+      headline: "Let's build EarlyHer.",
+      copy: "I'm a Frontend-Focused Software Engineer with product intuition and a track record of shipping health-adjacent products. I'm ready to take EarlyHer from concept to MVP — building the interface your users will trust with their most personal data.",
+    },
+  },
+];

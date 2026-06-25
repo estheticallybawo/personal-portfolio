@@ -28,6 +28,7 @@ import {
   education,
   profile,
   projects,
+  proposals,
   resumeHighlights,
   tools,
 } from "./portfolioData";
@@ -548,6 +549,8 @@ function App() {
   const activeProjectSlug = path.match(/^\/work\/([^/]+)\/?$/)?.[1];
   const activeProject = projects.find((project) => project.slug === activeProjectSlug);
   const isCertificationsPage = path === "/certifications" || path === "/certifications/";
+  const activeProposalSlug = path.match(/^\/proposals\/([^/]+)\/?$/)?.[1];
+  const activeProposal = proposals.find((p) => p.slug === activeProposalSlug);
 
   return (
     <>
@@ -574,6 +577,8 @@ function App() {
           <ProjectDetail project={activeProject} onBack={() => navigateTo("/")} onNavigate={navigateTo} onSoundCue={playSound} />
         ) : isCertificationsPage ? (
           <CertificationsPage onBack={() => navigateTo("/")} onSoundCue={playSound} />
+        ) : activeProposal ? (
+          <ProposalPage proposal={activeProposal} onBack={() => navigateTo("/")} onSoundCue={playSound} />
         ) : (
           <>
             <Hero onSoundCue={playSound} />
@@ -1264,6 +1269,194 @@ function ProjectDetail({
           </button>
         )}
       </nav>
+    </article>
+  );
+}
+
+function ProposalPage({
+  proposal,
+  onBack,
+  onSoundCue,
+}: {
+  proposal: (typeof proposals)[number];
+  onBack: () => void;
+  onSoundCue: (kind: SoundKind) => void;
+}) {
+  return (
+    <article
+      className="proposal-page"
+      style={{
+        "--pro-accent": proposal.accentPrimary,
+        "--pro-accent2": proposal.accentSecondary,
+      } as CSSProperties}
+    >
+      <div className="proposal-topbar">
+        <button
+          className="back-link"
+          type="button"
+          onClick={() => { onSoundCue("button"); onBack(); }}
+        >
+          <ArrowLeft size={16} />
+          Back to portfolio
+        </button>
+        <span className="proposal-badge">Client Proposal</span>
+      </div>
+
+      {/* Hero */}
+      <header className="proposal-hero">
+        <div className="proposal-hero-glow" aria-hidden="true" />
+        <p className="proposal-eyebrow">Prepared for {proposal.clientName} · {proposal.prepared}</p>
+        <h1 className="proposal-name">{proposal.productName}</h1>
+        <p className="proposal-tagline">{proposal.tagline}</p>
+        <p className="proposal-pitch">{proposal.pitch}</p>
+      </header>
+
+      {/* Problem */}
+      <section className="proposal-section proposal-problem">
+        <div className="proposal-section-label">
+          <span>01</span>
+          <p>The Problem</p>
+        </div>
+        <div className="proposal-problem-body">
+          <h2>{proposal.problem.headline}</h2>
+          <p className="proposal-subheadline">{proposal.problem.subheadline}</p>
+          <ul className="proposal-problem-list">
+            {proposal.problem.points.map((pt) => (
+              <li key={pt}>{pt}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Solution */}
+      <section className="proposal-section">
+        <div className="proposal-section-label">
+          <span>02</span>
+          <p>The Solution</p>
+        </div>
+        <div className="proposal-solution-body">
+          <h2>{proposal.solution.headline}</h2>
+          <p className="proposal-copy">{proposal.solution.copy}</p>
+          <div className="proposal-features">
+            {proposal.solution.features.map((f) => (
+              <article className="proposal-feature-card" key={f.title}>
+                <span className="proposal-feature-icon">{f.icon}</span>
+                <h3>{f.title}</h3>
+                <p>{f.desc}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* UVP */}
+      <section className="proposal-uvp-section">
+        <blockquote className="proposal-uvp">
+          <span className="proposal-uvp-marker" aria-hidden="true">"</span>
+          {proposal.uvp}
+        </blockquote>
+      </section>
+
+      {/* Market */}
+      <section className="proposal-section">
+        <div className="proposal-section-label">
+          <span>03</span>
+          <p>Market Opportunity</p>
+        </div>
+        <div className="proposal-market-body">
+          <h2>{proposal.market.headline}</h2>
+          <div className="proposal-stats">
+            {proposal.market.stats.map((s) => (
+              <div className="proposal-stat" key={s.label}>
+                <strong>{s.value}</strong>
+                <span>{s.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Segments */}
+      <section className="proposal-section">
+        <div className="proposal-section-label">
+          <span>04</span>
+          <p>Customer Segments</p>
+        </div>
+        <div className="proposal-segments">
+          {proposal.segments.map((seg) => (
+            <article className="proposal-segment-card" key={seg.title}>
+              <h3>{seg.title}</h3>
+              <p>{seg.desc}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* Revenue */}
+      <section className="proposal-section">
+        <div className="proposal-section-label">
+          <span>05</span>
+          <p>Revenue Streams</p>
+        </div>
+        <div className="proposal-revenue-list">
+          {proposal.revenue.map((r) => (
+            <div className="proposal-revenue-row" key={r.stream}>
+              <div className="proposal-revenue-left">
+                <span className={`proposal-revenue-tag proposal-revenue-tag--${r.type.toLowerCase()}`}>{r.type}</span>
+                <strong>{r.stream}</strong>
+              </div>
+              <p>{r.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Metrics */}
+      <section className="proposal-section">
+        <div className="proposal-section-label">
+          <span>06</span>
+          <p>Success Metrics</p>
+        </div>
+        <div className="proposal-metrics">
+          {proposal.metrics.map((m) => (
+            <article className="proposal-metric-card" key={m.label}>
+              <strong>{m.value}</strong>
+              <p className="proposal-metric-label">{m.label}</p>
+              <p className="proposal-metric-context">{m.context}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* Channels */}
+      <section className="proposal-section proposal-channels-section">
+        <div className="proposal-section-label">
+          <span>07</span>
+          <p>Channels</p>
+        </div>
+        <ul className="proposal-channels">
+          {proposal.channels.map((c) => (
+            <li key={c}>{c}</li>
+          ))}
+        </ul>
+      </section>
+
+      {/* CTA */}
+      <section className="proposal-cta-section">
+        <div className="proposal-cta-glow" aria-hidden="true" />
+        <h2>{proposal.cta.headline}</h2>
+        <p>{proposal.cta.copy}</p>
+        <a
+          className="proposal-cta-btn"
+          href="mailto:estherbawotsotso@gmail.com"
+          onClick={() => onSoundCue("button")}
+        >
+          Get in touch <ArrowUpRight size={18} />
+        </a>
+        <p className="proposal-cta-sig">
+          Esther Bawo Tsotso — Frontend-Focused Software Engineer
+        </p>
+      </section>
     </article>
   );
 }
