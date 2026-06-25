@@ -39,7 +39,7 @@ const themeStorageKey = "esther-portfolio-theme";
 const soundStorageKey = "esther-portfolio-sound";
 const soundLevelStorageKey = "esther-portfolio-sound-level";
 const soundLevels = [0, 0.2, 0.55, 1] as const;
-const PORTFOLIO_VIDEO_ID = "qzyl0f3mRG0"; // single-video mode for the main portfolio
+const PLAYLIST_ID = "PLGHl5-LkFRpM";
 const clickSoundPath = "/assets/mixkit-coins-handling-1939.wav";
 const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
 const projectRevealSoundPath = "/assets/mixkit-page-forward-single-chime-1107.wav";
@@ -60,10 +60,6 @@ type ThemeRipple = { x: number; y: number; color: string; id: number } | null;
 interface YTPlayerInstance {
   playVideo(): void;
   pauseVideo(): void;
-  loadVideoById(videoId: string): void;
-  cueVideoById(videoId: string): void;
-  loadPlaylist(config: { list: string; listType: string }): void;
-  cuePlaylist(config: { list: string; listType: string }): void;
   setShuffle(shuffle: boolean): void;
   getCurrentTime(): number;
   getDuration(): number;
@@ -183,7 +179,8 @@ function App() {
   const [soundLevel, setSoundLevel] = useState(() => {
     const savedLevel = Number(localStorage.getItem(soundLevelStorageKey));
     if (soundLevels.some((level) => level === savedLevel)) return savedLevel;
-    return localStorage.getItem(soundStorageKey) === "on" ? 0.55 : 0;
+    // default ON — off only if user explicitly turned it off before
+    return localStorage.getItem(soundStorageKey) === "off" ? 0 : 0.55;
   });
   const soundEnabled = soundLevel > 0;
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -244,15 +241,21 @@ function App() {
       ytPlayerRef.current = new window.YT.Player(mount, {
         height: 1,
         width: 1,
-        videoId: PORTFOLIO_VIDEO_ID,
         playerVars: {
-          autoplay: 0,
+          list: PLAYLIST_ID,
+          listType: "playlist",
+          autoplay: 1,
           controls: 0,
           playsinline: 1,
           origin: window.location.origin,
         },
         events: {
-          onReady: () => { /* single-video mode — no shuffle needed */ },
+          onReady: () => {
+            try { ytPlayerRef.current?.setShuffle(true); } catch { /* ignore */ }
+            if (soundEnabledRef.current) {
+              try { ytPlayerRef.current?.playVideo(); } catch { /* browser may block */ }
+            }
+          },
           onStateChange: (event: { data: number }) => {
             if (event.data === 1) {
               if (!progressIntervalRef.current) {
@@ -530,26 +533,6 @@ function App() {
   const activeProject = projects.find((project) => project.slug === activeProjectSlug);
   const isCertificationsPage = path === "/certifications" || path === "/certifications/";
   const isEarlyHerPage = path === "/earlyher" || path === "/earlyher/";
-
-  // Switch between EarlyHer playlist and portfolio single-video when navigating
-  useEffect(() => {
-    if (!ytPlayerRef.current) return;
-    try {
-      if (isEarlyHerPage) {
-        if (soundEnabled) {
-          ytPlayerRef.current.loadPlaylist({ list: earlyHer.playlistId, listType: "playlist" });
-        } else {
-          ytPlayerRef.current.cuePlaylist({ list: earlyHer.playlistId, listType: "playlist" });
-        }
-      } else {
-        if (soundEnabled) {
-          ytPlayerRef.current.loadVideoById(PORTFOLIO_VIDEO_ID);
-        } else {
-          ytPlayerRef.current.cueVideoById(PORTFOLIO_VIDEO_ID);
-        }
-      }
-    } catch { /* player not ready */ }
-  }, [isEarlyHerPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
