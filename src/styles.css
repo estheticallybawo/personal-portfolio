@@ -2974,14 +2974,22 @@ img {
 }
 .eh-cta p {
   font-family: var(--heading-font);
-  font-size: clamp(18px, 2.5vw, 26px);
-  font-weight: 700;
+  font-size: clamp(20px, 2.8vw, 30px);
+  font-weight: 900;
   color: var(--text);
   margin: 0;
+  max-width: 52ch;
+  line-height: 1.25;
 }
 
-/* ── Print styles (Save as PDF) ──────────────────────────────────────────── */
+/* Print-only lists (hidden on screen, shown in PDF) */
+.eh-print-list { display: none; }
+
+/* ── Print styles (Download PDF) ─────────────────────────────────────────── */
 @media print {
+  /* Page setup */
+  @page { margin: 18mm 16mm; size: A4; }
+
   /* Hide UI chrome */
   .no-print,
   .floating-player,
@@ -2990,34 +2998,72 @@ img {
   .cursor-spotlight,
   .back-to-top { display: none !important; }
 
-  /* Reset page */
-  * { color-adjust: exact; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  body { background: #fff !important; color: #1a1a1a !important; font-size: 11pt; }
+  /* Force colours */
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #fff !important; color: #1a1a1a !important; font-size: 10.5pt; line-height: 1.55; }
   .site-shell { max-width: 100%; padding: 0; margin: 0; }
 
-  /* Page layout */
-  .eh-page {
-    padding: 0;
-    max-width: 100%;
-  }
-  .case-hero { padding-top: 0; }
-  .case-hero h1 { font-size: 36pt; }
+  /* EarlyHer page shell */
+  .eh-page { padding: 0; max-width: 100%; }
+  .case-list-section { padding: 20pt 0; }
+  .case-list-section + .case-list-section { border-top: 0.5pt solid #ddd; }
+  .section-heading p { font-size: 8pt; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin-bottom: 4pt; }
+  .section-heading h2 { font-size: 18pt; margin-bottom: 12pt; }
 
-  /* Photo carousel , show only active */
+  /* Hero */
+  .case-hero { padding-top: 0; }
+  .case-hero h1 { font-size: 32pt; line-height: 1.1; }
+  .eh-pitch { font-size: 11pt; max-width: 100%; }
+
+  /* Photo carousel — show only active photo */
   .eh-photo-card { display: none !important; }
   .eh-photo-card.is-active { display: block !important; position: static !important; opacity: 1 !important; }
   .eh-photo-view { aspect-ratio: auto; height: auto; }
   .eh-photo-carousel .project-carousel-top,
   .eh-photo-carousel .project-carousel-dots { display: none; }
 
-  /* Grids , single column for print */
-  .eh-stat-grid,
-  .eh-deliverables-grid,
-  .eh-competitor-grid,
-  .eh-pricing-cards { grid-template-columns: 1fr 1fr; }
+  /* Grids */
+  .eh-stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .eh-competitor-grid { grid-template-columns: repeat(3, 1fr); }
+  .eh-pricing-cards { grid-template-columns: repeat(3, 1fr); }
 
-  /* Break pages nicely */
-  section { page-break-inside: avoid; }
+  /* Carousel wrappers — hide interactive parts, show print list */
+  .eh-del-wrap .project-carousel-top,
+  .eh-del-wrap .project-carousel-controls,
+  .eh-del-wrap .project-carousel-dots,
+  .eh-del-stage,
+  .eh-stage-total { display: none !important; }
+  .eh-print-list {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 8pt 0 0;
+  }
+  .eh-print-list li {
+    padding: 10pt 0;
+    border-bottom: 0.5pt solid #eee;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4pt 16pt;
+    align-items: start;
+  }
+  .eh-print-list li strong { grid-column: 1; font-size: 10pt; color: #1a1a1a; }
+  .eh-print-amount { grid-column: 2; font-weight: 800; color: #b23a6e; font-size: 10pt; white-space: nowrap; }
+  .eh-print-list li p { grid-column: 1 / -1; font-size: 9pt; color: #555; margin: 2pt 0 0; }
+  .eh-print-total { background: #fdf3f7; }
+  .eh-print-total strong { font-size: 11pt; }
+  .eh-print-total .eh-print-amount { font-size: 13pt; }
+
+  /* Competitor cards */
+  .eh-competitor-card { break-inside: avoid; }
+  .eh-competitor-gap { border-top: 0.5pt solid #f0c0d5; }
+
+  /* Positioning note */
+  .eh-positioning-note { background: #fdf3f7 !important; border-color: #f0c0d5 !important; }
+
+  /* Page breaks */
+  section { break-inside: avoid; }
+  .case-grid { break-inside: avoid; }
 }
 
 /* ── EarlyHer mobile ─────────────────────────────────────────────────────── */

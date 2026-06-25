@@ -1409,6 +1409,16 @@ function EarlyHerDeliverablesCarousel({ onSoundCue }: { onSoundCue: (kind: Sound
             </button>
           ))}
         </div>
+
+        {/* Print-only: full deliverable list */}
+        <ol className="eh-print-list">
+          {deliverables.map((item) => (
+            <li key={item.number}>
+              <strong>{item.number} — {item.title}</strong>
+              <p>{item.desc}</p>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );
@@ -1494,6 +1504,21 @@ function EarlyHerStagesCarousel({ onSoundCue }: { onSoundCue: (kind: SoundKind) 
           <span>Total investment</span>
           <strong>{earlyHer.finalRate}</strong>
         </div>
+
+        {/* Print-only: full stage list */}
+        <ol className="eh-print-list eh-print-stages">
+          {stages.map((item) => (
+            <li key={item.stage}>
+              <strong>{item.stage} — {item.title}</strong>
+              <span className="eh-print-amount">{item.amount}</span>
+              <p>{item.trigger}</p>
+            </li>
+          ))}
+          <li className="eh-print-total">
+            <strong>Total</strong>
+            <span className="eh-print-amount">{earlyHer.finalRate}</span>
+          </li>
+        </ol>
       </div>
     </section>
   );
@@ -1521,11 +1546,17 @@ function EarlyHerPage({
         <button
           className="eh-download-btn"
           type="button"
-          onClick={() => { onSoundCue("button"); window.print(); }}
-          title="Save as PDF"
+          onClick={() => {
+            onSoundCue("button");
+            const prev = document.title;
+            document.title = "EarlyHer Proposal — Esther Tsotso";
+            window.print();
+            document.title = prev;
+          }}
+          title="Download proposal as PDF"
         >
           <Download size={15} />
-          Save as PDF
+          Download PDF
         </button>
       </div>
 
@@ -1697,15 +1728,15 @@ function EarlyHerPage({
 
       {/* CTA */}
       <section className="eh-cta no-print" data-reveal>
-        <p>Ready to move forward?</p>
+        <p>Proposal quotation is open for negotiation, let's finalize</p>
         <a
-          href={profile.links.calendar}
+          href="https://wa.link/sbqf10"
           target="_blank"
           rel="noreferrer"
           className="primary-button"
           onClick={() => onSoundCue("button")}
         >
-          Book a call <ArrowUpRight size={15} />
+          Click to continue <ArrowUpRight size={15} />
         </a>
       </section>
     </article>
