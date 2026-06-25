@@ -241,6 +241,7 @@ function App() {
       ytPlayerRef.current = new window.YT.Player(mount, {
         height: 1,
         width: 1,
+        videoId: "_rSO8tMhtzo",
         playerVars: {
           list: PLAYLIST_ID,
           listType: "playlist",
@@ -1337,13 +1338,15 @@ function EarlyHerPhotoCarousel() {
   );
 }
 
-function EarlyHerDeliverablesCarousel() {
+function EarlyHerDeliverablesCarousel({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
   const deliverables = earlyHer.deliverables;
   const [active, setActive] = useState(0);
   const touchStartRef = useRef<number | null>(null);
 
-  const move = (dir: 1 | -1) =>
+  const move = (dir: 1 | -1) => {
+    onSoundCue("button");
     setActive((i) => (i + dir + deliverables.length) % deliverables.length);
+  };
 
   const d = deliverables[active];
 
@@ -1398,13 +1401,98 @@ function EarlyHerDeliverablesCarousel() {
               type="button"
               key={item.number}
               className={i === active ? "is-active" : ""}
-              onClick={() => setActive(i)}
+              onClick={() => { onSoundCue("button"); setActive(i); }}
               aria-label={`View deliverable ${item.number}`}
               aria-current={i === active ? "true" : undefined}
             >
               {item.number}
             </button>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function EarlyHerStagesCarousel({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
+  const stages = earlyHer.stages;
+  const [active, setActive] = useState(0);
+  const touchStartRef = useRef<number | null>(null);
+
+  const move = (dir: 1 | -1) => {
+    onSoundCue("button");
+    setActive((i) => (i + dir + stages.length) % stages.length);
+  };
+
+  const s = stages[active];
+
+  return (
+    <section className="case-list-section">
+      <div className="section-heading" data-reveal>
+        <p>Proposed payment structure</p>
+        <h2>Eight milestones. Pay as we build.</h2>
+      </div>
+
+      <div className="eh-del-wrap" data-reveal>
+        {/* Counter + controls */}
+        <div className="project-carousel-top">
+          <div>
+            <span>{String(active + 1).padStart(2, "0")}</span>
+            <span>/</span>
+            <span>{String(stages.length).padStart(2, "0")}</span>
+          </div>
+          <div className="project-carousel-controls">
+            <button type="button" onClick={() => move(-1)} aria-label="Previous stage">
+              <ArrowLeft size={16} />
+            </button>
+            <button type="button" onClick={() => move(1)} aria-label="Next stage">
+              <ArrowUpRight size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Card */}
+        <div
+          className="eh-del-stage"
+          onTouchStart={(e) => { touchStartRef.current = e.touches[0]?.clientX ?? null; }}
+          onTouchEnd={(e) => {
+            if (touchStartRef.current === null) return;
+            const dist = (e.changedTouches[0]?.clientX ?? touchStartRef.current) - touchStartRef.current;
+            touchStartRef.current = null;
+            if (Math.abs(dist) < 42) return;
+            move(dist < 0 ? 1 : -1);
+          }}
+        >
+          <article className="eh-stage-card" key={s.stage}>
+            <span className="eh-stage-card-num">{s.stage}</span>
+            <div className="eh-stage-card-body">
+              <strong className="eh-stage-card-amount">{s.amount}</strong>
+              <p className="eh-stage-card-title">{s.title}</p>
+              <p className="eh-stage-card-trigger">{s.trigger}</p>
+            </div>
+          </article>
+        </div>
+
+        {/* Number rail nav */}
+        <div className="project-carousel-dots" aria-label="Stage navigation">
+          {stages.map((item, i) => (
+            <button
+              type="button"
+              key={item.stage}
+              className={i === active ? "is-active" : ""}
+              onClick={() => { onSoundCue("button"); setActive(i); }}
+              aria-label={`View stage ${item.stage}`}
+              aria-current={i === active ? "true" : undefined}
+            >
+              {item.stage}
+            </button>
+          ))}
+        </div>
+
+        {/* Total */}
+        <div className="eh-stage-total" style={{ marginTop: 20, borderRadius: 12 }}>
+          <span>Total investment</span>
+          <strong>{earlyHer.finalRate}</strong>
         </div>
       </div>
     </section>
@@ -1534,7 +1622,7 @@ function EarlyHerPage({
       </section>
 
       {/* Deliverables carousel */}
-      <EarlyHerDeliverablesCarousel />
+      <EarlyHerDeliverablesCarousel onSoundCue={onSoundCue} />
 
       {/* Pricing */}
       <section className="case-list-section eh-pricing-section">
@@ -1561,29 +1649,8 @@ function EarlyHerPage({
         </div>
       </section>
 
-      {/* Payment stages */}
-      <section className="case-list-section">
-        <div className="section-heading" data-reveal>
-          <p>Proposed payment structure</p>
-          <h2>Eight milestones. Pay as we build.</h2>
-        </div>
-        <div className="eh-stages" data-reveal>
-          {earlyHer.stages.map((stage) => (
-            <div className="eh-stage-row" key={stage.stage}>
-              <span className="eh-stage-num">{stage.stage}</span>
-              <div className="eh-stage-body">
-                <strong>{stage.title}</strong>
-                <p>{stage.trigger}</p>
-              </div>
-              <span className="eh-stage-amount">{stage.amount}</span>
-            </div>
-          ))}
-          <div className="eh-stage-total">
-            <span>Total</span>
-            <strong>{earlyHer.finalRate}</strong>
-          </div>
-        </div>
-      </section>
+      {/* Payment stages carousel */}
+      <EarlyHerStagesCarousel onSoundCue={onSoundCue} />
 
       {/* Important notes */}
       <section className="case-list-section">
