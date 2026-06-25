@@ -455,6 +455,7 @@ img {
   justify-content: center;
   align-items: center;
   min-height: 42px;
+  padding: 10px 24px;
   border: 1px solid var(--accent-line);
   border-radius: 999px;
   font-size: 13px;
@@ -1391,7 +1392,8 @@ img {
   line-height: 1;
 }
 
-.case-grid > p {
+.case-grid > p,
+.case-grid > div > p:not(.eyebrow) {
   margin: 0;
   color: var(--muted-strong);
   font-size: clamp(1.05rem, 2vw, 1.35rem);
@@ -2506,6 +2508,46 @@ img {
   --eh-berry-line: rgba(143, 32, 80, 0.18);
 }
 
+/* Glassmorphic + neumorphic depth on all EarlyHer cards */
+.eh-stat-card,
+.eh-competitor-card,
+.eh-price-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+.eh-del-card,
+.eh-stage-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 8px 28px rgba(178, 58, 110, 0.14),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+.eh-positioning-note {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 4px 20px rgba(178, 58, 110, 0.1),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+}
+.eh-market-range {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 16px rgba(178, 58, 110, 0.1);
+}
+/* Lift cards on hover for extra depth */
+.eh-competitor-card:hover,
+.eh-stat-card:hover {
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.26),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+  transform: translateY(-3px);
+  transition: transform 260ms ease, box-shadow 260ms ease, border-color 200ms ease;
+}
+
 /* Top bar: back link + download side-by-side */
 .eh-topbar {
   display: flex;
@@ -2980,6 +3022,15 @@ img {
   margin: 0;
   max-width: 52ch;
   line-height: 1.25;
+}
+
+/* Attribution */
+.eh-attribution {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 40px 0 0;
+  letter-spacing: 0.04em;
 }
 
 /* Print-only lists (hidden on screen, shown in PDF) */

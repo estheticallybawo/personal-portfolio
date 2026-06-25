@@ -1739,6 +1739,8 @@ function EarlyHerPage({
           Click to continue <ArrowUpRight size={15} />
         </a>
       </section>
+
+      <p className="eh-attribution">Prepared by Esther Tsotso · Made for Yinka, Founder EarlyHer</p>
     </article>
   );
 }
