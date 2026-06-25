@@ -2494,7 +2494,7 @@ img {
 
 /* ── EarlyHer Engagement Page ─────────────────────────────────────────────── */
 
-/* Subtle brand accent for EarlyHer sections — overrides locally, very minimal */
+/* Subtle brand accent for EarlyHer sections , overrides locally, very minimal */
 .eh-page {
   --eh-berry: #b23a6e;
   --eh-berry-soft: rgba(178, 58, 110, 0.08);
@@ -2828,14 +2828,14 @@ img {
   .case-hero { padding-top: 0; }
   .case-hero h1 { font-size: 36pt; }
 
-  /* Photo carousel — show only active */
+  /* Photo carousel , show only active */
   .eh-photo-card { display: none !important; }
   .eh-photo-card.is-active { display: block !important; position: static !important; opacity: 1 !important; }
   .eh-photo-view { aspect-ratio: auto; height: auto; }
   .eh-photo-carousel .project-carousel-top,
   .eh-photo-carousel .project-carousel-dots { display: none; }
 
-  /* Grids — single column for print */
+  /* Grids , single column for print */
   .eh-stat-grid,
   .eh-deliverables-grid,
   .eh-pricing-cards { grid-template-columns: 1fr 1fr; }

@@ -638,7 +638,7 @@ export const whyCards = [
   {
     id: "africa",
     label: "my africa",
-    detail: "Everything I build carries this — the textures, the rhythms, the people who raised me.",
+    detail: "Everything I build carries this , the textures, the rhythms, the people who raised me.",
     photos: [] as string[],
     video: { youtubeId: "lugard7P0nw" },
     rotation: -5,
@@ -691,7 +691,7 @@ export const whyCards = [
   {
     id: "me",
     label: "other versions of me",
-    detail: "Still becoming. The designer, the engineer, the builder — all at once.",
+    detail: "Still becoming. The designer, the engineer, the builder , all at once.",
     photos: [] as string[],
     rotation: -4,
   },
@@ -728,18 +728,18 @@ export const earlyHer = {
   },
 
   intro:
-    "EarlyHer is not being approached as a small MVP. It is being approached as the first serious version of the full product — with the right foundation for product clarity, brand trust, app experience, secure technical setup, AI-assisted health support, and early launch readiness. Because EarlyHer involves sensitive women's health information, it needs to be handled with care, structure, privacy awareness, and long-term scalability in mind from day one.",
+    "EarlyHer is not being approached as a small MVP. It is being approached as the first serious version of the full product , with the right foundation for product clarity, brand trust, app experience, secure technical setup, AI-assisted health support, and early launch readiness. Because EarlyHer involves sensitive women's health information, it needs to be handled with care, structure, privacy awareness, and long-term scalability in mind from day one.",
 
   marketContext: {
     body: "A healthcare product with app development, secure user data handling, backend setup, database management, AI-assisted support, and launch preparation usually sits within a much higher build range when developed through a full healthcare product team or agency. EarlyHer is being approached with that level of seriousness, but with a founder-friendly structure suitable for this first version.",
-    rangeLabel: "Comparable healthcare & AI-assisted product builds",
+    rangeLabel: "Industry's standard pricing for  healthcare & AI-assisted product builds",
     range: "£80,000 – £300,000+",
   },
 
   founderRateLabel: "EarlyHer Founder Support Rate",
   founderRate: "£25,000",
   founderRateNote:
-    "Reduced founder support rate covering the full first version of EarlyHer — product foundation, identity direction, app experience, backend setup, database handling, security-conscious implementation, MedGemma-assisted support, standard setup costs, and early launch support.",
+    "Reduced founder support rate covering the full first version of EarlyHer , product foundation, identity direction, app experience, backend setup, database handling, security-conscious implementation, AI-assisted support, standard setup costs, and early launch support.",
 
   referralLabel: "Referral Deduction (via Yemi)",
   referralNote: "Because this opportunity came through Yemi, an additional referral deduction of 8% is applied. 8% of £25,000 = £2,000.",
@@ -753,7 +753,7 @@ export const earlyHer = {
   investorPrep: {
     headline: "How This Prepares EarlyHer for Customers and Investors",
     forCustomers:
-      "For customers, the work will help EarlyHer feel trustworthy, easy to understand, and useful from the first experience — shaped around real user needs, sensitive health information, clear guidance, and a supportive app journey.",
+      "For customers, the work will help EarlyHer feel trustworthy, easy to understand, and useful from the first experience , shaped around real user needs, sensitive health information, clear guidance, and a supportive app journey.",
     forInvestors:
       "For investors or partners, the work will help EarlyHer communicate a stronger product story, show a clearer first version, demonstrate organised product thinking, and present a more credible foundation for future growth.",
   },
@@ -762,37 +762,37 @@ export const earlyHer = {
     {
       number: "01",
       title: "The Product Foundation",
-      desc: "The thinking, structure, and clarity needed before and during the build — shaping EarlyHer around the women it is being built for, the problems it is solving, and the experience users should have from day one.",
+      desc: "The thinking, structure, and clarity needed before and during the build , shaping EarlyHer around the women it is being built for, the problems it is solving, and the experience users should have from day one.",
     },
     {
       number: "02",
       title: "The EarlyHer Identity",
-      desc: "How EarlyHer should look, sound, and feel as a women's health product — creating an identity that feels trustworthy, calm, intelligent, and appropriate for women tracking symptoms or preparing for GP appointments.",
+      desc: "How EarlyHer should look, sound, and feel as a women's health product , creating an identity that feels trustworthy, calm, intelligent, and appropriate for women tracking symptoms or preparing for GP appointments.",
     },
     {
       number: "03",
       title: "The App Experience",
-      desc: "The first full version of the app experience — cycle tracking, phase understanding, symptom logging, self-examination guidance, health information preparation, and a path toward doctor support when needed.",
+      desc: "The first full version of the app experience , cycle tracking, phase understanding, symptom logging, self-examination guidance, health information preparation, and a path toward doctor support when needed.",
     },
     {
       number: "04",
       title: "The Behind-the-Scenes System",
-      desc: "The technical layer needed to make the app function beyond just screens — account creation, secure data storage, user access structure, backend setup, and privacy-conscious handling of sensitive health information.",
+      desc: "The technical layer needed to make the app function beyond just screens , account creation, secure data storage, user access structure, backend setup, and privacy-conscious handling of sensitive health information.",
     },
     {
       number: "05",
-      title: "MedGemma-Assisted Support Layer",
-      desc: "An AI-assisted layer to provide smarter health-related guidance within the product. Not to replace doctors — to help users better organise, understand, and prepare their health information before seeking professional support.",
+      title: "AI-Assisted Support Layer",
+      desc: "An AI-assisted layer to provide smarter health-related guidance within the product. Not to replace doctors , to help users better organise, understand, and prepare their health information before seeking professional support.",
     },
     {
       number: "06",
       title: "Project Setup & Launch Operating Costs",
-      desc: "Standard setup and first-version operating costs — domain, hosting, storage, selected paid tools, development tools, testing, communication setup, and basic launch preparation. Included to avoid repeated requests for small setup payments.",
+      desc: "Standard setup and first-version operating costs , domain, hosting, storage, selected paid tools, development tools, testing, communication setup, and basic launch preparation. Included to avoid repeated requests for small setup payments.",
     },
     {
       number: "07",
       title: "The Launch Foundation",
-      desc: "Early communication support to introduce EarlyHer clearly to users, supporters, partners, or early adopters — the messaging and content direction needed to support awareness and the first stage of market introduction.",
+      desc: "Early communication support to introduce EarlyHer clearly to users, supporters, partners, or early adopters , the messaging and content direction needed to support awareness and the first stage of market introduction.",
     },
   ],
 
@@ -802,25 +802,25 @@ export const earlyHer = {
     { stage: "03", title: "Look, Feel & User Experience Direction", amount: "£1,700", trigger: "After visual and experience direction is approved" },
     { stage: "04", title: "Core App Structure & User Flow", amount: "£2,300", trigger: "After main app structure and user journey direction are approved" },
     { stage: "05", title: "Technical Foundation", amount: "£3,200", trigger: "After behind-the-scenes system and first technical foundation are completed" },
-    { stage: "06", title: "MedGemma-Assisted Support Layer", amount: "£2,700", trigger: "After AI-assisted support layer direction and first integration structure are completed" },
+    { stage: "06", title: "AI-Assisted Support Layer", amount: "£2,700", trigger: "After AI-assisted support layer direction and first integration structure are completed" },
     { stage: "07", title: "First Version Build & Connection", amount: "£2,900", trigger: "After main app build and key connections are completed and reviewed" },
     { stage: "08", title: "Launch Readiness & Final Handover", amount: "£1,000", trigger: "After launch support materials, final checks, and handover are completed" },
   ],
 
   importantNotes: [
     "This quote covers the product foundation and first full version of EarlyHer.",
-    "Specialist costs outside the product build — legal representation, formal medical review, clinical validation, formal GDPR compliance certification, NHS approval, or external medical board review — are not included unless separately agreed in writing.",
+    "Specialist costs outside the product build , legal representation, formal medical review, clinical validation, formal GDPR compliance certification, NHS approval, or external medical board review , are not included unless separately agreed in writing.",
     "Because EarlyHer is a women's health product, any medical or clinical recommendations should be reviewed by a qualified healthcare professional before public release.",
-    "The MedGemma-assisted layer is intended to support health-information organisation and user guidance. It should not be presented as a replacement for doctors, diagnosis, treatment, or emergency medical care.",
+    "The AI-assisted layer is intended to support health-information organisation and user guidance. It should not be presented as a replacement for doctors, diagnosis, treatment, or emergency medical care.",
     "The security and privacy foundation will be approached carefully, but formal legal, GDPR, NHS, or medical compliance approval should be handled by qualified legal, clinical, or compliance professionals.",
   ],
 
   photos: [
-    { src: "/assets/earlyher/meetup.jpg", caption: "EarlyHer Community Meetup" },
-    { src: "/assets/earlyher/call.jpg", caption: "EarlyHer Community Call" },
-    { src: "/assets/earlyher/popup.jpg", caption: "EarlyHer University Pop-Up" },
+    { src: "/assets/earlyher/meetup.png", caption: "EarlyHer Community Meetup" },
+    { src: "/assets/earlyher/call.png", caption: "EarlyHer Community Call" },
+    { src: "/assets/earlyher/popup.png", caption: "EarlyHer University Pop-Up" },
   ],
 
-  // YouTube playlist ID for this page — update when you have the right one
-  playlistId: "PLGHl5-LkFRpM",
+  // YouTube playlist ID for this page , update when you have the right one
+  playlistId: "https://youtube.com/playlist?list=PLLmemQh3Fs0s&si=BiPSJjZ7WszuJP6Y",
 };

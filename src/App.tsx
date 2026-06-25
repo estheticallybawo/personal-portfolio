@@ -39,7 +39,7 @@ const themeStorageKey = "esther-portfolio-theme";
 const soundStorageKey = "esther-portfolio-sound";
 const soundLevelStorageKey = "esther-portfolio-sound-level";
 const soundLevels = [0, 0.2, 0.55, 1] as const;
-const PLAYLIST_ID = "PLGHl5-LkFRpM";
+const PLAYLIST_ID = "https://youtu.be/qzyl0f3mRG0?si=-eXE0bWifGiA59U_";
 const clickSoundPath = "/assets/mixkit-coins-handling-1939.wav";
 const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
 const projectRevealSoundPath = "/assets/mixkit-page-forward-single-chime-1107.wav";
@@ -1510,7 +1510,7 @@ function EarlyHerPage({
       {/* Payment stages */}
       <section className="case-list-section">
         <div className="section-heading" data-reveal>
-          <p>Payment structure</p>
+          <p>Proposed payment structure</p>
           <h2>Eight milestones. Pay as we build.</h2>
         </div>
         <div className="eh-stages" data-reveal>
@@ -1710,29 +1710,7 @@ function WhySection({
   onVideoPlay: () => void;
   onVideoStop: () => void;
 }) {
-  return (
-    <section className="why-section section-anchor" id="why">
-      <SectionHeading
-        eyebrow="My Why"
-        title="The people behind every line of code."
-        copy="Grab a card. Each one is a reason the work matters."
-      />
-      <div className="why-cards-wrap" data-reveal>
-        {whyCards.map((card) =>
-          "video" in card && card.video ? (
-            <WhyVideoCard
-              key={card.id}
-              card={card as VideoCardData}
-              onVideoPlay={onVideoPlay}
-              onVideoStop={onVideoStop}
-            />
-          ) : (
-            <WhyCard key={card.id} card={card} />
-          ),
-        )}
-      </div>
-    </section>
-  );
+  
 }
 
 function About() {
