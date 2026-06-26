@@ -33,6 +33,12 @@
   /* Neumorphic dual shadow: dark down-right + light up-left */
   --neu-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5), -5px -5px 13px rgba(120, 160, 210, 0.03);
   --neu-shadow-hover: 7px 7px 20px rgba(0, 0, 0, 0.55), -6px -6px 15px rgba(120, 160, 210, 0.05);
+  /* Legacy raised-shadow set — used by the Actively Building chatbox + case nav */
+  --neu-light: rgba(6, 145, 196, 0.08);
+  --neu-dark: rgba(0, 0, 0, 0.52);
+  --neu-raised:    -4px -4px 12px var(--neu-light),  5px  5px 14px var(--neu-dark);
+  --neu-raised-sm: -2px -2px  7px var(--neu-light),  3px  3px  8px var(--neu-dark);
+  --neu-raised-lg: -6px -6px 18px var(--neu-light),  8px  8px 22px var(--neu-dark);
   scroll-behavior: smooth;
 }
 
@@ -63,6 +69,9 @@
   /* Light theme: classic soft-UI — grey shadow down-right, white highlight up-left */
   --neu-shadow: 5px 5px 14px rgba(174, 174, 192, 0.38), -5px -5px 12px rgba(255, 255, 255, 0.9);
   --neu-shadow-hover: 7px 7px 18px rgba(174, 174, 192, 0.45), -6px -6px 14px rgba(255, 255, 255, 0.95);
+  /* Legacy raised-shadow set (light) — chatbox + case nav */
+  --neu-light: rgba(255, 255, 255, 0.9);
+  --neu-dark: rgba(158, 186, 210, 0.62);
 }
 
 /* ── Dark-mode glass (inset top-rim replaces flat neumorphic dual-shadow) ──── */
@@ -3302,4 +3311,353 @@ img {
   .eh-stage-row { grid-template-columns: 36px 1fr auto; }
   .eh-cta { flex-direction: column; align-items: flex-start; }
   .eh-photo-view { aspect-ratio: 4 / 3; }
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   Merged from main: case-study nav + Actively Building chatbox
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Case study project navigation ───────────────────── */
+.case-project-nav {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: clamp(48px, 8vw, 80px);
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+
+.case-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  max-width: 280px;
+  transition: border-color 220ms ease, background 220ms ease,
+              transform 220ms ease, box-shadow 220ms ease;
+  box-shadow: var(--neu-raised-sm);
+}
+
+.case-nav-btn:hover {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  transform: translateY(-2px);
+  box-shadow: var(--neu-raised-sm), 0 8px 28px rgba(6, 145, 196, 0.12);
+}
+
+.case-nav-btn small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.case-nav-btn > span {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.case-nav-btn > svg {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.case-nav-btn--next,
+.case-nav-btn--home {
+  margin-left: auto;
+  text-align: right;
+}
+
+.case-nav-btn--home {
+  border-color: var(--accent-line);
+  background: linear-gradient(135deg, var(--accent-soft), transparent 80%), var(--panel);
+}
+
+@media (max-width: 640px) {
+  .case-project-nav { flex-direction: column; }
+  .case-nav-btn { max-width: 100%; }
+  .case-nav-btn--next,
+  .case-nav-btn--home {
+    margin-left: 0;
+    text-align: left;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   Actively Building — CTA button + chat modal
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Green pulsing orb ────────────────────────────────── */
+.ab-orb {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+  animation: orb-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes orb-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7), 0 0 0 0 rgba(34, 197, 94, 0.3);
+  }
+  55% {
+    box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.15), 0 0 0 11px rgba(34, 197, 94, 0);
+  }
+}
+
+/* ── CTA button ───────────────────────────────────────── */
+.actively-building-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid var(--accent-line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: border-color 220ms ease, background 220ms ease,
+              transform 220ms ease, box-shadow 220ms ease;
+}
+
+.actively-building-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(34, 197, 94, 0.55);
+  background: rgba(34, 197, 94, 0.07);
+  box-shadow: 0 0 22px rgba(34, 197, 94, 0.14);
+}
+
+/* ── Backdrop ─────────────────────────────────────────── */
+.ab-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(1, 5, 15, 0.7);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: ab-fade-in 200ms ease;
+}
+
+@keyframes ab-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Modal panel ──────────────────────────────────────── */
+.ab-modal {
+  width: min(440px, 100%);
+  max-height: min(580px, 90vh);
+  display: flex;
+  flex-direction: column;
+  background: var(--project-card-bg);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(6, 145, 196, 0.08);
+  animation: ab-slide-up 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes ab-slide-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── Header ───────────────────────────────────────────── */
+.ab-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.ab-header-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  flex: 1;
+  color: var(--text);
+}
+
+.ab-close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.72rem;
+  transition: background 180ms, color 180ms;
+}
+
+.ab-close:hover {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+/* ── Message area ─────────────────────────────────────── */
+.ab-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 100px;
+}
+
+/* ── Chat bubbles ─────────────────────────────────────── */
+.ab-bubble {
+  max-width: 84%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  animation: ab-bubble-in 220ms ease;
+}
+
+@keyframes ab-bubble-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.ab-bubble--bot {
+  align-self: flex-start;
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  color: var(--text);
+  border-bottom-left-radius: 4px;
+}
+
+.ab-bubble--user {
+  align-self: flex-end;
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+/* ── Typing indicator ─────────────────────────────────── */
+.ab-bubble--typing {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 16px;
+}
+
+.ab-bubble--typing span {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+  animation: typing-dot 1.2s ease-in-out infinite;
+}
+
+.ab-bubble--typing span:nth-child(2) { animation-delay: 0.2s; }
+.ab-bubble--typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing-dot {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0);    }
+  30%           { opacity: 1;   transform: translateY(-3px); }
+}
+
+/* ── Prompt chips ─────────────────────────────────────── */
+.ab-prompts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px 18px;
+  border-top: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.ab-prompt {
+  text-align: left;
+  padding: 9px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--text);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 180ms, border-color 180ms, opacity 180ms, transform 120ms;
+}
+
+.ab-prompt:hover:not(:disabled):not(.is-used) {
+  background: rgba(6, 145, 196, 0.28);
+  transform: translateX(3px);
+}
+
+.ab-prompt.is-used {
+  opacity: 0.35;
+  cursor: default;
+  border-color: var(--line);
+  background: transparent;
+}
+
+.ab-prompt:disabled:not(.is-used) {
+  cursor: default;
+  opacity: 0.7;
+}
+
+@media (max-width: 640px) {
+  .ab-modal { border-radius: 16px; }
+}
+
+/* ── Chat CTA button (inside bot bubble) ─────────────── */
+.ab-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: #fff;
+  color: #07111f;
+  font-size: 0.76rem;
+  font-weight: 600;
+  transition: background 180ms, transform 150ms;
+  text-decoration: none;
+}
+
+.ab-cta:hover {
+  background: #f0f0f0;
+  transform: translateY(-1px);
+}
+
+
+/* Chatbox elements: soft raised depth (matches legacy neu set) */
+.ab-prompt,
+.actively-building-btn,
+.ab-close {
+  box-shadow: var(--neu-raised-sm);
+}
+
+@media (max-width: 640px) {
+  .actively-building-btn { padding: 8px 12px; font-size: 0.75rem; }
 }

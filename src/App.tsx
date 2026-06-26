@@ -1,7 +1,8 @@
 import { type CSSProperties, type MouseEvent as ReactMouseEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { flushSync } from "react-dom";
+import { flushSync, createPortal } from "react-dom";
 import {
   ArrowUpRight,
+  ArrowRight,
   ArrowLeft,
   ArrowDown,
   Check,
@@ -53,6 +54,40 @@ const heroRoles = [
   "Mobile MVP Builder",
   "Open Source Contributor",
 ];
+
+const buildingPrompts = [
+  {
+    id: "building",
+    q: "What are you currently building?",
+    a: "Flowst AI, a voice-first, visual-first learning platform for minds that think in pictures. It helps people build mental models, practice explaining things out loud, and move from passive familiarity to real understanding. Think: flow state as a product.",
+  },
+  {
+    id: "how",
+    q: "How does it work?",
+    a: "It's powered by the Logios cognitive architecture and grounded in a learning doctrine called NeuroMap. Users interact by voice, get visual mental models generated in real time, and receive feedback from multi-agent guidance, all to make any subject click.",
+  },
+  {
+    id: "problem",
+    q: "What problem are you solving?",
+    a: "Most AI tools are text-in, text-out. That works for some people. But a huge portion of learners think visually, learn by speaking, and retain through expression, not passive reading. Flowst AI is built for them.",
+  },
+  {
+    id: "tech",
+    q: "What's powering it?",
+    a: "Gemini at the core, with multi-agent orchestration for different learning modes: retrieval, explanation, feedback, and visual generation. The goal is a platform that feels like a thinking partner, not a search engine.",
+  },
+  {
+    id: "available",
+    q: "Are you available for work?",
+    a: "Yes, open to product-focused frontend or design engineering roles, especially at teams building tools for how people actually think and learn. If your users are often overlooked by tech, let's talk.",
+  },
+  {
+    id: "join",
+    q: "How can I be a part?",
+    a: "Send me a DM, let's talk.",
+    cta: { label: "DM on Instagram", href: "https://instagram.com/bawocore" },
+  },
+] as const;
 
 type SoundKind = "nav" | "theme" | "project" | "projectReveal" | "certificate" | "copy" | "contact" | "button";
 type ThemeRipple = { x: number; y: number; color: string; id: number } | null;
@@ -184,6 +219,7 @@ function App() {
   });
   const soundEnabled = soundLevel > 0;
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const [path, setPath] = useState(() => window.location.pathname);
   const [theme, setTheme] = useState<Theme>(() => {
     const requestedTheme = new URLSearchParams(window.location.search).get("theme");
@@ -552,10 +588,12 @@ function App() {
         themeLabel={themeLabel}
         onThemeToggle={toggleTheme}
         onSoundCue={playSound}
+        onOpenChat={() => { playSound("button"); setShowChat(true); }}
       />
+      {showChat && <ActivelyBuildingModal onClose={() => setShowChat(false)} onSoundCue={playSound} />}
       <main className="site-shell">
         {activeProject ? (
-          <ProjectDetail project={activeProject} onBack={() => navigateTo("/")} onSoundCue={playSound} />
+          <ProjectDetail project={activeProject} onBack={() => navigateTo("/")} onNavigate={navigateTo} onSoundCue={playSound} />
         ) : isCertificationsPage ? (
           <CertificationsPage onBack={() => navigateTo("/")} onSoundCue={playSound} />
         ) : isEarlyHerPage ? (
@@ -602,11 +640,13 @@ function Nav({
   themeLabel,
   onThemeToggle,
   onSoundCue,
+  onOpenChat,
 }: {
   theme: Theme;
   themeLabel: string;
   onThemeToggle: (event: ReactMouseEvent<HTMLButtonElement>) => void;
   onSoundCue: (kind: SoundKind) => void;
+  onOpenChat: () => void;
 }) {
   return (
     <header className="nav-wrap">
@@ -622,6 +662,14 @@ function Nav({
         <a href="/#contact" onClick={() => onSoundCue("button")}>Contact</a>
       </nav>
       <div className="nav-controls">
+        <button
+          className="actively-building-btn"
+          onClick={onOpenChat}
+          aria-haspopup="dialog"
+        >
+          <span className="ab-orb" aria-hidden="true" />
+          Actively Building
+        </button>
         <button
           className="theme-toggle"
           aria-label={themeLabel}
@@ -715,6 +763,89 @@ function FloatingMusicPlayer({
   );
 }
 
+type BuildMessage = { from: "user" | "bot"; text: string; cta?: { label: string; href: string } };
+
+function ActivelyBuildingModal({
+  onClose,
+  onSoundCue,
+}: {
+  onClose: () => void;
+  onSoundCue: (kind: SoundKind) => void;
+}) {
+  const [messages, setMessages] = useState<BuildMessage[]>([
+    { from: "bot", text: "Hey! Tap any question below to see what I'm up to right now." },
+  ]);
+  const [pending, setPending] = useState(false);
+  const [usedIds, setUsedIds] = useState<Set<string>>(new Set());
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, pending]);
+
+  const handlePrompt = (prompt: (typeof buildingPrompts)[number]) => {
+    if (pending || usedIds.has(prompt.id)) return;
+    onSoundCue("button");
+    setUsedIds((prev) => new Set(prev).add(prompt.id));
+    setMessages((prev) => [...prev, { from: "user", text: prompt.q }]);
+    setPending(true);
+    setTimeout(() => {
+      setMessages((prev) => [...prev, { from: "bot", text: prompt.a, ...("cta" in prompt ? { cta: prompt.cta } : {}) }]);
+      setPending(false);
+    }, 720);
+  };
+
+  return createPortal(
+    <div className="ab-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-label="Actively building chat">
+      <div className="ab-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="ab-header">
+          <span className="ab-orb" aria-hidden="true" />
+          <span className="ab-header-title">Esther's Build Log</span>
+          <button className="ab-close" onClick={onClose} aria-label="Close chat">✕</button>
+        </div>
+        <div className="ab-messages">
+          {messages.map((msg, i) => (
+            <div key={i} className={`ab-bubble ab-bubble--${msg.from}`}>
+              {msg.text}
+              {msg.cta && (
+                <a className="ab-cta" href={msg.cta.href} target="_blank" rel="noreferrer">
+                  <Instagram size={13} />
+                  {msg.cta.label}
+                </a>
+              )}
+            </div>
+          ))}
+          {pending && (
+            <div className="ab-bubble ab-bubble--bot ab-bubble--typing">
+              <span /><span /><span />
+            </div>
+          )}
+          <div ref={bottomRef} />
+        </div>
+        <div className="ab-prompts">
+          {buildingPrompts.map((prompt) => (
+            <button
+              key={prompt.id}
+              className={`ab-prompt${usedIds.has(prompt.id) ? " is-used" : ""}`}
+              onClick={() => handlePrompt(prompt)}
+              disabled={pending}
+            >
+              {prompt.q}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
 function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
   return (
     <section className="hero section-anchor" id="home">
@@ -729,8 +860,8 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
 
         <aside className="hero-side" data-reveal>
           <p>
-            Hi there, I'm a frontend developer from Nigeria who solves product problems with product intuition,
-            and user empathy. I focus on building experiences that feels human and well thought out.
+            Hi there, I'm a Frontend-Focused Software Engineer from Nigeria who solves product problems with
+            product intuition and user empathy. I focus on building experiences that feel human and well thought out.
           </p>
           <div className="hero-actions">
             <a className="primary-button" href="#projects" onClick={() => onSoundCue("button")}>
@@ -759,10 +890,6 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
             a long lasting impression 😉😏
           </span>
         </div>
-        <a href={profile.cvUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
-          <Download size={16} />
-          Download CV
-        </a>
       </div>
     </section>
   );
@@ -953,12 +1080,23 @@ function Projects({
 function ProjectDetail({
   project,
   onBack,
+  onNavigate,
   onSoundCue,
 }: {
   project: (typeof projects)[number];
   onBack: () => void;
+  onNavigate: (path: string) => void;
   onSoundCue: (kind: SoundKind) => void;
 }) {
+  const currentIndex = projects.findIndex((p) => p.slug === project.slug);
+  const prevProject = currentIndex > 0 ? projects[currentIndex - 1] : null;
+  const nextProject = currentIndex < projects.length - 1 ? projects[currentIndex + 1] : null;
+
+  const goTo = (slug: string) => {
+    onSoundCue("button");
+    onNavigate(`/work/${slug}`);
+  };
+
   return (
     <article className="case-study">
       <button
@@ -1112,6 +1250,45 @@ function ProjectDetail({
           ))}
         </div>
       </section>
+
+      <nav className="case-project-nav" aria-label="Project navigation">
+        {prevProject ? (
+          <button className="case-nav-btn" onClick={() => goTo(prevProject.slug)}>
+            <ArrowLeft size={18} />
+            <span>
+              <small>Previous</small>
+              {prevProject.name}
+            </span>
+          </button>
+        ) : <div />}
+
+        {nextProject ? (
+          <button className="case-nav-btn case-nav-btn--next" onClick={() => goTo(nextProject.slug)}>
+            <span>
+              <small>Next project</small>
+              {nextProject.name}
+            </span>
+            <ArrowRight size={18} />
+          </button>
+        ) : (
+          <button
+            className="case-nav-btn case-nav-btn--home"
+            onClick={() => {
+              onSoundCue("button");
+              onBack();
+              setTimeout(() => {
+                document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+              }, 200);
+            }}
+          >
+            <span>
+              <small>That's all of them</small>
+              Back to projects
+            </span>
+            <ArrowRight size={18} />
+          </button>
+        )}
+      </nav>
     </article>
   );
 }
@@ -1910,40 +2087,38 @@ function About() {
         }
         copy="Every product I touch starts with three questions: are people safer because of it? Can they earn more? Do they connect more meaningfully?"
       />
-      <div className="about-grid">
-        <div className="about-narrative" data-reveal>
-          <p>
-            I take a people-first approach to building, starting with the users most often
-            overlooked by technology. When you design for the margins, you raise the floor
-            for everyone.
-          </p>
-          <p>
-            I work with AI as a core collaborator in my process. It's my multiplier, it
-            lets me take an idea from zero to testable faster than ever, close the gap
-            between what I can imagine and what I can ship, and move with confidence even
-            as I'm still growing.
-          </p>
-          <p>
-            My next chapter is design. Because I believe the most powerful builders of the
-            next decade will be designer-first engineers, people who lead with empathy,
-            and let AI handle the rest.
-          </p>
-        </div>
-        <div className="craft-grid">
-          {craftCards.map((card, index) => {
-            const Icon = icons[index];
-            return (
-              <article className="craft-card" key={card.title} data-reveal>
-                <Icon size={22} />
-                <div>
-                  <h3>{card.title}</h3>
-                  <p>{card.copy}</p>
-                  <span>{card.detail}</span>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+      <div className="about-narrative" data-reveal>
+        <p>
+          I take a people-first approach to building, starting with the users most often
+          overlooked by technology. When you design for the margins, you raise the floor
+          for everyone.
+        </p>
+        <p>
+          I work with AI as a core collaborator in my process. It's my multiplier, it
+          lets me take an idea from zero to testable faster than ever, close the gap
+          between what I can imagine and what I can ship, and move with confidence even
+          as I'm still growing.
+        </p>
+        <p>
+          My next chapter is design. Because I believe the most powerful builders of the
+          next decade will be designer-first engineers, people who lead with empathy,
+          and let AI handle the rest.
+        </p>
+      </div>
+      <div className="craft-grid">
+        {craftCards.map((card, index) => {
+          const Icon = icons[index];
+          return (
+            <article className="craft-card" key={card.title} data-reveal>
+              <Icon size={20} />
+              <div>
+                <h3>{card.title}</h3>
+                <p>{card.copy}</p>
+                <span>{card.detail}</span>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
