@@ -850,7 +850,7 @@ img {
 
 .section-heading h2 {
   max-width: 680px;
-  margin: 14px 0 18px;
+  margin: 14px 0 26px;
   color: var(--text);
   font-family: var(--heading-font);
   font-size: clamp(2rem, 5vw, 4.6rem);
