@@ -1736,7 +1736,7 @@ function EarlyHerPage({
           className="primary-button"
           onClick={() => onSoundCue("button")}
         >
-          Click to continue <ArrowUpRight size={15} />
+          Proceed  <ArrowUpRight size={15} />
         </a>
       </section>
 
