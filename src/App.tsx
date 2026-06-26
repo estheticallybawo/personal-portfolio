@@ -1871,10 +1871,10 @@ function EarlyHerPage({
           <h2>Who else is in the room.</h2>
         </div>
         <p className="eh-competitor-statement" data-reveal>{earlyHer.competitorStatement}</p>
-        <EarlyHerCompetitorsCarousel onSoundCue={onSoundCue} />
         <div className="eh-positioning-note" data-reveal>
           <p>{earlyHer.positioningNote}</p>
         </div>
+        <EarlyHerCompetitorsCarousel onSoundCue={onSoundCue} />
       </section>
 
       {/* Photo carousel, The Vision */}

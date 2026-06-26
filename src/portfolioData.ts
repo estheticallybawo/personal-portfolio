@@ -823,7 +823,7 @@ export const earlyHer = {
 
   playlistId: "PLLmemQh3Fs0s",
 
-  competitorStatement: "EarlyHer sits at the intersection of women's health tracking, symptom awareness, AI-assisted health preparation, and doctor-readiness. While apps like Flo, Clue, Natural Cycles, Ada, Hertility, and Oura solve parts of the journey, EarlyHer's opportunity is to help women turn personal health patterns into organised, appointment-ready evidence so they can advocate for themselves earlier and more confidently.",
+  competitorStatement: "Apps like Flo, Clue, Ada, Hertility, and Oura each solve a slice of the journey — cycle tracking, fertility, symptom assessment, or biometrics. Each one collects. None of them help women turn what they're tracking into evidence they can take to a doctor.",
 
   competitors: [
     {
@@ -864,5 +864,5 @@ export const earlyHer = {
     },
   ],
 
-  positioningNote: "Every one of these companies is collecting data, not building advocacy. With Earlyher users have full power and control over their data, with zero external storage or data collection as the key differentiator. The risk for EarlyHer isn't direct competition. It's invisibility and without a distinct position, Flo can copy the symptom log, Ada can add a history view, Clue can add a 'share with doctor' button but EarlyHer's defensible ground is the full arc: from daily patterns, to organised evidence, to confident clinical conversations. Which is why early positioning is non-negotiable.",
+  positioningNote: "EarlyHer's defensible ground is the full arc — from daily patterns, to organised evidence, to confident clinical conversations. That's what none of them offer. Which is why early positioning is non-negotiable.",
 };

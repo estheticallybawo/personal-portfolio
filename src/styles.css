@@ -2991,7 +2991,7 @@ img {
   color: var(--text);
   line-height: 1.75;
   max-width: 72ch;
-  margin: 0 0 40px;
+  margin: 0 0 24px;
 }
 .eh-competitor-grid {
   display: grid;
@@ -3084,6 +3084,7 @@ img {
   border-radius: 20px;
   background: var(--eh-berry-soft);
   border: 1px solid var(--eh-berry-line);
+  margin-bottom: 40px;
 }
 .eh-positioning-note > p {
   font-size: clamp(15px, 1.6vw, 17px);
