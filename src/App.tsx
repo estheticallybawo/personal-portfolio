@@ -1701,6 +1701,92 @@ function EarlyHerStagesCarousel({ onSoundCue }: { onSoundCue: (kind: SoundKind) 
   );
 }
 
+function EarlyHerCompetitorsCarousel({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
+  const competitors = earlyHer.competitors;
+  const [active, setActive] = useState(0);
+  const touchStartRef = useRef<number | null>(null);
+
+  const move = (dir: 1 | -1) => {
+    onSoundCue("button");
+    setActive((i) => (i + dir + competitors.length) % competitors.length);
+  };
+
+  const c = competitors[active];
+
+  return (
+    <div className="eh-del-wrap eh-competitor-wrap" data-reveal>
+      {/* Counter + controls */}
+      <div className="project-carousel-top">
+        <div>
+          <span>{String(active + 1).padStart(2, "0")}</span>
+          <span>/</span>
+          <span>{String(competitors.length).padStart(2, "0")}</span>
+        </div>
+        <div className="project-carousel-controls">
+          <button type="button" onClick={() => move(-1)} aria-label="Previous competitor">
+            <ArrowLeft size={16} />
+          </button>
+          <button type="button" onClick={() => move(1)} aria-label="Next competitor">
+            <ArrowUpRight size={16} />
+          </button>
+        </div>
+      </div>
+
+      {/* Card */}
+      <div
+        className="eh-del-stage"
+        onTouchStart={(e) => { touchStartRef.current = e.touches[0]?.clientX ?? null; }}
+        onTouchEnd={(e) => {
+          if (touchStartRef.current === null) return;
+          const dist = (e.changedTouches[0]?.clientX ?? touchStartRef.current) - touchStartRef.current;
+          touchStartRef.current = null;
+          if (Math.abs(dist) < 42) return;
+          move(dist < 0 ? 1 : -1);
+        }}
+      >
+        <div className="eh-competitor-card eh-competitor-card--solo" key={c.name}>
+          <div className="eh-competitor-header">
+            <strong className="eh-competitor-name">{c.name}</strong>
+            <span className="eh-competitor-category">{c.category}</span>
+          </div>
+          <p className="eh-competitor-solves">{c.solves}</p>
+          <div className="eh-competitor-gap">
+            <span>The gap</span>
+            <p>{c.gap}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Number rail nav */}
+      <div className="project-carousel-dots" aria-label="Competitor navigation">
+        {competitors.map((item, i) => (
+          <button
+            type="button"
+            key={item.name}
+            className={i === active ? "is-active" : ""}
+            onClick={() => { onSoundCue("button"); setActive(i); }}
+            aria-label={`View ${item.name}`}
+            aria-current={i === active ? "true" : undefined}
+          >
+            {String(i + 1).padStart(2, "0")}
+          </button>
+        ))}
+      </div>
+
+      {/* Print-only: full competitor list */}
+      <ol className="eh-print-list eh-print-competitors">
+        {competitors.map((item) => (
+          <li key={item.name}>
+            <strong>{item.name} — {item.category}</strong>
+            <p>{item.solves}</p>
+            <p><em>The gap:</em> {item.gap}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 function EarlyHerPage({
   onBack,
   onSoundCue,
@@ -1785,21 +1871,7 @@ function EarlyHerPage({
           <h2>Who else is in the room.</h2>
         </div>
         <p className="eh-competitor-statement" data-reveal>{earlyHer.competitorStatement}</p>
-        <div className="eh-competitor-grid" data-reveal>
-          {earlyHer.competitors.map((c) => (
-            <div className="eh-competitor-card" key={c.name}>
-              <div className="eh-competitor-header">
-                <strong className="eh-competitor-name">{c.name}</strong>
-                <span className="eh-competitor-category">{c.category}</span>
-              </div>
-              <p className="eh-competitor-solves">{c.solves}</p>
-              <div className="eh-competitor-gap">
-                <span>The gap</span>
-                <p>{c.gap}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <EarlyHerCompetitorsCarousel onSoundCue={onSoundCue} />
         <div className="eh-positioning-note" data-reveal>
           <p>{earlyHer.positioningNote}</p>
         </div>
