@@ -33,7 +33,7 @@
   /* Neumorphic dual shadow: dark down-right + light up-left */
   --neu-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5), -5px -5px 13px rgba(120, 160, 210, 0.03);
   --neu-shadow-hover: 7px 7px 20px rgba(0, 0, 0, 0.55), -6px -6px 15px rgba(120, 160, 210, 0.05);
-  /* Legacy raised-shadow set — used by the Actively Building chatbox + case nav */
+  /* Legacy raised-shadow set, used by the Actively Building chatbox + case nav */
   --neu-light: rgba(6, 145, 196, 0.08);
   --neu-dark: rgba(0, 0, 0, 0.52);
   --neu-raised:    -4px -4px 12px var(--neu-light),  5px  5px 14px var(--neu-dark);
@@ -66,10 +66,10 @@
   --theme-ripple-color: #01050f;
   --shadow: rgba(5, 43, 68, 0.12);
   --player-bg: rgba(238, 246, 255, 0.88);
-  /* Light theme: classic soft-UI — grey shadow down-right, white highlight up-left */
+  /* Light theme: classic soft-UI, grey shadow down-right, white highlight up-left */
   --neu-shadow: 5px 5px 14px rgba(174, 174, 192, 0.38), -5px -5px 12px rgba(255, 255, 255, 0.9);
   --neu-shadow-hover: 7px 7px 18px rgba(174, 174, 192, 0.45), -6px -6px 14px rgba(255, 255, 255, 0.95);
-  /* Legacy raised-shadow set (light) — chatbox + case nav */
+  /* Legacy raised-shadow set (light), chatbox + case nav */
   --neu-light: rgba(255, 255, 255, 0.9);
   --neu-dark: rgba(158, 186, 210, 0.62);
 }
@@ -84,7 +84,7 @@
     0 8px 26px rgba(0, 0, 0, 0.52);
 }
 
-/* Cards — frosted glass surface */
+/* Cards, frosted glass surface */
 :root:not([data-theme="light"]) .craft-card,
 :root:not([data-theme="light"]) .experience-card,
 :root:not([data-theme="light"]) .mini-card,
@@ -99,7 +99,7 @@
   border-color: rgba(255, 255, 255, 0.09);
 }
 
-/* EarlyHer berry cards — pink-tinted glass (not grey) */
+/* EarlyHer berry cards, pink-tinted glass (not grey) */
 :root:not([data-theme="light"]) .eh-del-card,
 :root:not([data-theme="light"]) .eh-stage-card {
   backdrop-filter: blur(14px);
@@ -129,7 +129,7 @@
     0 2px 10px rgba(178, 58, 110, 0.13);
 }
 
-/* Buttons — glass pill/circle with inset top-rim highlight */
+/* Buttons, glass pill/circle with inset top-rim highlight */
 :root:not([data-theme="light"]) .primary-button,
 :root:not([data-theme="light"]) .secondary-button,
 :root:not([data-theme="light"]) .project-carousel-controls button,
@@ -150,7 +150,7 @@
     0 4px 14px rgba(0, 0, 0, 0.3);
 }
 
-/* Music player shell — frosted glass with top-rim highlight */
+/* Music player shell, frosted glass with top-rim highlight */
 :root:not([data-theme="light"]) .floating-player {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.12);
@@ -159,7 +159,7 @@
     0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-/* EarlyHer berry download button — pink-tinted glass pill */
+/* EarlyHer berry download button, pink-tinted glass pill */
 :root:not([data-theme="light"]) .eh-download-btn {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -2727,7 +2727,7 @@ img {
   border-color: var(--eh-berry);
 }
 
-/* Recipient strip — "Prepared for" badge in the hero */
+/* Recipient strip, "Prepared for" badge in the hero */
 .eh-recipient-strip {
   display: inline-flex;
   align-items: center;
@@ -2789,7 +2789,7 @@ img {
 .eh-photo-card img {
   width: 100%;
   height: 100%;
-  /* contain (not cover) so the full photo always shows — nothing cropped,
+  /* contain (not cover) so the full photo always shows, nothing cropped,
      whatever the photo's aspect ratio or the screen size */
   object-fit: contain;
   object-position: center;
@@ -3274,7 +3274,7 @@ img {
   .case-hero h1 { font-size: 32pt; line-height: 1.1; }
   .eh-pitch { font-size: 11pt; max-width: 100%; }
 
-  /* Photo carousel — show only active photo */
+  /* Photo carousel, show only active photo */
   .eh-photo-card { display: none !important; }
   .eh-photo-card.is-active { display: block !important; position: static !important; opacity: 1 !important; }
   .eh-photo-view { aspect-ratio: auto; height: auto; }
@@ -3286,7 +3286,7 @@ img {
   .eh-competitor-grid { grid-template-columns: repeat(3, 1fr); }
   .eh-pricing-cards { grid-template-columns: repeat(3, 1fr); }
 
-  /* Carousel wrappers — hide interactive parts, show print list */
+  /* Carousel wrappers, hide interactive parts, show print list */
   .eh-del-wrap .project-carousel-top,
   .eh-del-wrap .project-carousel-controls,
   .eh-del-wrap .project-carousel-dots,
@@ -3423,7 +3423,7 @@ img {
 
 
 /* ═══════════════════════════════════════════════════════
-   Actively Building — CTA button + chat modal
+   Actively Building, CTA button + chat modal
    ═══════════════════════════════════════════════════════ */
 
 /* ── Green pulsing orb ────────────────────────────────── */

@@ -823,7 +823,7 @@ export const earlyHer = {
 
   playlistId: "PLLmemQh3Fs0s",
 
-  competitorStatement: "Apps like Flo, Clue, Ada, Hertility, and Oura each solve a slice of the journey — cycle tracking, fertility, symptom assessment, or biometrics. Each one collects. None of them help women turn what they're tracking into evidence they can take to a doctor.",
+  competitorStatement: "Apps like Flo, Clue, Ada, Hertility, and Oura each solve a slice of the journey, cycle tracking, fertility, symptom assessment, or biometrics. Each one collects. None of them help women turn what they're tracking into evidence they can take to a doctor.",
 
   competitors: [
     {
@@ -864,5 +864,5 @@ export const earlyHer = {
     },
   ],
 
-  positioningNote: "EarlyHer's defensible ground is the full arc — from daily patterns, to organised evidence, to confident clinical conversations. That's what none of them offer. Which is why early positioning is non-negotiable.",
+  positioningNote: "EarlyHer's defensible ground is the full arc, from daily patterns, to organised evidence, to confident clinical conversations. That's what none of them offer. Which is why early positioning is non-negotiable.",
 };
