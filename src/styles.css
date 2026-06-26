@@ -30,6 +30,9 @@
   --shadow: rgba(0, 0, 0, 0.34);
   --player-bg: rgba(4, 10, 22, 0.88);
   --heading-font: "Outfit", "Comfortaa", system-ui, sans-serif;
+  /* Neumorphic dual shadow: dark down-right + light up-left */
+  --neu-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5), -5px -5px 13px rgba(120, 160, 210, 0.03);
+  --neu-shadow-hover: 7px 7px 20px rgba(0, 0, 0, 0.55), -6px -6px 15px rgba(120, 160, 210, 0.05);
   scroll-behavior: smooth;
 }
 
@@ -57,6 +60,9 @@
   --theme-ripple-color: #01050f;
   --shadow: rgba(5, 43, 68, 0.12);
   --player-bg: rgba(238, 246, 255, 0.88);
+  /* Light theme: classic soft-UI — grey shadow down-right, white highlight up-left */
+  --neu-shadow: 5px 5px 14px rgba(174, 174, 192, 0.38), -5px -5px 12px rgba(255, 255, 255, 0.9);
+  --neu-shadow-hover: 7px 7px 18px rgba(174, 174, 192, 0.45), -6px -6px 14px rgba(255, 255, 255, 0.95);
 }
 
 * {
@@ -1320,13 +1326,15 @@ img {
   border-radius: 22px;
   background: var(--panel);
   padding: 22px;
-  transition: border-color 260ms ease, background 260ms ease, box-shadow 260ms ease;
+  box-shadow: var(--neu-shadow);
+  transition: border-color 260ms ease, background 260ms ease, box-shadow 260ms ease, transform 260ms ease;
 }
 
 .digital-badge-card:hover {
   border-color: rgba(8, 182, 245, 0.38);
   background: linear-gradient(145deg, rgba(8, 182, 245, 0.08), transparent 70%), var(--panel);
-  box-shadow: 0 18px 44px rgba(8, 182, 245, 0.08);
+  box-shadow: var(--neu-shadow-hover);
+  transform: translateY(-3px);
 }
 
 .digital-badge-card h3 {
@@ -1418,13 +1426,15 @@ img {
   border-radius: 18px;
   background: var(--panel);
   padding: 22px;
-  transition: border-color 260ms ease, background 260ms ease, box-shadow 260ms ease;
+  box-shadow: var(--neu-shadow);
+  transition: border-color 260ms ease, background 260ms ease, box-shadow 260ms ease, transform 260ms ease;
 }
 
 .case-note:hover {
   border-color: rgba(8, 182, 245, 0.38);
   background: linear-gradient(145deg, rgba(8, 182, 245, 0.08), transparent 70%), var(--panel);
-  box-shadow: 0 18px 44px rgba(8, 182, 245, 0.08);
+  box-shadow: var(--neu-shadow-hover);
+  transform: translateY(-3px);
 }
 
 .case-note span,
@@ -1527,7 +1537,8 @@ img {
 .mini-card {
   border: 1px solid var(--line);
   background: var(--panel);
-  transition: border-color 260ms ease, background 260ms ease, box-shadow 260ms ease;
+  box-shadow: var(--neu-shadow);
+  transition: border-color 260ms ease, background 260ms ease, box-shadow 260ms ease, transform 260ms ease;
 }
 
 .craft-card:hover,
@@ -1535,7 +1546,8 @@ img {
 .mini-card:hover {
   border-color: rgba(8, 182, 245, 0.38);
   background: linear-gradient(145deg, rgba(8, 182, 245, 0.08), transparent 70%), var(--panel);
-  box-shadow: 0 18px 44px rgba(8, 182, 245, 0.08);
+  box-shadow: var(--neu-shadow-hover);
+  transform: translateY(-3px);
 }
 
 .craft-card {
@@ -2508,44 +2520,27 @@ img {
   --eh-berry-line: rgba(143, 32, 80, 0.18);
 }
 
-/* Glassmorphic + neumorphic depth on all EarlyHer cards */
+/* Neumorphic depth on EarlyHer cards (shares the global soft-UI shadow) */
 .eh-stat-card,
 .eh-competitor-card,
-.eh-price-card {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow:
-    0 8px 28px rgba(0, 0, 0, 0.2),
-    0 1px 0 rgba(255, 255, 255, 0.06) inset;
-}
+.eh-price-card,
 .eh-del-card,
-.eh-stage-card {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow:
-    0 8px 28px rgba(178, 58, 110, 0.14),
-    0 1px 0 rgba(255, 255, 255, 0.06) inset;
-}
-.eh-positioning-note {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow:
-    0 4px 20px rgba(178, 58, 110, 0.1),
-    0 1px 0 rgba(255, 255, 255, 0.05) inset;
-}
+.eh-stage-card,
+.eh-positioning-note,
 .eh-market-range {
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 4px 16px rgba(178, 58, 110, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--neu-shadow);
 }
 /* Lift cards on hover for extra depth */
+.eh-competitor-card,
+.eh-stat-card {
+  transition: transform 260ms ease, box-shadow 260ms ease, border-color 200ms ease;
+}
 .eh-competitor-card:hover,
 .eh-stat-card:hover {
-  box-shadow:
-    0 14px 40px rgba(0, 0, 0, 0.26),
-    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+  box-shadow: var(--neu-shadow-hover);
   transform: translateY(-3px);
-  transition: transform 260ms ease, box-shadow 260ms ease, border-color 200ms ease;
 }
 
 /* Top bar: back link + download side-by-side */
@@ -3040,6 +3035,15 @@ img {
 @media print {
   /* Page setup */
   @page { margin: 18mm 16mm; size: A4; }
+
+  /* Flatten neumorphic shadows for clean PDF */
+  .eh-stat-card,
+  .eh-competitor-card,
+  .eh-price-card,
+  .eh-del-card,
+  .eh-stage-card,
+  .eh-positioning-note,
+  .eh-market-range { box-shadow: none !important; }
 
   /* Hide UI chrome */
   .no-print,
