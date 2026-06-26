@@ -1562,7 +1562,7 @@ function EarlyHerPage({
 
       {/* Hero */}
       <header className="case-hero eh-hero">
-        <p className="eyebrow">Engagement Proposal · {earlyHer.prepared}</p>
+        <p className="eyebrow">Proposal Made for Yinka, Founder EarlyHer · {earlyHer.prepared}</p>
         <h1>{earlyHer.product}</h1>
         <span>{earlyHer.tagline}</span>
         <p className="eh-pitch">{earlyHer.pitch}</p>
@@ -1740,7 +1740,7 @@ function EarlyHerPage({
         </a>
       </section>
 
-      <p className="eh-attribution">Prepared by Esther Tsotso · Made for Yinka, Founder EarlyHer</p>
+      <p className="eh-attribution">Prepared by Esther Tsotso for Earlyher </p>
     </article>
   );
 }
