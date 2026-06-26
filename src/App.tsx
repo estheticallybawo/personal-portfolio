@@ -1521,7 +1521,7 @@ function EarlyHerDeliverablesCarousel({ onSoundCue }: { onSoundCue: (kind: Sound
   const touchStartRef = useRef<number | null>(null);
 
   const move = (dir: 1 | -1) => {
-    onSoundCue("button");
+    onSoundCue("projectReveal");
     setActive((i) => (i + dir + deliverables.length) % deliverables.length);
   };
 
@@ -1578,7 +1578,7 @@ function EarlyHerDeliverablesCarousel({ onSoundCue }: { onSoundCue: (kind: Sound
               type="button"
               key={item.number}
               className={i === active ? "is-active" : ""}
-              onClick={() => { onSoundCue("button"); setActive(i); }}
+              onClick={() => { onSoundCue("projectReveal"); setActive(i); }}
               aria-label={`View deliverable ${item.number}`}
               aria-current={i === active ? "true" : undefined}
             >
@@ -1607,7 +1607,7 @@ function EarlyHerStagesCarousel({ onSoundCue }: { onSoundCue: (kind: SoundKind) 
   const touchStartRef = useRef<number | null>(null);
 
   const move = (dir: 1 | -1) => {
-    onSoundCue("button");
+    onSoundCue("projectReveal");
     setActive((i) => (i + dir + stages.length) % stages.length);
   };
 
@@ -1667,7 +1667,7 @@ function EarlyHerStagesCarousel({ onSoundCue }: { onSoundCue: (kind: SoundKind) 
               type="button"
               key={item.stage}
               className={i === active ? "is-active" : ""}
-              onClick={() => { onSoundCue("button"); setActive(i); }}
+              onClick={() => { onSoundCue("projectReveal"); setActive(i); }}
               aria-label={`View stage ${item.stage}`}
               aria-current={i === active ? "true" : undefined}
             >
@@ -1707,7 +1707,7 @@ function EarlyHerCompetitorsCarousel({ onSoundCue }: { onSoundCue: (kind: SoundK
   const touchStartRef = useRef<number | null>(null);
 
   const move = (dir: 1 | -1) => {
-    onSoundCue("button");
+    onSoundCue("projectReveal");
     setActive((i) => (i + dir + competitors.length) % competitors.length);
   };
 
@@ -1764,7 +1764,7 @@ function EarlyHerCompetitorsCarousel({ onSoundCue }: { onSoundCue: (kind: SoundK
             type="button"
             key={item.name}
             className={i === active ? "is-active" : ""}
-            onClick={() => { onSoundCue("button"); setActive(i); }}
+            onClick={() => { onSoundCue("projectReveal"); setActive(i); }}
             aria-label={`View ${item.name}`}
             aria-current={i === active ? "true" : undefined}
           >
