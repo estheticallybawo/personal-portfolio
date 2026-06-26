@@ -1447,12 +1447,13 @@ function CertificationsPage({
 
 // ── EarlyHer Engagement Page ──────────────────────────────────────────────────
 
-function EarlyHerPhotoCarousel() {
+function EarlyHerPhotoCarousel({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
   const [activePhoto, setActivePhoto] = useState(0);
   const touchStartRef = useRef<number | null>(null);
   const photos = earlyHer.photos;
 
   const movePhoto = (direction: 1 | -1) => {
+    onSoundCue("certificate");
     setActivePhoto((i) => (i + direction + photos.length) % photos.length);
   };
 
@@ -1503,7 +1504,7 @@ function EarlyHerPhotoCarousel() {
             type="button"
             key={photo.src}
             className={index === activePhoto ? "is-active" : ""}
-            onClick={() => setActivePhoto(index)}
+            onClick={() => { onSoundCue("certificate"); setActivePhoto(index); }}
             aria-label={`Show ${photo.caption}`}
             aria-current={index === activePhoto ? "true" : undefined}
           >
@@ -1883,7 +1884,7 @@ function EarlyHerPage({
           <p>The vision</p>
           <h2>What EarlyHer could look like in the world.</h2>
         </div>
-        <EarlyHerPhotoCarousel />
+        <EarlyHerPhotoCarousel onSoundCue={onSoundCue} />
       </section>
 
       {/* Approach */}
