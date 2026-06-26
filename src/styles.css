@@ -161,6 +161,51 @@
     0 3px 12px rgba(178, 58, 110, 0.2);
 }
 
+/* ── Light-mode neumorphism on interactive elements ──── */
+/* Nav links: give them a surface so the dual shadow is visible */
+:root[data-theme="light"] .nav-links a {
+  background: var(--panel);
+  border-color: var(--line);
+  box-shadow: var(--neu-shadow);
+}
+
+/* Round icon buttons */
+:root[data-theme="light"] .theme-toggle,
+:root[data-theme="light"] .floating-player-toggle {
+  background: var(--panel);
+  border-color: var(--line);
+  box-shadow: var(--neu-shadow);
+}
+
+/* Pill buttons */
+:root[data-theme="light"] .primary-button,
+:root[data-theme="light"] .secondary-button {
+  box-shadow: var(--neu-shadow);
+}
+
+/* Carousel + number rail controls */
+:root[data-theme="light"] .project-carousel-controls button,
+:root[data-theme="light"] .project-carousel-dots button,
+:root[data-theme="light"] .certification-controls button,
+:root[data-theme="light"] .certification-number-rail button {
+  box-shadow: var(--neu-shadow);
+}
+
+/* Tool chips */
+:root[data-theme="light"] .tool-chip {
+  box-shadow: var(--neu-shadow);
+}
+
+/* Back-to-top */
+:root[data-theme="light"] .back-to-top {
+  box-shadow: var(--neu-shadow);
+}
+
+/* Floating music player shell */
+:root[data-theme="light"] .floating-player {
+  box-shadow: var(--neu-shadow);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -1068,7 +1113,7 @@ img {
   .project-feature:hover {
     border-color: rgba(8, 182, 245, 0.38);
     background: linear-gradient(145deg, rgba(8, 182, 245, 0.08), transparent 70%), var(--project-card-hover);
-    box-shadow: 0 18px 44px rgba(8, 182, 245, 0.08);
+    box-shadow: var(--neu-shadow-hover);
   }
 
   .project-feature:hover .project-image img {
@@ -1191,7 +1236,7 @@ img {
 .certification-card:hover {
   border-color: rgba(8, 182, 245, 0.38);
   background: linear-gradient(145deg, rgba(8, 182, 245, 0.08), transparent 70%), var(--panel);
-  box-shadow: 0 18px 44px rgba(8, 182, 245, 0.08);
+  box-shadow: var(--neu-shadow-hover);
 }
 
 .certification-card-active {
@@ -2667,6 +2712,31 @@ img {
 .eh-download-btn:hover {
   background: rgba(178, 58, 110, 0.14);
   border-color: var(--eh-berry);
+}
+
+/* Recipient strip — "Prepared for" badge in the hero */
+.eh-recipient-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--eh-berry-line);
+  background: var(--eh-berry-soft);
+  box-shadow: var(--neu-shadow);
+}
+.eh-recipient-strip span {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.eh-recipient-strip strong {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--eh-berry);
 }
 
 /* Hero pitch paragraph */
