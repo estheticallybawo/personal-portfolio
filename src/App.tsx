@@ -1565,10 +1565,6 @@ function EarlyHerPage({
         <p className="eyebrow">Proposal Made for Yinka, Founder EarlyHer · {earlyHer.prepared}</p>
         <h1>{earlyHer.product}</h1>
         <span>{earlyHer.tagline}</span>
-        <div className="eh-recipient-strip">
-          <span>Prepared for</span>
-          <strong>{earlyHer.client}, Founder EarlyHer</strong>
-        </div>
         <p className="eh-pitch">{earlyHer.pitch}</p>
       </header>
 
