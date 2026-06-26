@@ -263,30 +263,32 @@ body::before {
   background: radial-gradient(
     circle,
     rgba(6, 145, 196, 0.18),
-    rgba(6, 145, 196, 0.075) 38%,
-    transparent 72%
+    rgba(6, 145, 196, 0.08) 34%,
+    rgba(6, 145, 196, 0.02) 58%,
+    transparent 76%
   );
   border-radius: 50%;
-  filter: blur(14px);
   transform: translate3d(50vw, 50vh, 0) translate(-50%, -50%);
   transition: opacity 520ms ease;
   will-change: transform, opacity;
-  /* `screen` blend forces a composited layer that exposes a faint
-     rectangular seam around the glow once other animations (the spinning
-     player disc) keep the compositor active. On the near-black background
-     `normal` looks all but identical and has no seam. */
+  /* No `filter: blur()` or non-normal `mix-blend-mode` here on purpose: both
+     force the glow onto its own GPU render surface, and that surface's
+     bounding box shows as a faint rectangular seam once another animation
+     (the spinning player disc) keeps the compositor continuously active.
+     The radial gradient is already smooth, so the softness is baked into the
+     stops instead — same look, no seam. */
   mix-blend-mode: normal;
 }
 
 :root[data-theme="light"] .cursor-spotlight {
   opacity: 0;
-  filter: blur(12px);
   mix-blend-mode: normal;
   background: radial-gradient(
     circle,
     rgba(2, 127, 173, 0.2),
-    rgba(55, 80, 240, 0.09) 36%,
-    transparent 72%
+    rgba(55, 80, 240, 0.1) 34%,
+    rgba(55, 80, 240, 0.025) 58%,
+    transparent 76%
   );
 }
 
