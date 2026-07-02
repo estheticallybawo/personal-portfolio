@@ -15,6 +15,7 @@
   --accent-soft: rgba(1, 136, 159, 0.18);
   --accent-line: rgba(1, 136, 159, 0.46);
   --footer-fill: var(--accent);
+  --footer-deep: #024b5b;
   --cursor-core: rgba(1, 136, 159, 0.12);
   --cursor-mid: rgba(1, 136, 159, 0.045);
   --button-bg: #f5f7fb;
@@ -57,6 +58,7 @@
   --accent-soft: rgba(1, 136, 159, 0.13);
   --accent-line: rgba(1, 136, 159, 0.38);
   --footer-fill: var(--accent);
+  --footer-deep: #023d4b;
   --cursor-core: rgba(1, 136, 159, 0.18);
   --cursor-mid: rgba(1, 136, 159, 0.08);
   --button-bg: #07111f;
@@ -1906,78 +1908,97 @@ img {
   z-index: 1;
 }
 
-/* ── Gooey liquid band ──────────────────────────────────────────────────
-   A solid accent band anchored to the bottom of the footer. Its top edge
-   bobs into gentle organic swells via the #footer-goo metaball filter. The
-   contact copy above stays on the page background; only the credits and
-   socials sit inside the coloured band. */
-.footer-liquid {
+/* ── Ocean footer ───────────────────────────────────────────────────────
+   The page settles into water: a soft teal glow fades the section above into
+   the sea, then layered SVG waves roll horizontally at different speeds over
+   a depth-graded body, with slow air bubbles rising through it. */
+
+/* Shallow-water light just above the waterline, so the page dissolves into
+   the sea instead of meeting a hard edge. */
+.footer-glow {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
-  height: clamp(190px, 22vh, 250px);
-  background: var(--footer-fill);
+  bottom: clamp(210px, 24vh, 280px);
+  height: 170px;
+  background: linear-gradient(to bottom, transparent, rgba(1, 136, 159, 0.13));
   z-index: 0;
   pointer-events: none;
 }
 
-.footer-goo {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: calc(100% - 2.4rem);
-  height: 6rem;
-  filter: url("#footer-goo");
-}
-
-.footer-goo-defs {
-  position: absolute;
-  width: 0;
-  height: 0;
-  pointer-events: none;
-}
-
-.footer-goo-surface {
+/* The sea band anchored to the bottom of the footer */
+.footer-sea {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 2.4rem;
-  background: var(--footer-fill);
+  height: clamp(210px, 24vh, 280px);
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
 }
 
+/* Water body with depth gradient (surface → deep) */
+.footer-sea-body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 62px;
+  bottom: 0;
+  background: linear-gradient(to bottom, var(--footer-fill), var(--footer-deep));
+}
+
+/* Layered rolling waves that drift horizontally at different speeds */
+.footer-waves {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 74px;
+  display: block;
+}
+
+.footer-wave-parallax use {
+  animation: footer-wave-move 12s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
+}
+.footer-wave-parallax .fw1 { animation-duration: 8s;  animation-delay: -2s; fill: rgba(1, 136, 159, 0.5); }
+.footer-wave-parallax .fw2 { animation-duration: 11s; animation-delay: -3s; fill: rgba(1, 136, 159, 0.45); }
+.footer-wave-parallax .fw3 { animation-duration: 15s; animation-delay: -4s; fill: rgba(1, 136, 159, 0.6); }
+.footer-wave-parallax .fw4 { animation-duration: 22s; animation-delay: -5s; fill: var(--footer-fill); }
+
+@keyframes footer-wave-move {
+  0%   { transform: translate3d(-90px, 0, 0); }
+  100% { transform: translate3d(85px, 0, 0); }
+}
+
+/* Slow air bubbles rising through the water */
 .footer-bubble {
   position: absolute;
-  bottom: 0.6rem;
+  bottom: 6px;
   left: var(--position);
   width: var(--size);
   height: var(--size);
-  background: var(--footer-fill);
   border-radius: 50%;
-  transform: translate(-50%, 50%);
-  animation: footer-bubble-bob var(--time) ease-in-out var(--delay) infinite;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  animation: footer-bubble-rise var(--time) linear var(--delay) infinite;
 }
 
-/* Bubbles stay large and merged, gently bobbing so the surface undulates
-   as one calm wave rather than detaching into spikes. */
-@keyframes footer-bubble-bob {
-  0%,
-  100% {
-    bottom: 0.4rem;
-  }
-  50% {
-    bottom: var(--distance);
-  }
+@keyframes footer-bubble-rise {
+  0%   { transform: translate(0, 0) scale(0.55); opacity: 0; }
+  14%  { opacity: 0.6; }
+  80%  { opacity: 0.38; }
+  100% { transform: translate(var(--drift), calc(-1 * var(--rise))) scale(1); opacity: 0; }
 }
 
-/* Credits + socials sit over the coloured band → white for contrast */
+/* Credits + socials sit over the water → white for contrast */
 .footer .footer-bottom {
   border-top-color: rgba(255, 255, 255, 0.22);
 }
 
 .footer .footer-bottom small {
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 .footer .inspiration-credit a {
@@ -1995,6 +2016,9 @@ img {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .footer-wave-parallax use {
+    animation: none;
+  }
   .footer-bubble {
     display: none;
   }
@@ -3367,7 +3391,8 @@ img {
   .nav-wrap,
   .scroll-progress,
   .cursor-spotlight,
-  .footer-liquid,
+  .footer-glow,
+  .footer-sea,
   .back-to-top { display: none !important; }
 
   /* Footer credits are white-on-fill on screen; restore ink for paper */

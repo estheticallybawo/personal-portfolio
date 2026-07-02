@@ -2289,21 +2289,19 @@ function Resume({
 }
 
 function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
-  // Wide, fairly uniform bubbles spread evenly so the merged surface reads as
-  // one calm undulating wave instead of separate spikes.
-  const bubbleCount = 12;
+  // Slow air bubbles drifting up through the water and fading.
   const bubbles = useMemo(
     () =>
-      Array.from({ length: bubbleCount }, (_, id) => {
-        const time = 3.6 + Math.random() * 3; // 3.6–6.6s (slow)
-        const slot = (id + 0.5) / bubbleCount; // even horizontal distribution
+      Array.from({ length: 9 }, (_, id) => {
+        const time = 7 + Math.random() * 6; // 7–13s (slow drift)
         return {
           id,
-          size: 4 + Math.random() * 2.4, // 4–6.4rem (wide, overlapping)
-          position: -8 + (slot * 116 + (Math.random() - 0.5) * 8), // even + slight jitter
+          size: 5 + Math.random() * 9, // 5–14px
+          position: 5 + Math.random() * 90, // 5–95%
           time,
           delay: -(Math.random() * time), // negative → staggered on load
-          distance: 1.6 + Math.random() * 1.1, // rem of gentle bob height
+          rise: 120 + Math.random() * 90, // px risen before fading out
+          drift: (Math.random() - 0.5) * 24, // slight sideways wander
         };
       }),
     [],
@@ -2312,20 +2310,6 @@ function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
   return (
     <footer className="footer section-anchor" id="contact">
       <div className="footer-inner">
-        <svg className="footer-goo-defs" aria-hidden="true" focusable="false">
-          <defs>
-            <filter id="footer-goo">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="blur" />
-              <feColorMatrix
-                in="blur"
-                mode="matrix"
-                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 15 -6"
-                result="goo"
-              />
-              <feBlend in="SourceGraphic" in2="goo" />
-            </filter>
-          </defs>
-        </svg>
         <p className="eyebrow" data-reveal>
           Contact
         </p>
@@ -2370,21 +2354,42 @@ function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
           <SocialLinks />
         </div>
       </div>
-      {/* Gooey liquid band (full-bleed): bubbles bob into a calm wave */}
-      <div className="footer-liquid" aria-hidden="true">
-        <div className="footer-goo">
-          <span className="footer-goo-surface" />
+      {/* Shallow-water light: the page dissolves into the sea */}
+      <div className="footer-glow" aria-hidden="true" />
+      {/* The ocean: layered rolling waves over a depth-graded body */}
+      <div className="footer-sea" aria-hidden="true">
+        <svg
+          className="footer-waves"
+          viewBox="0 24 150 28"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <path
+              id="footer-wave"
+              d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"
+            />
+          </defs>
+          <g className="footer-wave-parallax">
+            <use href="#footer-wave" x="48" y="0" className="fw fw1" />
+            <use href="#footer-wave" x="48" y="3" className="fw fw2" />
+            <use href="#footer-wave" x="48" y="5" className="fw fw3" />
+            <use href="#footer-wave" x="48" y="7" className="fw fw4" />
+          </g>
+        </svg>
+        <div className="footer-sea-body">
           {bubbles.map((b) => (
             <span
               key={b.id}
               className="footer-bubble"
               style={
                 {
-                  "--size": `${b.size}rem`,
+                  "--size": `${b.size}px`,
                   "--position": `${b.position}%`,
                   "--time": `${b.time}s`,
                   "--delay": `${b.delay}s`,
-                  "--distance": `${b.distance}rem`,
+                  "--rise": `${b.rise}px`,
+                  "--drift": `${b.drift}px`,
                 } as CSSProperties
               }
             />
