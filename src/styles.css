@@ -431,9 +431,11 @@ img {
   overflow-x: clip;
 }
 
-/* Still wavy-mesh surface (main page only): a 3D-projected undulating grid,
+/* Still triangulated-surface backdrop (main page only): a 3D-projected mesh
    pre-rendered to a static SVG. Fixed, so content scrolls over it while it
-   stays put — the ocean footer then rises out of the same surface. */
+   stays put — the ocean footer then rises out of the same surface. Kept
+   shallow on purpose: it dissolves before any deep vanishing point so it
+   reads as quiet near-field texture, never a focal point. */
 .site-mesh {
   position: fixed;
   inset: 0;
@@ -443,12 +445,16 @@ img {
   background-size: cover;
   background-position: center bottom;
   opacity: 0.8;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 30%, #000 52%, #000 86%, transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 30%, #000 52%, #000 86%, transparent 100%);
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 38%, #000 60%, #000 90%, transparent 100%),
+    radial-gradient(100% 80% at 50% 92%, #000 32%, transparent 74%);
+  mask-image:
+    linear-gradient(to bottom, transparent 38%, #000 60%, #000 90%, transparent 100%),
+    radial-gradient(100% 80% at 50% 92%, #000 32%, transparent 74%);
 }
 
 :root[data-theme="light"] .site-mesh {
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
 .section-anchor {
