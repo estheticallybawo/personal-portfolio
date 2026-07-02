@@ -1890,6 +1890,72 @@ img {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
+}
+
+/* Keep real footer content above the decorative gooey layer */
+.footer > *:not(.footer-goo):not(.footer-goo-defs) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Gooey liquid surface ─────────────────────────────────────────────── */
+.footer-goo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5rem;
+  pointer-events: none;
+  filter: url("#footer-goo");
+  z-index: 0;
+}
+
+.footer-goo-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.footer-goo-surface {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 7px;
+  background: var(--accent);
+}
+
+.footer-bubble {
+  position: absolute;
+  bottom: 0;
+  left: var(--position);
+  width: var(--size);
+  height: var(--size);
+  background: var(--accent);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  animation: footer-bubble-rise var(--time) ease-in var(--delay) infinite;
+}
+
+@keyframes footer-bubble-rise {
+  0% {
+    bottom: 0;
+    width: var(--size);
+    height: var(--size);
+  }
+  100% {
+    bottom: var(--distance);
+    width: 0;
+    height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-bubble {
+    display: none;
+  }
 }
 
 .footer h2 {
@@ -3257,6 +3323,7 @@ img {
   .nav-wrap,
   .scroll-progress,
   .cursor-spotlight,
+  .footer-goo,
   .back-to-top { display: none !important; }
 
   /* Force colours */

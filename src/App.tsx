@@ -2287,8 +2287,58 @@ function Resume({
 }
 
 function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
+  const bubbles = useMemo(
+    () =>
+      Array.from({ length: 14 }, (_, id) => {
+        const size = 14 + Math.random() * 34; // 14–48px
+        const time = 4 + Math.random() * 5; // 4–9s
+        return {
+          id,
+          size,
+          position: Math.random() * 100, // %
+          time,
+          delay: -(Math.random() * time), // negative → staggered on load
+          distance: 1.8 + Math.random() * 1.4, // rem risen before dissolving
+        };
+      }),
+    [],
+  );
+
   return (
     <footer className="footer section-anchor" id="contact">
+      {/* Gooey liquid surface: accent bubbles boil up and metaball-merge */}
+      <div className="footer-goo" aria-hidden="true">
+        <span className="footer-goo-surface" />
+        {bubbles.map((b) => (
+          <span
+            key={b.id}
+            className="footer-bubble"
+            style={
+              {
+                "--size": `${b.size}px`,
+                "--position": `${b.position}%`,
+                "--time": `${b.time}s`,
+                "--delay": `${b.delay}s`,
+                "--distance": `${b.distance}rem`,
+              } as CSSProperties
+            }
+          />
+        ))}
+      </div>
+      <svg className="footer-goo-defs" aria-hidden="true" focusable="false">
+        <defs>
+          <filter id="footer-goo">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" />
+            <feColorMatrix
+              in="blur"
+              mode="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"
+              result="goo"
+            />
+            <feBlend in="SourceGraphic" in2="goo" />
+          </filter>
+        </defs>
+      </svg>
       <p className="eyebrow" data-reveal>
         Contact
       </p>
