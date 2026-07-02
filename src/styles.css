@@ -11,17 +11,18 @@
   --text: #f5f7fb;
   --muted: rgba(245, 247, 251, 0.66);
   --muted-strong: rgba(245, 247, 251, 0.82);
-  --accent: #0691c4;
-  --accent-soft: rgba(6, 145, 196, 0.18);
-  --accent-line: rgba(6, 145, 196, 0.46);
-  --cursor-core: rgba(6, 145, 196, 0.12);
-  --cursor-mid: rgba(6, 145, 196, 0.045);
+  --accent: #01889F;
+  --accent-soft: rgba(1, 136, 159, 0.18);
+  --accent-line: rgba(1, 136, 159, 0.46);
+  --footer-fill: var(--accent);
+  --cursor-core: rgba(1, 136, 159, 0.12);
+  --cursor-mid: rgba(1, 136, 159, 0.045);
   --button-bg: #f5f7fb;
   --button-text: #02111b;
   --project-card-bg: rgba(12, 17, 29, 0.98);
   --project-card-hover: rgba(17, 24, 39, 0.99);
   --project-card-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
-  --project-card-hover-shadow: 0 22px 54px rgba(0, 0, 0, 0.28), 0 0 46px rgba(6, 145, 196, 0.08);
+  --project-card-hover-shadow: 0 22px 54px rgba(0, 0, 0, 0.28), 0 0 46px rgba(1, 136, 159, 0.08);
   --section-gap: clamp(72px, 8vw, 104px);
   --theme-x: 50vw;
   --theme-y: 48px;
@@ -34,7 +35,7 @@
   --neu-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5), -5px -5px 13px rgba(120, 160, 210, 0.03);
   --neu-shadow-hover: 7px 7px 20px rgba(0, 0, 0, 0.55), -6px -6px 15px rgba(120, 160, 210, 0.05);
   /* Legacy raised-shadow set, used by the Actively Building chatbox + case nav */
-  --neu-light: rgba(6, 145, 196, 0.08);
+  --neu-light: rgba(1, 136, 159, 0.08);
   --neu-dark: rgba(0, 0, 0, 0.52);
   --neu-raised:    -4px -4px 12px var(--neu-light),  5px  5px 14px var(--neu-dark);
   --neu-raised-sm: -2px -2px  7px var(--neu-light),  3px  3px  8px var(--neu-dark);
@@ -52,17 +53,18 @@
   --text: #0d2342;
   --muted: rgba(7, 17, 31, 0.68);
   --muted-strong: rgba(7, 17, 31, 0.84);
-  --accent: #027fad;
-  --accent-soft: rgba(2, 127, 173, 0.13);
-  --accent-line: rgba(2, 127, 173, 0.38);
-  --cursor-core: rgba(0, 112, 160, 0.18);
-  --cursor-mid: rgba(0, 112, 160, 0.08);
+  --accent: #01889F;
+  --accent-soft: rgba(1, 136, 159, 0.13);
+  --accent-line: rgba(1, 136, 159, 0.38);
+  --footer-fill: var(--accent);
+  --cursor-core: rgba(1, 136, 159, 0.18);
+  --cursor-mid: rgba(1, 136, 159, 0.08);
   --button-bg: #07111f;
   --button-text: #ffffff;
   --project-card-bg: rgba(255, 255, 255, 0.98);
   --project-card-hover: rgba(255, 255, 255, 1);
   --project-card-shadow: none;
-  --project-card-hover-shadow: 0 0 0 1px rgba(2, 127, 173, 0.06);
+  --project-card-hover-shadow: 0 0 0 1px rgba(1, 136, 159, 0.06);
   --theme-ripple-color: #01050f;
   --shadow: rgba(5, 43, 68, 0.12);
   --player-bg: rgba(238, 246, 255, 0.88);
@@ -248,7 +250,7 @@ body::before {
 }
 
 :root[data-theme="light"] body::before {
-  background-image: radial-gradient(circle, rgba(2, 127, 173, 0.13) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(1, 136, 159, 0.13) 1px, transparent 1px);
 }
 
 .cursor-spotlight {
@@ -262,9 +264,9 @@ body::before {
   opacity: 0;
   background: radial-gradient(
     circle,
-    rgba(6, 145, 196, 0.18),
-    rgba(6, 145, 196, 0.08) 34%,
-    rgba(6, 145, 196, 0.02) 58%,
+    rgba(1, 136, 159, 0.18),
+    rgba(1, 136, 159, 0.08) 34%,
+    rgba(1, 136, 159, 0.02) 58%,
     transparent 76%
   );
   border-radius: 50%;
@@ -285,7 +287,7 @@ body::before {
   mix-blend-mode: normal;
   background: radial-gradient(
     circle,
-    rgba(2, 127, 173, 0.2),
+    rgba(1, 136, 159, 0.2),
     rgba(55, 80, 240, 0.1) 34%,
     rgba(55, 80, 240, 0.025) 58%,
     transparent 76%
@@ -1885,30 +1887,48 @@ img {
   line-height: 1.35;
 }
 
+/* Footer spans the full viewport width (it sits outside the centred shell) so
+   the liquid band can run edge-to-edge; the inner wrapper re-aligns the copy
+   to the same 1120px column as the rest of the page. */
 .footer {
   min-height: auto;
+  position: relative;
+}
+
+.footer-inner {
+  width: min(100%, 1120px);
+  margin-inline: auto;
+  padding-inline: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
-}
-
-/* Keep real footer content above the decorative gooey layer */
-.footer > *:not(.footer-goo):not(.footer-goo-defs) {
-  position: relative;
   z-index: 1;
 }
 
-/* ── Gooey liquid surface ─────────────────────────────────────────────── */
-.footer-goo {
+/* ── Gooey liquid band ──────────────────────────────────────────────────
+   A solid accent band anchored to the bottom of the footer. Its top edge
+   bobs into gentle organic swells via the #footer-goo metaball filter. The
+   contact copy above stays on the page background; only the credits and
+   socials sit inside the coloured band. */
+.footer-liquid {
   position: absolute;
-  top: 0;
   left: 0;
   right: 0;
-  height: 3.5rem;
-  pointer-events: none;
-  filter: url("#footer-goo");
+  bottom: 0;
+  height: clamp(190px, 22vh, 250px);
+  background: var(--footer-fill);
   z-index: 0;
+  pointer-events: none;
+}
+
+.footer-goo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% - 2.4rem);
+  height: 6rem;
+  filter: url("#footer-goo");
 }
 
 .footer-goo-defs {
@@ -1923,33 +1943,55 @@ img {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 7px;
-  background: var(--accent);
+  height: 2.4rem;
+  background: var(--footer-fill);
 }
 
 .footer-bubble {
   position: absolute;
-  bottom: 0;
+  bottom: 0.6rem;
   left: var(--position);
   width: var(--size);
   height: var(--size);
-  background: var(--accent);
+  background: var(--footer-fill);
   border-radius: 50%;
-  transform: translateX(-50%);
-  animation: footer-bubble-rise var(--time) ease-in var(--delay) infinite;
+  transform: translate(-50%, 50%);
+  animation: footer-bubble-bob var(--time) ease-in-out var(--delay) infinite;
 }
 
-@keyframes footer-bubble-rise {
-  0% {
-    bottom: 0;
-    width: var(--size);
-    height: var(--size);
-  }
+/* Bubbles stay large and merged, gently bobbing so the surface undulates
+   as one calm wave rather than detaching into spikes. */
+@keyframes footer-bubble-bob {
+  0%,
   100% {
-    bottom: var(--distance);
-    width: 0;
-    height: 0;
+    bottom: 0.4rem;
   }
+  50% {
+    bottom: var(--distance);
+  }
+}
+
+/* Credits + socials sit over the coloured band → white for contrast */
+.footer .footer-bottom {
+  border-top-color: rgba(255, 255, 255, 0.22);
+}
+
+.footer .footer-bottom small {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.footer .inspiration-credit a {
+  color: #fff;
+}
+
+.footer .footer-bottom .social-links a {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.footer .footer-bottom .social-links a:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1973,7 +2015,7 @@ img {
   color: var(--accent);
 }
 
-.footer > p:not(.eyebrow) {
+.footer-inner > p:not(.eyebrow) {
   max-width: 460px;
   margin: 0 0 44px;
   color: var(--muted);
@@ -2167,6 +2209,7 @@ img {
 
 @media (max-width: 760px) {
   .site-shell,
+  .footer-inner,
   .nav-wrap {
     padding-inline: 24px;
   }
@@ -2280,6 +2323,7 @@ img {
 
 @media (max-width: 640px) {
   .site-shell,
+  .footer-inner,
   .nav-wrap {
     padding-inline: 18px;
   }
@@ -3323,8 +3367,13 @@ img {
   .nav-wrap,
   .scroll-progress,
   .cursor-spotlight,
-  .footer-goo,
+  .footer-liquid,
   .back-to-top { display: none !important; }
+
+  /* Footer credits are white-on-fill on screen; restore ink for paper */
+  .footer .footer-bottom small,
+  .footer .footer-bottom .social-links a,
+  .footer .inspiration-credit a { color: #333 !important; }
 
   /* Force colours */
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -3444,7 +3493,7 @@ img {
   border-color: var(--accent-line);
   background: var(--accent-soft);
   transform: translateY(-2px);
-  box-shadow: var(--neu-raised-sm), 0 8px 28px rgba(6, 145, 196, 0.12);
+  box-shadow: var(--neu-raised-sm), 0 8px 28px rgba(1, 136, 159, 0.12);
 }
 
 .case-nav-btn small {
@@ -3569,7 +3618,7 @@ img {
   border: 1px solid var(--line);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(6, 145, 196, 0.08);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(1, 136, 159, 0.08);
   animation: ab-slide-up 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -3703,7 +3752,7 @@ img {
 }
 
 .ab-prompt:hover:not(:disabled):not(.is-used) {
-  background: rgba(6, 145, 196, 0.28);
+  background: rgba(1, 136, 159, 0.28);
   transform: translateX(3px);
 }
 

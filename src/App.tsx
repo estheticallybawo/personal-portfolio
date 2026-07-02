@@ -606,10 +606,12 @@ function App() {
             <WhySection onVideoPlay={handleVideoPlay} onVideoStop={handleVideoStop} />
             <About />
             <Resume onNavigate={navigateTo} onSoundCue={playSound} />
-            <Footer onSoundCue={playSound} />
           </>
         )}
       </main>
+      {!activeProject && !isCertificationsPage && !isEarlyHerPage && (
+        <Footer onSoundCue={playSound} />
+      )}
       <button
         className={showBackToTop ? "back-to-top is-visible" : "back-to-top"}
         type="button"
@@ -2287,18 +2289,21 @@ function Resume({
 }
 
 function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
+  // Wide, fairly uniform bubbles spread evenly so the merged surface reads as
+  // one calm undulating wave instead of separate spikes.
+  const bubbleCount = 12;
   const bubbles = useMemo(
     () =>
-      Array.from({ length: 14 }, (_, id) => {
-        const size = 14 + Math.random() * 34; // 14–48px
-        const time = 4 + Math.random() * 5; // 4–9s
+      Array.from({ length: bubbleCount }, (_, id) => {
+        const time = 3.6 + Math.random() * 3; // 3.6–6.6s (slow)
+        const slot = (id + 0.5) / bubbleCount; // even horizontal distribution
         return {
           id,
-          size,
-          position: Math.random() * 100, // %
+          size: 4 + Math.random() * 2.4, // 4–6.4rem (wide, overlapping)
+          position: -8 + (slot * 116 + (Math.random() - 0.5) * 8), // even + slight jitter
           time,
           delay: -(Math.random() * time), // negative → staggered on load
-          distance: 1.8 + Math.random() * 1.4, // rem risen before dissolving
+          distance: 1.6 + Math.random() * 1.1, // rem of gentle bob height
         };
       }),
     [],
@@ -2306,81 +2311,85 @@ function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
 
   return (
     <footer className="footer section-anchor" id="contact">
-      {/* Gooey liquid surface: accent bubbles boil up and metaball-merge */}
-      <div className="footer-goo" aria-hidden="true">
-        <span className="footer-goo-surface" />
-        {bubbles.map((b) => (
-          <span
-            key={b.id}
-            className="footer-bubble"
-            style={
-              {
-                "--size": `${b.size}px`,
-                "--position": `${b.position}%`,
-                "--time": `${b.time}s`,
-                "--delay": `${b.delay}s`,
-                "--distance": `${b.distance}rem`,
-              } as CSSProperties
-            }
-          />
-        ))}
-      </div>
-      <svg className="footer-goo-defs" aria-hidden="true" focusable="false">
-        <defs>
-          <filter id="footer-goo">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" />
-            <feColorMatrix
-              in="blur"
-              mode="matrix"
-              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"
-              result="goo"
-            />
-            <feBlend in="SourceGraphic" in2="goo" />
-          </filter>
-        </defs>
-      </svg>
-      <p className="eyebrow" data-reveal>
-        Contact
-      </p>
-      <h2 data-reveal>
-        Have a problem worth solving?
-        <span>
-          Let&apos;s build something users{" "}
-          <PunWord mistake="rove" correction="love" />
-          .
-        </span>
-      </h2>
-      <p data-reveal>
-        Open to frontend roles, product collaborations, and user-centered problems
-        that need clear thinking, technical execution, and product care.
-      </p>
-      <div className="contact-actions" data-reveal>
-        <a
-          className="contact-secondary"
-          href={profile.links.calendar}
-          target="_blank"
-          rel="noreferrer"
-          onClick={() => onSoundCue("button")}
-        >
-          Get in touch
-          <ArrowUpRight size={15} />
-        </a>
-      </div>
-      <div className="footer-bottom">
-        <div>
-          <small>(c) 2026 - Built by Esther Tsotso</small>
-          <small className="inspiration-credit">
-            Key inspiration from top folks I admire {" "}
-            <a href="https://www.victorwilliams.me/" target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
-              Victor Williams
-            </a>
-            {" "}and{" "}
-            <a href="https://www.somkene.com/" target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
-              Somkene Ojukwu
-            </a>
-          </small>
+      <div className="footer-inner">
+        <svg className="footer-goo-defs" aria-hidden="true" focusable="false">
+          <defs>
+            <filter id="footer-goo">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="11" result="blur" />
+              <feColorMatrix
+                in="blur"
+                mode="matrix"
+                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 15 -6"
+                result="goo"
+              />
+              <feBlend in="SourceGraphic" in2="goo" />
+            </filter>
+          </defs>
+        </svg>
+        <p className="eyebrow" data-reveal>
+          Contact
+        </p>
+        <h2 data-reveal>
+          Have a problem worth solving?
+          <span>
+            Let&apos;s build something users{" "}
+            <PunWord mistake="rove" correction="love" />
+            .
+          </span>
+        </h2>
+        <p data-reveal>
+          Open to frontend roles, product collaborations, and user-centered problems
+          that need clear thinking, technical execution, and product care.
+        </p>
+        <div className="contact-actions" data-reveal>
+          <a
+            className="contact-secondary"
+            href={profile.links.calendar}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => onSoundCue("button")}
+          >
+            Get in touch
+            <ArrowUpRight size={15} />
+          </a>
         </div>
-        <SocialLinks />
+        <div className="footer-bottom">
+          <div>
+            <small>(c) 2026 - Built by Esther Tsotso</small>
+            <small className="inspiration-credit">
+              Key inspiration from top folks I admire {" "}
+              <a href="https://www.victorwilliams.me/" target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
+                Victor Williams
+              </a>
+              {" "}and{" "}
+              <a href="https://www.somkene.com/" target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
+                Somkene Ojukwu
+              </a>
+            </small>
+          </div>
+          <SocialLinks />
+        </div>
+      </div>
+      {/* Gooey liquid band (full-bleed): bubbles bob into a calm wave */}
+      <div className="footer-liquid" aria-hidden="true">
+        <div className="footer-goo">
+          <span className="footer-goo-surface" />
+          {bubbles.map((b) => (
+            <span
+              key={b.id}
+              className="footer-bubble"
+              style={
+                {
+                  "--size": `${b.size}rem`,
+                  "--position": `${b.position}%`,
+                  "--time": `${b.time}s`,
+                  "--delay": `${b.delay}s`,
+                  "--distance": `${b.distance}rem`,
+                } as CSSProperties
+              }
+            />
+          ))}
+        </div>
       </div>
     </footer>
   );
