@@ -2354,9 +2354,7 @@ function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
           <SocialLinks />
         </div>
       </div>
-      {/* Shallow-water light: the page dissolves into the sea */}
-      <div className="footer-glow" aria-hidden="true" />
-      {/* The ocean: layered rolling waves over a depth-graded body */}
+      {/* The ocean: layered rolling waves fading into the page background */}
       <div className="footer-sea" aria-hidden="true">
         <svg
           className="footer-waves"

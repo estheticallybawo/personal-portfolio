@@ -11,19 +11,19 @@
   --text: #f5f7fb;
   --muted: rgba(245, 247, 251, 0.66);
   --muted-strong: rgba(245, 247, 251, 0.82);
-  --accent: #01889F;
-  --accent-soft: rgba(1, 136, 159, 0.18);
-  --accent-line: rgba(1, 136, 159, 0.46);
+  --accent: #0096AD;
+  --accent-soft: rgba(0, 150, 173, 0.18);
+  --accent-line: rgba(0, 150, 173, 0.46);
   --footer-fill: var(--accent);
   --footer-deep: #024b5b;
-  --cursor-core: rgba(1, 136, 159, 0.12);
-  --cursor-mid: rgba(1, 136, 159, 0.045);
+  --cursor-core: rgba(0, 150, 173, 0.12);
+  --cursor-mid: rgba(0, 150, 173, 0.045);
   --button-bg: #f5f7fb;
   --button-text: #02111b;
   --project-card-bg: rgba(12, 17, 29, 0.98);
   --project-card-hover: rgba(17, 24, 39, 0.99);
   --project-card-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
-  --project-card-hover-shadow: 0 22px 54px rgba(0, 0, 0, 0.28), 0 0 46px rgba(1, 136, 159, 0.08);
+  --project-card-hover-shadow: 0 22px 54px rgba(0, 0, 0, 0.28), 0 0 46px rgba(0, 150, 173, 0.08);
   --section-gap: clamp(72px, 8vw, 104px);
   --theme-x: 50vw;
   --theme-y: 48px;
@@ -36,7 +36,7 @@
   --neu-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5), -5px -5px 13px rgba(120, 160, 210, 0.03);
   --neu-shadow-hover: 7px 7px 20px rgba(0, 0, 0, 0.55), -6px -6px 15px rgba(120, 160, 210, 0.05);
   /* Legacy raised-shadow set, used by the Actively Building chatbox + case nav */
-  --neu-light: rgba(1, 136, 159, 0.08);
+  --neu-light: rgba(0, 150, 173, 0.08);
   --neu-dark: rgba(0, 0, 0, 0.52);
   --neu-raised:    -4px -4px 12px var(--neu-light),  5px  5px 14px var(--neu-dark);
   --neu-raised-sm: -2px -2px  7px var(--neu-light),  3px  3px  8px var(--neu-dark);
@@ -54,19 +54,19 @@
   --text: #0d2342;
   --muted: rgba(7, 17, 31, 0.68);
   --muted-strong: rgba(7, 17, 31, 0.84);
-  --accent: #01889F;
-  --accent-soft: rgba(1, 136, 159, 0.13);
-  --accent-line: rgba(1, 136, 159, 0.38);
+  --accent: #0096AD;
+  --accent-soft: rgba(0, 150, 173, 0.13);
+  --accent-line: rgba(0, 150, 173, 0.38);
   --footer-fill: var(--accent);
   --footer-deep: #023d4b;
-  --cursor-core: rgba(1, 136, 159, 0.18);
-  --cursor-mid: rgba(1, 136, 159, 0.08);
+  --cursor-core: rgba(0, 150, 173, 0.18);
+  --cursor-mid: rgba(0, 150, 173, 0.08);
   --button-bg: #07111f;
   --button-text: #ffffff;
   --project-card-bg: rgba(255, 255, 255, 0.98);
   --project-card-hover: rgba(255, 255, 255, 1);
   --project-card-shadow: none;
-  --project-card-hover-shadow: 0 0 0 1px rgba(1, 136, 159, 0.06);
+  --project-card-hover-shadow: 0 0 0 1px rgba(0, 150, 173, 0.06);
   --theme-ripple-color: #01050f;
   --shadow: rgba(5, 43, 68, 0.12);
   --player-bg: rgba(238, 246, 255, 0.88);
@@ -183,11 +183,18 @@
 }
 
 /* Round icon buttons */
-:root[data-theme="light"] .theme-toggle,
-:root[data-theme="light"] .floating-player-toggle {
+:root[data-theme="light"] .theme-toggle {
   background: var(--panel);
   border-color: var(--line);
   box-shadow: var(--neu-shadow);
+}
+
+/* The play button lives inside the frosted player over the teal footer, so it
+   gets subtle glass instead of the neumorphic white counter-glow. */
+:root[data-theme="light"] .floating-player-toggle {
+  background: rgba(255, 255, 255, 0.32);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: none;
 }
 
 /* Pill buttons */
@@ -209,14 +216,19 @@
   box-shadow: var(--neu-shadow);
 }
 
-/* Back-to-top */
-:root[data-theme="light"] .back-to-top {
-  box-shadow: var(--neu-shadow);
-}
-
-/* Floating music player shell */
+/* Fixed floating controls (music player + back-to-top) float over both the
+   light page and the teal footer. Give them translucent frosted glass — like
+   the dark-mode glass — so they tint with whatever is behind them instead of
+   staying an opaque light pill. The blur already lives on the base rules. */
+:root[data-theme="light"] .back-to-top,
 :root[data-theme="light"] .floating-player {
-  box-shadow: var(--neu-shadow);
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 6px 20px rgba(3, 46, 61, 0.14);
 }
 
 * {
@@ -252,7 +264,7 @@ body::before {
 }
 
 :root[data-theme="light"] body::before {
-  background-image: radial-gradient(circle, rgba(1, 136, 159, 0.13) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(0, 150, 173, 0.13) 1px, transparent 1px);
 }
 
 .cursor-spotlight {
@@ -266,9 +278,9 @@ body::before {
   opacity: 0;
   background: radial-gradient(
     circle,
-    rgba(1, 136, 159, 0.18),
-    rgba(1, 136, 159, 0.08) 34%,
-    rgba(1, 136, 159, 0.02) 58%,
+    rgba(0, 150, 173, 0.18),
+    rgba(0, 150, 173, 0.08) 34%,
+    rgba(0, 150, 173, 0.02) 58%,
     transparent 76%
   );
   border-radius: 50%;
@@ -289,7 +301,7 @@ body::before {
   mix-blend-mode: normal;
   background: radial-gradient(
     circle,
-    rgba(1, 136, 159, 0.2),
+    rgba(0, 150, 173, 0.2),
     rgba(55, 80, 240, 0.1) 34%,
     rgba(55, 80, 240, 0.025) 58%,
     transparent 76%
@@ -1909,24 +1921,12 @@ img {
 }
 
 /* ── Ocean footer ───────────────────────────────────────────────────────
-   The page settles into water: a soft teal glow fades the section above into
-   the sea, then layered SVG waves roll horizontally at different speeds over
-   a depth-graded body, with slow air bubbles rising through it. */
+   Layered SVG waves roll horizontally over a teal body, with slow air bubbles
+   rising through it. The whole thing is masked so it fades in from fully
+   transparent at the top — there is no hard edge where it meets the page. */
 
-/* Shallow-water light just above the waterline, so the page dissolves into
-   the sea instead of meeting a hard edge. */
-.footer-glow {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: clamp(210px, 24vh, 280px);
-  height: 170px;
-  background: linear-gradient(to bottom, transparent, rgba(1, 136, 159, 0.13));
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* The sea band anchored to the bottom of the footer */
+/* The sea band anchored to the bottom of the footer. The top-fade mask on the
+   WHOLE band (waves + water together) is what removes the demarcation line. */
 .footer-sea {
   position: absolute;
   left: 0;
@@ -1936,6 +1936,8 @@ img {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 104px);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 104px);
 }
 
 /* Water body with depth gradient (surface → deep) */
@@ -1945,6 +1947,8 @@ img {
   right: 0;
   top: 62px;
   bottom: 0;
+  /* Full teal water with depth. The seamless top comes from the mask on
+     .footer-sea, so the body can be solid without creating an edge. */
   background: linear-gradient(to bottom, var(--footer-fill), var(--footer-deep));
 }
 
@@ -1962,9 +1966,9 @@ img {
 .footer-wave-parallax use {
   animation: footer-wave-move 12s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
 }
-.footer-wave-parallax .fw1 { animation-duration: 8s;  animation-delay: -2s; fill: rgba(1, 136, 159, 0.5); }
-.footer-wave-parallax .fw2 { animation-duration: 11s; animation-delay: -3s; fill: rgba(1, 136, 159, 0.45); }
-.footer-wave-parallax .fw3 { animation-duration: 15s; animation-delay: -4s; fill: rgba(1, 136, 159, 0.6); }
+.footer-wave-parallax .fw1 { animation-duration: 8s;  animation-delay: -2s; fill: rgba(0, 150, 173, 0.5); }
+.footer-wave-parallax .fw2 { animation-duration: 11s; animation-delay: -3s; fill: rgba(0, 150, 173, 0.45); }
+.footer-wave-parallax .fw3 { animation-duration: 15s; animation-delay: -4s; fill: rgba(0, 150, 173, 0.6); }
 .footer-wave-parallax .fw4 { animation-duration: 22s; animation-delay: -5s; fill: var(--footer-fill); }
 
 @keyframes footer-wave-move {
@@ -1992,7 +1996,7 @@ img {
   100% { transform: translate(var(--drift), calc(-1 * var(--rise))) scale(1); opacity: 0; }
 }
 
-/* Credits + socials sit over the water → white for contrast */
+/* Credits + socials sit over the teal water → white for contrast */
 .footer .footer-bottom {
   border-top-color: rgba(255, 255, 255, 0.22);
 }
@@ -3391,7 +3395,6 @@ img {
   .nav-wrap,
   .scroll-progress,
   .cursor-spotlight,
-  .footer-glow,
   .footer-sea,
   .back-to-top { display: none !important; }
 
@@ -3518,7 +3521,7 @@ img {
   border-color: var(--accent-line);
   background: var(--accent-soft);
   transform: translateY(-2px);
-  box-shadow: var(--neu-raised-sm), 0 8px 28px rgba(1, 136, 159, 0.12);
+  box-shadow: var(--neu-raised-sm), 0 8px 28px rgba(0, 150, 173, 0.12);
 }
 
 .case-nav-btn small {
@@ -3643,7 +3646,7 @@ img {
   border: 1px solid var(--line);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(1, 136, 159, 0.08);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(0, 150, 173, 0.08);
   animation: ab-slide-up 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -3777,7 +3780,7 @@ img {
 }
 
 .ab-prompt:hover:not(:disabled):not(.is-used) {
-  background: rgba(1, 136, 159, 0.28);
+  background: rgba(0, 150, 173, 0.28);
   transform: translateX(3px);
 }
 
