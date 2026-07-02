@@ -609,13 +609,11 @@ function App() {
           </>
         )}
       </main>
+      {/* Still wavy-mesh surface: fixed backdrop every page scrolls over,
+          flowing into the ocean footer on the main page */}
+      <div className="site-mesh" aria-hidden="true" />
       {!activeProject && !isCertificationsPage && !isEarlyHerPage && (
-        <>
-          {/* Still wavy-mesh surface: fixed backdrop the page scrolls over,
-              flowing into the ocean footer at the bottom */}
-          <div className="site-mesh" aria-hidden="true" />
-          <Footer onSoundCue={playSound} />
-        </>
+        <Footer onSoundCue={playSound} />
       )}
       <button
         className={showBackToTop ? "back-to-top is-visible" : "back-to-top"}
