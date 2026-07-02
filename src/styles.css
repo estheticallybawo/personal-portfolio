@@ -431,6 +431,26 @@ img {
   overflow-x: clip;
 }
 
+/* Still wavy-mesh surface (main page only): a 3D-projected undulating grid,
+   pre-rendered to a static SVG. Fixed, so content scrolls over it while it
+   stays put — the ocean footer then rises out of the same surface. */
+.site-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("/assets/wave-mesh.svg");
+  background-size: cover;
+  background-position: center bottom;
+  opacity: 0.8;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 30%, #000 52%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 30%, #000 52%, #000 86%, transparent 100%);
+}
+
+:root[data-theme="light"] .site-mesh {
+  opacity: 0.5;
+}
+
 .section-anchor {
   scroll-margin-top: 96px;
 }
@@ -1907,6 +1927,9 @@ img {
 .footer {
   min-height: auto;
   position: relative;
+  /* Above .site-mesh so the water covers the surface where they meet;
+     the transparent area above the waterline still shows the mesh through. */
+  z-index: 1;
 }
 
 .footer-inner {
@@ -3395,6 +3418,7 @@ img {
   .nav-wrap,
   .scroll-progress,
   .cursor-spotlight,
+  .site-mesh,
   .footer-sea,
   .back-to-top { display: none !important; }
 
