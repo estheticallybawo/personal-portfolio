@@ -2298,19 +2298,21 @@ function Resume({
 }
 
 function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
-  // Slow air bubbles drifting up through the water and fading.
+  // Slow air bubbles drifting up through the water and fading — scattered at
+  // different depths and sizes so the water feels inhabited, not patterned.
   const bubbles = useMemo(
     () =>
-      Array.from({ length: 9 }, (_, id) => {
-        const time = 7 + Math.random() * 6; // 7–13s (slow drift)
+      Array.from({ length: 17 }, (_, id) => {
+        const time = 6 + Math.random() * 8; // 6–14s (slow drift)
         return {
           id,
-          size: 5 + Math.random() * 9, // 5–14px
-          position: 5 + Math.random() * 90, // 5–95%
+          size: 4 + Math.random() * 13, // 4–17px
+          position: 3 + Math.random() * 94, // 3–97%
+          depth: 4 + Math.random() * 58, // px above the sea floor it starts
           time,
           delay: -(Math.random() * time), // negative → staggered on load
-          rise: 120 + Math.random() * 90, // px risen before fading out
-          drift: (Math.random() - 0.5) * 24, // slight sideways wander
+          rise: 90 + Math.random() * 130, // px risen before fading out
+          drift: (Math.random() - 0.5) * 36, // sideways wander
         };
       }),
     [],
@@ -2383,6 +2385,7 @@ function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
                 {
                   "--size": `${b.size}px`,
                   "--position": `${b.position}%`,
+                  "--depth": `${b.depth}px`,
                   "--time": `${b.time}s`,
                   "--delay": `${b.delay}s`,
                   "--rise": `${b.rise}px`,

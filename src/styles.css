@@ -2016,13 +2016,23 @@ img {
 /* Slow air bubbles rising through the water */
 .footer-bubble {
   position: absolute;
-  bottom: 6px;
+  bottom: var(--depth, 6px);
   left: var(--position);
   width: var(--size);
   height: var(--size);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  /* Glossy sphere: off-centre highlight, translucent core, soft bottom rim —
+     reads as an air bubble catching light rather than a flat dot. */
+  background: radial-gradient(
+    circle at 32% 28%,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.3) 26%,
+    rgba(255, 255, 255, 0.08) 52%,
+    rgba(255, 255, 255, 0.02) 72%
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.24),
+    inset -2px -3px 4px rgba(255, 255, 255, 0.16);
   animation: footer-bubble-rise var(--time) linear var(--delay) infinite;
 }
 
