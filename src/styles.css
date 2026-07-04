@@ -57,7 +57,7 @@
   --accent: #0088C4;
   --accent-soft: rgba(0, 136, 196, 0.12);
   --accent-line: rgba(0, 136, 196, 0.38);
-  --footer-fill: #00CCFF;
+  --footer-fill: #8DC1E3;
   --footer-deep: #00458A;
   --cursor-core: rgba(0, 136, 196, 0.14);
   --cursor-mid: rgba(0, 136, 196, 0.06);
@@ -454,7 +454,9 @@ img {
 }
 
 :root[data-theme="light"] .site-mesh {
-  opacity: 0.4;
+  /* Cyan strokes vanish on the light background — use the deeper-blue variant */
+  background-image: url("/assets/wave-mesh-light.svg");
+  opacity: 0.55;
 }
 
 .section-anchor {
@@ -1999,6 +2001,11 @@ img {
 .footer-wave-parallax .fw1 { animation-duration: 8s;  animation-delay: -2s; fill: rgba(0, 204, 255, 0.45); }
 .footer-wave-parallax .fw2 { animation-duration: 11s; animation-delay: -3s; fill: rgba(0, 204, 255, 0.4); }
 .footer-wave-parallax .fw3 { animation-duration: 15s; animation-delay: -4s; fill: rgba(0, 204, 255, 0.55); }
+
+/* Light mode: gentler water — Azul Vital crests instead of electric cyan */
+:root[data-theme="light"] .footer-wave-parallax .fw1 { fill: rgba(141, 193, 227, 0.55); }
+:root[data-theme="light"] .footer-wave-parallax .fw2 { fill: rgba(141, 193, 227, 0.5); }
+:root[data-theme="light"] .footer-wave-parallax .fw3 { fill: rgba(141, 193, 227, 0.7); }
 .footer-wave-parallax .fw4 { animation-duration: 22s; animation-delay: -5s; fill: var(--footer-fill); }
 
 @keyframes footer-wave-move {
