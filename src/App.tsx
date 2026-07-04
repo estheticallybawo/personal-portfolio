@@ -2343,16 +2343,6 @@ function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
         <div className="footer-bottom">
           <div>
             <small>(c) 2026 - Built by Esther Tsotso</small>
-            <small className="inspiration-credit">
-              Key inspiration from top folks I admire {" "}
-              <a href="https://www.victorwilliams.me/" target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
-                Victor Williams
-              </a>
-              {" "}and{" "}
-              <a href="https://www.somkene.com/" target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
-                Somkene Ojukwu
-              </a>
-            </small>
           </div>
           <SocialLinks />
         </div>

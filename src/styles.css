@@ -1,42 +1,42 @@
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300..800&family=Outfit:wght@100..900&display=swap');
 
 :root {
-  font-family: "Comfortaa", system-ui, sans-serif;
+  font-family: "Sora", system-ui, sans-serif;
   color: #f5f7fb;
-  background: #01050f;
-  --bg: #01050f;
+  background: #0C1029;
+  --bg: #0C1029;
   --panel: rgba(255, 255, 255, 0.026);
   --panel-strong: rgba(255, 255, 255, 0.052);
   --line: rgba(255, 255, 255, 0.075);
   --text: #f5f7fb;
   --muted: rgba(245, 247, 251, 0.66);
   --muted-strong: rgba(245, 247, 251, 0.82);
-  --accent: #0096AD;
-  --accent-soft: rgba(0, 150, 173, 0.18);
-  --accent-line: rgba(0, 150, 173, 0.46);
+  --accent: #00CCFF;
+  --accent-soft: rgba(0, 204, 255, 0.15);
+  --accent-line: rgba(0, 204, 255, 0.42);
   --footer-fill: var(--accent);
-  --footer-deep: #024b5b;
-  --cursor-core: rgba(0, 150, 173, 0.12);
-  --cursor-mid: rgba(0, 150, 173, 0.045);
+  --footer-deep: #00458A;
+  --cursor-core: rgba(0, 204, 255, 0.1);
+  --cursor-mid: rgba(0, 204, 255, 0.04);
   --button-bg: #f5f7fb;
-  --button-text: #02111b;
-  --project-card-bg: rgba(12, 17, 29, 0.98);
-  --project-card-hover: rgba(17, 24, 39, 0.99);
+  --button-text: #0C1029;
+  --project-card-bg: rgba(15, 20, 44, 0.98);
+  --project-card-hover: rgba(20, 26, 55, 0.99);
   --project-card-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
-  --project-card-hover-shadow: 0 22px 54px rgba(0, 0, 0, 0.28), 0 0 46px rgba(0, 150, 173, 0.08);
+  --project-card-hover-shadow: 0 22px 54px rgba(0, 0, 0, 0.28), 0 0 46px rgba(0, 204, 255, 0.07);
   --section-gap: clamp(72px, 8vw, 104px);
   --theme-x: 50vw;
   --theme-y: 48px;
   --theme-radius: 120vmax;
-  --theme-ripple-color: #f5fbff;
+  --theme-ripple-color: #f2f8fd;
   --shadow: rgba(0, 0, 0, 0.34);
-  --player-bg: rgba(4, 10, 22, 0.88);
-  --heading-font: "Outfit", "Comfortaa", system-ui, sans-serif;
+  --player-bg: rgba(10, 13, 34, 0.88);
+  --heading-font: "Outfit", "Sora", system-ui, sans-serif;
   /* Neumorphic dual shadow: dark down-right + light up-left */
   --neu-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5), -5px -5px 13px rgba(120, 160, 210, 0.03);
   --neu-shadow-hover: 7px 7px 20px rgba(0, 0, 0, 0.55), -6px -6px 15px rgba(120, 160, 210, 0.05);
   /* Legacy raised-shadow set, used by the Actively Building chatbox + case nav */
-  --neu-light: rgba(0, 150, 173, 0.08);
+  --neu-light: rgba(0, 204, 255, 0.07);
   --neu-dark: rgba(0, 0, 0, 0.52);
   --neu-raised:    -4px -4px 12px var(--neu-light),  5px  5px 14px var(--neu-dark);
   --neu-raised-sm: -2px -2px  7px var(--neu-light),  3px  3px  8px var(--neu-dark);
@@ -46,28 +46,28 @@
 
 :root[data-theme="light"] {
   color: #07111f;
-  background: #f5fbff;
-  --bg: #f5fbff;
+  background: #f2f8fd;
+  --bg: #f2f8fd;
   --panel: rgba(0, 35, 64, 0.035);
   --panel-strong: rgba(255, 255, 255, 0.82);
   --line: rgba(0, 35, 64, 0.1);
   --text: #0d2342;
   --muted: rgba(7, 17, 31, 0.68);
   --muted-strong: rgba(7, 17, 31, 0.84);
-  --accent: #0096AD;
-  --accent-soft: rgba(0, 150, 173, 0.13);
-  --accent-line: rgba(0, 150, 173, 0.38);
-  --footer-fill: var(--accent);
-  --footer-deep: #023d4b;
-  --cursor-core: rgba(0, 150, 173, 0.18);
-  --cursor-mid: rgba(0, 150, 173, 0.08);
+  --accent: #00458A;
+  --accent-soft: rgba(0, 69, 138, 0.10);
+  --accent-line: rgba(0, 69, 138, 0.34);
+  --footer-fill: #00CCFF;
+  --footer-deep: #00458A;
+  --cursor-core: rgba(0, 69, 138, 0.14);
+  --cursor-mid: rgba(0, 69, 138, 0.06);
   --button-bg: #07111f;
   --button-text: #ffffff;
   --project-card-bg: rgba(255, 255, 255, 0.98);
   --project-card-hover: rgba(255, 255, 255, 1);
   --project-card-shadow: none;
-  --project-card-hover-shadow: 0 0 0 1px rgba(0, 150, 173, 0.06);
-  --theme-ripple-color: #01050f;
+  --project-card-hover-shadow: 0 0 0 1px rgba(0, 69, 138, 0.07);
+  --theme-ripple-color: #0C1029;
   --shadow: rgba(5, 43, 68, 0.12);
   --player-bg: rgba(238, 246, 255, 0.88);
   /* Light theme: classic soft-UI, grey shadow down-right, white highlight up-left */
@@ -264,7 +264,7 @@ body::before {
 }
 
 :root[data-theme="light"] body::before {
-  background-image: radial-gradient(circle, rgba(0, 150, 173, 0.13) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(0, 69, 138, 0.11) 1px, transparent 1px);
 }
 
 .cursor-spotlight {
@@ -278,9 +278,9 @@ body::before {
   opacity: 0;
   background: radial-gradient(
     circle,
-    rgba(0, 150, 173, 0.18),
-    rgba(0, 150, 173, 0.08) 34%,
-    rgba(0, 150, 173, 0.02) 58%,
+    rgba(0, 204, 255, 0.14),
+    rgba(0, 204, 255, 0.06) 34%,
+    rgba(0, 204, 255, 0.015) 58%,
     transparent 76%
   );
   border-radius: 50%;
@@ -301,7 +301,7 @@ body::before {
   mix-blend-mode: normal;
   background: radial-gradient(
     circle,
-    rgba(0, 150, 173, 0.2),
+    rgba(0, 69, 138, 0.16),
     rgba(55, 80, 240, 0.1) 34%,
     rgba(55, 80, 240, 0.025) 58%,
     transparent 76%
@@ -444,7 +444,7 @@ img {
   background-image: url("/assets/wave-mesh.svg");
   background-size: cover;
   background-position: center bottom;
-  opacity: 0.8;
+  opacity: 0.6;
   -webkit-mask-image:
     linear-gradient(to bottom, transparent 38%, #000 60%, #000 90%, transparent 100%),
     radial-gradient(100% 80% at 50% 92%, #000 32%, transparent 74%);
@@ -454,7 +454,7 @@ img {
 }
 
 :root[data-theme="light"] .site-mesh {
-  opacity: 0.55;
+  opacity: 0.4;
 }
 
 .section-anchor {
@@ -643,7 +643,7 @@ img {
 .hero-side p {
   margin: 0;
   color: var(--muted-strong);
-  font-size: 15px;
+  font-size: 16.5px;
   font-weight: 500;
   line-height: 1.8;
 }
@@ -828,7 +828,7 @@ img {
   max-width: 360px;
   margin: 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14.5px;
   line-height: 1.7;
 }
 
@@ -904,7 +904,7 @@ img {
   display: block;
   max-width: 540px;
   color: var(--muted);
-  font-size: 15px;
+  font-size: 16.5px;
   font-weight: 500;
   line-height: 1.8;
 }
@@ -1079,7 +1079,7 @@ img {
   max-width: 500px;
   margin: 0 0 12px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 15.5px;
   font-weight: 500;
   line-height: 1.82;
 }
@@ -1643,7 +1643,7 @@ img {
 .case-note p {
   margin: 18px 0 0;
   color: var(--muted-strong);
-  font-size: 14px;
+  font-size: 15.5px;
   font-weight: 500;
   line-height: 1.75;
 }
@@ -1702,7 +1702,7 @@ img {
 .ai-review-list p {
   margin: 8px 0 0;
   color: var(--muted-strong);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   line-height: 1.72;
 }
@@ -1797,7 +1797,7 @@ img {
 .craft-card p {
   margin: 0 0 12px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14.5px;
   line-height: 1.7;
 }
 
@@ -1976,8 +1976,9 @@ img {
   right: 0;
   top: 62px;
   bottom: 0;
-  /* Full teal water with depth. The seamless top comes from the mask on
-     .footer-sea, so the body can be solid without creating an edge. */
+  /* Water with depth: cyan surface dropping quickly into deep royal blue so
+     the credits always sit on dark water. The seamless top comes from the
+     mask on .footer-sea, so the body can be solid without creating an edge. */
   background: linear-gradient(to bottom, var(--footer-fill), var(--footer-deep));
 }
 
@@ -1995,9 +1996,9 @@ img {
 .footer-wave-parallax use {
   animation: footer-wave-move 12s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
 }
-.footer-wave-parallax .fw1 { animation-duration: 8s;  animation-delay: -2s; fill: rgba(0, 150, 173, 0.5); }
-.footer-wave-parallax .fw2 { animation-duration: 11s; animation-delay: -3s; fill: rgba(0, 150, 173, 0.45); }
-.footer-wave-parallax .fw3 { animation-duration: 15s; animation-delay: -4s; fill: rgba(0, 150, 173, 0.6); }
+.footer-wave-parallax .fw1 { animation-duration: 8s;  animation-delay: -2s; fill: rgba(0, 204, 255, 0.45); }
+.footer-wave-parallax .fw2 { animation-duration: 11s; animation-delay: -3s; fill: rgba(0, 204, 255, 0.4); }
+.footer-wave-parallax .fw3 { animation-duration: 15s; animation-delay: -4s; fill: rgba(0, 204, 255, 0.55); }
 .footer-wave-parallax .fw4 { animation-duration: 22s; animation-delay: -5s; fill: var(--footer-fill); }
 
 @keyframes footer-wave-move {
@@ -2034,9 +2035,6 @@ img {
   color: rgba(255, 255, 255, 0.82);
 }
 
-.footer .inspiration-credit a {
-  color: #fff;
-}
 
 .footer .footer-bottom .social-links a {
   color: rgba(255, 255, 255, 0.85);
@@ -2076,7 +2074,7 @@ img {
   max-width: 460px;
   margin: 0 0 44px;
   color: var(--muted);
-  font-size: 15px;
+  font-size: 16.5px;
   line-height: 1.8;
 }
 
@@ -2133,20 +2131,8 @@ img {
   font-size: 12px;
 }
 
-.inspiration-credit {
-  margin-top: 6px;
-}
 
-.inspiration-credit a {
-  color: var(--muted-strong);
-  text-decoration: underline;
-  text-decoration-color: var(--accent-line);
-  text-underline-offset: 4px;
-}
 
-.inspiration-credit a:hover {
-  color: var(--accent);
-}
 
 [data-reveal] {
   opacity: 0;
@@ -2923,7 +2909,7 @@ img {
 
 /* Hero pitch paragraph */
 .eh-pitch {
-  font-size: 15px;
+  font-size: 16.5px;
   color: var(--muted);
   line-height: 1.7;
   max-width: 64ch;
@@ -3099,7 +3085,7 @@ img {
   line-height: 1.2;
 }
 .eh-del-desc {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--muted);
   line-height: 1.7;
   margin: 0;
@@ -3148,7 +3134,7 @@ img {
   margin: 0;
 }
 .eh-stage-card-trigger {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--muted);
   line-height: 1.65;
   margin: 0;
@@ -3194,7 +3180,7 @@ img {
   font-size: clamp(22px, 3vw, 30px);
 }
 .eh-competitor-card--solo .eh-competitor-solves {
-  font-size: 15px;
+  font-size: 16px;
 }
 .eh-competitor-card--solo .eh-competitor-gap > p {
   font-size: 14px;
@@ -3430,8 +3416,7 @@ img {
 
   /* Footer credits are white-on-fill on screen; restore ink for paper */
   .footer .footer-bottom small,
-  .footer .footer-bottom .social-links a,
-  .footer .inspiration-credit a { color: #333 !important; }
+  .footer .footer-bottom .social-links a { color: #333 !important; }
 
   /* Force colours */
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -3551,7 +3536,7 @@ img {
   border-color: var(--accent-line);
   background: var(--accent-soft);
   transform: translateY(-2px);
-  box-shadow: var(--neu-raised-sm), 0 8px 28px rgba(0, 150, 173, 0.12);
+  box-shadow: var(--neu-raised-sm), 0 8px 28px rgba(0, 204, 255, 0.1);
 }
 
 .case-nav-btn small {
@@ -3676,7 +3661,7 @@ img {
   border: 1px solid var(--line);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(0, 150, 173, 0.08);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(0, 204, 255, 0.08);
   animation: ab-slide-up 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -3810,7 +3795,7 @@ img {
 }
 
 .ab-prompt:hover:not(:disabled):not(.is-used) {
-  background: rgba(0, 150, 173, 0.28);
+  background: rgba(0, 204, 255, 0.28);
   transform: translateX(3px);
 }
 
