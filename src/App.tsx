@@ -713,7 +713,7 @@ function FloatingMusicPlayer({
     : null;
 
   return (
-    <div
+    <aside
       className={`floating-player${soundEnabled ? " is-playing" : ""}`}
       aria-label={soundEnabled && trackTitle ? `Now playing: ${trackTitle}` : "Music player"}
     >
@@ -764,7 +764,7 @@ function FloatingMusicPlayer({
       >
         {soundEnabled ? <Pause size={13} /> : <Play size={13} />}
       </button>
-    </div>
+    </aside>
   );
 }
 
@@ -2217,7 +2217,13 @@ function Resume({
         copy="A curated resume layer, focused on what each chapter proves my ability to solve, collaborate, and ship."
       />
 
-      <div className="experience-rail" data-reveal>
+      <div
+        className="experience-rail"
+        data-reveal
+        tabIndex={0}
+        role="region"
+        aria-label="Experience highlights, scrollable"
+      >
         {resumeHighlights.map((item, index) => (
           <article className="experience-card" key={`${item.org}-${item.title}`}>
             <span className="rail-index">{String(index + 1).padStart(2, "0")}</span>
