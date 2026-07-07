@@ -142,6 +142,41 @@ export const craftCards = [
 
 export const projects: Project[] = [
   {
+    slug: "flowst",
+    name: "Flowst",
+    role: "AI learning platform",
+    year: "2026",
+    description:
+      "Flowst AI, the flow state of learning — named AI agents that teach for retention: understand first, then express, in a zero-judgment sandbox.",
+    story:
+      "A learning problem: passive study doesn't stick. Flowst turns learning into an active loop — understand, connect, express — guided by agents designed for how minds actually retain.",
+    tech: ["AI Agents", "EdTech", "Product Design"],
+    liveUrl: "https://useflowst.com",
+    image: "/assets/flowst.jpg",
+    overview:
+      "Flowst is an AI learning platform built around a simple conviction: retention comes from expressing what you understand, not re-reading what you don't. Learners work with a cast of named agents — each with its own method, from PREP and MECE structuring to pressure simulation — inside a zero-judgment sandbox made for minds that think in pictures.",
+    roleDetails:
+      "I'm building Flowst end-to-end — product direction, the agent cast and their teaching methods, brand and interface design, and the engineering underneath. It's currently pre-launch, growing a waitlist.",
+    process: [
+      "Started from the retention problem: why passive study fades and what an active understand-then-express loop needs to feel like.",
+      "Designed a cast of distinct agents, each carrying one proven learning method, so the pedagogy lives in characters rather than settings menus.",
+      "Shaped the experience around visual connection, safe practice and proof-driven progress — then began building toward launch.",
+    ],
+    outcomes: [
+      "A clear product thesis: learn from agents designed for retention.",
+      "A pre-launch platform with a distinct identity and a growing waitlist.",
+      "A working foundation for creators and teams, not just individual learners.",
+    ],
+    lessons: [
+      "Pedagogy is a design material — methods become lovable when they become characters.",
+      "A safe sandbox matters as much as smart AI; judgment is the real blocker to practice.",
+      "Building an AI product end-to-end sharpens every question about trust, tone and reliance.",
+    ],
+    transferableSkills: ["AI product design", "Agent experience design", "Learning science", "End-to-end ownership"],
+    aiUse:
+      "Flowst is an AI-native product, so AI sits on both sides of the work: agents power the learning experience itself, and AI pairing accelerates how I design, write and build it — with the product judgment, agent personalities and pedagogy staying firmly mine.",
+  },
+  {
     slug: "loft-craft",
     name: "Loft Craft",
     role: "E-commerce platform",
