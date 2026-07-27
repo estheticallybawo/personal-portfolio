@@ -37,7 +37,7 @@ export const profile = {
   name: "Esther Bawo Tsotso",
   shortName: "Esther Tsotso",
   initials: "ET",
-  label: "Frontend Focused Software Engineer",
+  label: "AI Product & Design Engineer",
   email: "estherbawotsotso@gmail.com",
   contactEmail: "estheticallybawo@gmail.com",
   phone: "+234 806 136 5611",
@@ -121,7 +121,7 @@ export const craftCards = [
       "I start by understanding the real user pain, the product goal, and the simplest path to a useful solution.",
   },
   {
-    title: "Frontend Engineering",
+    title: "Product Engineering",
     detail: "React, TypeScript, Tailwind CSS",
     copy:
       "I build responsive, accessible interfaces that hold up across states, devices, browsers, and real user flows.",
@@ -152,7 +152,7 @@ export const projects: Project[] = [
       "A learning problem: passive study doesn't stick. Flowst turns learning into an active loop — understand, connect, express — guided by agents designed for how minds actually retain.",
     tech: ["AI Agents", "EdTech", "Product Design"],
     liveUrl: "https://useflowst.com",
-    image: "/assets/flowst.jpg",
+    image: "/flowsthero.PNG",
     overview:
       "Flowst is an AI learning platform built around a simple conviction: retention comes from expressing what you understand, not re-reading what you don't. Learners work with a cast of named agents — each with its own method, from PREP and MECE structuring to pressure simulation — inside a zero-judgment sandbox made for minds that think in pictures.",
     roleDetails:
@@ -193,7 +193,7 @@ export const projects: Project[] = [
     overview:
       "Loft Craft is an e-commerce experience built around the full shopping path: browsing furniture, managing a cart, paying securely, and confirming the order state without leaving users unsure about what happened.",
     roleDetails:
-      "I built the frontend flow, cart behavior, payment callback handling, and responsive interface patterns that make the purchase journey feel clear across devices.",
+      "I built the purchase flow, cart behavior, payment callback handling, and responsive interface patterns that make the shopping journey feel clear across devices.",
     process: [
       "Mapped the shopping journey from product discovery to order confirmation.",
       "Used Zustand for predictable cart state and Paystack for payment flow integration.",
@@ -202,7 +202,7 @@ export const projects: Project[] = [
     outcomes: [
       "A complete checkout flow with fewer dead ends.",
       "Clearer payment feedback for users after transactions.",
-      "A stronger example of product thinking inside a frontend build.",
+      "A stronger example of product thinking inside a product build.",
     ],
     lessons: [
       "Payment flows need emotional clarity as much as technical correctness.",
@@ -239,7 +239,7 @@ export const projects: Project[] = [
     outcomes: [
       "A polished Figma-to-code implementation.",
       "A smoother ticket selection and confirmation flow.",
-      "A useful proof point for detail-oriented frontend delivery.",
+      "A useful proof point for detail-oriented product delivery.",
     ],
     lessons: [
       "Multi-step flows work better when each screen has one clear job.",
@@ -348,7 +348,7 @@ export const projects: Project[] = [
     outcomes: [
       "A more understandable entry point for the product.",
       "Clearer trust and value communication.",
-      "A practical example of product messaging in a frontend-adjacent workflow.",
+      "A practical example of product messaging in an interface workflow.",
     ],
     lessons: [
       "Finance products need plain language before persuasion.",
@@ -462,6 +462,14 @@ export const projects: Project[] = [
 
 export const resumeHighlights = [
   {
+    type: "Self-initiated project",
+    title: "Flowst",
+    org: "Personal initiative",
+    period: "2026",
+    copy:
+      "A multi-agent learning platform from concept to launch-readiness, blending AI, product & design engineering as a self-directed project.",
+  },
+  {
     type: "Hackathon",
     title: "Echo App",
     org: "Exploration",
@@ -495,7 +503,7 @@ export const resumeHighlights = [
   },
   {
     type: "Internship",
-    title: "Frontend Intern",
+    title: "Frontend Engineering Intern",
     org: "HNG Tech",
     period: "Dec 2024 - Apr 2025",
     copy:
@@ -519,7 +527,7 @@ export const education = [
 ];
 
 export const credentials = [
-  "BestLearner Award - AltSchool Africa Frontend Engineering",
+  "BestLearner Award - AltSchool Africa in Frontend Engineering",
 ];
 
 export const certifications: Certification[] = [
@@ -536,7 +544,7 @@ export const certifications: Certification[] = [
   {
     title: "Responsive Web Design",
     issuer: "freeCodeCamp",
-    category: "Frontend",
+    category: "Product",
     image: "/assets/certifications/Freecodecamp - Web Design.PNG",
     verifyUrl: "https://www.freecodecamp.org/certification/estheticallybawo/responsive-web-design",
     takeaway:
@@ -555,16 +563,16 @@ export const certifications: Certification[] = [
   {
     title: "Next.js",
     issuer: "Frontend Masters",
-    category: "Frontend",
+    category: "Product",
     image: "/assets/certifications/Frontend Masters-NextJS.PNG",
     takeaway:
-      "Deepened my understanding of production React patterns, routing, rendering, and full-stack frontend decisions.",
+      "Deepened my understanding of production React patterns, routing, rendering, and full-stack product decisions.",
     skills: ["Next.js", "Routing", "Rendering patterns"],
   },
   {
     title: "React Native",
     issuer: "Frontend Masters",
-    category: "Mobile",
+    category: "Product",
     image: "/assets/certifications/Frontend Masters-ReactNative.jpg",
     takeaway:
       "Expanded how I think about cross-platform interfaces, mobile constraints, and app-like interaction patterns.",
@@ -621,7 +629,7 @@ export const certifications: Certification[] = [
   {
     title: "Tailwind CSS",
     issuer: "Scrimba",
-    category: "Frontend",
+    category: "Design",
     image: "/assets/certifications/Scrimba - Tailwind.jpg",
     verifyUrl: "https://scrimba.com/certificate-cert24zAwJ78oKUJhjJCx9QzR7U56NzVPTeMvu63W",
     takeaway:

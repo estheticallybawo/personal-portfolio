@@ -46,12 +46,12 @@ const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
 const projectRevealSoundPath = "/assets/mixkit-page-forward-single-chime-1107.wav";
 const certificateChimePath = "/assets/mixkit-page-back-chime-1108.wav";
 const heroRoles = [
-  "Frontend Maestro",
+  "AI Product & Design Engineer",
   "Problem Solver",
   "Product Thinker",
   "Solution Engineer",
   "AI Product Builder",
-  "Mobile MVP Builder",
+  "Mobile App Builder",
   "Open Source Contributor",
 ];
 
@@ -59,7 +59,7 @@ const buildingPrompts = [
   {
     id: "building",
     q: "What are you currently building?",
-    a: "Flowst AI, a voice-first, visual-first learning platform for minds that think in pictures. It helps people build mental models, practice explaining things out loud, and move from passive familiarity to real understanding. Think: flow state as a product.",
+    a: "https://useflowst.com is my current focus. It's a multi-agent learning platform that helps people learn faster and retain more by thinking out loud, seeing mental models, and getting feedback from AI agents.",
   },
   {
     id: "how",
@@ -79,7 +79,7 @@ const buildingPrompts = [
   {
     id: "available",
     q: "Are you available for work?",
-    a: "Yes, open to product-focused frontend or design engineering roles, especially at teams building tools for how people actually think and learn. If your users are often overlooked by tech, let's talk.",
+    a: "Yes, open to product engineering, design engineering, or product management roles, especially at teams building tools for how people actually think and learn. If your users are often overlooked by tech, let's talk.",
   },
   {
     id: "join",
@@ -806,6 +806,18 @@ function ActivelyBuildingModal({
     }, 720);
   };
 
+  const renderMessageText = (text: string) => {
+    return text.split(/(https?:\/\/[^\s]+)/g).map((part, index) =>
+      /^https?:\/\//.test(part) ? (
+        <a key={index} href={part} target="_blank" rel="noreferrer">
+          {part}
+        </a>
+      ) : (
+        part
+      ),
+    );
+  };
+
   return createPortal(
     <div className="ab-backdrop" onClick={onClose} role="dialog" aria-modal="true" aria-label="Actively building chat">
       <div className="ab-modal" onClick={(e) => e.stopPropagation()}>
@@ -817,7 +829,7 @@ function ActivelyBuildingModal({
         <div className="ab-messages">
           {messages.map((msg, i) => (
             <div key={i} className={`ab-bubble ab-bubble--${msg.from}`}>
-              {msg.text}
+              {renderMessageText(msg.text)}
               {msg.cta && (
                 <a className="ab-cta" href={msg.cta.href} target="_blank" rel="noreferrer">
                   <Instagram size={13} />
@@ -865,7 +877,7 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
 
         <aside className="hero-side" data-reveal>
           <p>
-            Hi there, I'm a Frontend-Focused Software Engineer from Nigeria who solves product problems with
+            Hi there, I'm an AI Product & Design Engineer from Nigeria who solves product problems with
             product intuition and user empathy. I focus on building experiences that feel human and well thought out.
           </p>
           <div className="hero-actions">
@@ -2243,7 +2255,7 @@ function Resume({
         <SectionHeading
           eyebrow="Learning & recognition"
           title="Education with one standout award."
-          copy="Formal training and the recognition that shows the same care I bring to frontend engineering delivery."
+          copy="Formal training and the recognition that shows the same care I bring to product and design engineering delivery."
         />
       </div>
 
@@ -2281,7 +2293,7 @@ function Resume({
           <div className="mini-card-grid">
             {credentials.map((credential) => (
               <article className="mini-card" key={credential}>
-                <span>Frontend award</span>
+                <span>Recognition</span>
                 <strong>{credential}</strong>
                 <p>
                   Awarded for being the best Frontend Engineering student with
@@ -2333,7 +2345,7 @@ function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
           </span>
         </h2>
         <p data-reveal>
-          Open to frontend roles, product collaborations, and user-centered problems
+          Open to product engineering, design engineering, and product management roles, product collaborations, and user-centered problems
           that need clear thinking, technical execution, and product care.
         </p>
         <div className="contact-actions" data-reveal>
