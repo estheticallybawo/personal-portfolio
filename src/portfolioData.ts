@@ -463,14 +463,6 @@ export const projects: Project[] = [
 export const resumeHighlights = [
   {
     type: "Current position",
-    title: "Founder",
-    org: "Flowst",
-    period: "Present",
-    copy:
-      "Building Flowst, an AI learning platform that helps people understand, express, and retain what they learn.",
-  },
-  {
-    type: "Current position",
     title: "Head Researcher",
     org: "SILT Institute",
     period: "Present",
