@@ -32,6 +32,7 @@ import {
   resumeHighlights,
   tools,
   whyCards,
+  writingPosts,
 } from "./portfolioData";
 
 type Theme = "dark" | "light";
@@ -1023,29 +1024,69 @@ function Writing({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
           <h2>Notes on how I view the world with Artificial Intelligence.</h2>
           <p>
             Essays and field notes on intelligence, learning, technology, and the ideas shaping my
-            what i build.
+            work.
           </p>
         </div>
       </div>
-      <a
-        className="publication-row"
-        href={profile.links.substack}
-        target="_blank"
-        rel="noreferrer"
-        onClick={() => onSoundCue("button")}
-        data-reveal
-      >
-        <span className="publication-mark">
-          <img src="/web.png" alt="whatWEBecome Substack logo" />
-        </span>
-        <div>
-          <small>Newsletter | Substack</small>
-          <h3>whatWEBecome</h3>
-          <p>Worldviews and working notes from designing for many forms of intelligence.</p>
+      <div className="writing-rail-shell" data-reveal>
+        <div className="writing-rail-toolbar" aria-hidden="true">
+          <span>Published articles</span>
         </div>
-        <span className="publication-status">New essays coming soon</span>
-        <ArrowUpRight size={18} aria-hidden="true" />
-      </a>
+        <div className="writing-rail" aria-label="Newsletter essays">
+          {writingPosts.map((post) => (
+            <article className="writing-card" key={post.url}>
+              <a
+                className="writing-cover-link"
+                href={post.url}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`Read “${post.title}” on ${post.publication}`}
+                onClick={() => onSoundCue("button")}
+              >
+                <figure className="writing-cover">
+                  <img src={post.image} alt={post.imageAlt} loading="lazy" />
+                  <span className="writing-cover-arrow" aria-hidden="true">
+                    <ArrowUpRight size={18} />
+                  </span>
+                </figure>
+              </a>
+              <div className="writing-card-caption">
+                <div className="writing-card-meta">
+                  <span>{post.publication}</span>
+                  <time dateTime={post.dateTime}>{post.date}</time>
+                </div>
+                <a
+                  className="writing-title-link"
+                  href={post.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => onSoundCue("button")}
+                >
+                  <h3>{post.title}</h3>
+                </a>
+                <p>{post.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+      <aside className="newsletter-cta" data-reveal aria-labelledby="newsletter-cta-title">
+        <div>
+          <p className="newsletter-cta-kicker">Stay with the questions</p>
+          <h3 id="newsletter-cta-title">Follow whatWEBecome.</h3>
+          <p>
+            Occasional essays on AI, learning, humanity, and the tools shaping who we become.
+          </p>
+        </div>
+        <a
+          href={`${profile.links.substack}/subscribe`}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => onSoundCue("button")}
+        >
+          Subscribe on Substack <ArrowUpRight size={16} />
+        </a>
+      </aside>
     </section>
   );
 }

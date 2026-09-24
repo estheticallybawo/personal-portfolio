@@ -57,6 +57,33 @@ export const profile = {
   },
 };
 
+export const writingPosts = [
+  {
+    publication: "whatWEBecome",
+    title: "Before AI, We Were Already Extending Ourselves",
+    description:
+      "What anthropology can teach us about ourselves and the tools we create.",
+    date: "24 Sep 2026",
+    dateTime: "2026-09-24",
+    image: "/writing-before-ai.jpg",
+    imageAlt:
+      "Illustrated river valley at sunset with the title Before AI, We Were Already Extending Ourselves.",
+    url: "https://whatwebcome.substack.com/p/whatwebecome-1-before-ai-we-were",
+  },
+  {
+    publication: "whatWEBecome",
+    title: "Maybe the Question Isn’t Whether We Should Slow AI Down",
+    description:
+      "Why the deeper AI-safety mismatch may sit between machine capability and our understanding of the people these systems serve.",
+    date: "18 Sep 2026",
+    dateTime: "2026-09-18",
+    image: "/writing-slow-ai.jpg",
+    imageAlt:
+      "Deep blue typographic cover reading Maybe the Question Isn’t Whether We Should Slow AI Down.",
+    url: "https://whatwebcome.substack.com/p/maybe-the-question-isnt-whether-we",
+  },
+];
+
 export const tools = [
   {
     name: "JavaScript",
