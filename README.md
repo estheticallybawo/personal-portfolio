@@ -1,8 +1,8 @@
 # Esther Tsotso Portfolio
 
-A personal portfolio for Esther Bawo Tsotso, an AI Product & Design Engineer focused on Product Engineering, Design Engineering, and Product Management.
+A personal portfolio for Esther Bawo Tsotso, an AI Researcher and Product Engineer focused on responsible educational AI, adaptive learning systems, and human-centred product engineering.
 
-The site highlights selected projects, technical tools, experience, education, awards, and contact links in a responsive React portfolio with dark/light mode, sticky project cards, sound controls, and smooth interaction details.
+The site tells a chronological journey from early computer tutoring and classroom teaching through broadcasting, software engineering, AI product work, and research leadership at SILT Institute. It also highlights applied projects, research interests, experience, education, and contact links in a responsive React portfolio.
 
 ## Tech Stack
 

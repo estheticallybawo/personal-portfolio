@@ -37,20 +37,23 @@ export const profile = {
   name: "Esther Bawo Tsotso",
   shortName: "Esther Tsotso",
   initials: "ET",
-  label: "AI Product & Design Engineer",
+  label: "AI Researcher & Product Engineer",
   email: "estherbawotsotso@gmail.com",
   contactEmail: "estheticallybawo@gmail.com",
   phone: "+234 806 136 5611",
   location: "Nigeria",
   image: "/assets/frontend.jpg",
+  headshot: "/esther%20(2).jpg",
   cvUrl:
-    "https://docs.google.com/document/d/1itqRE7tUgOmPEZfevQOhQMQyNemueKoPwKpWmuMzics/edit?usp=sharing",
+    "https://docs.google.com/document/d/1j7VtsYQAPlM58AjTc7SNJWwMsi-BLCgu4LyBVKSg0M4/edit?usp=sharing",
   certificationsUrl: "/certifications",
   links: {
     github: "https://github.com/estheticallybawo",
     linkedin: "https://linkedin.com/in/estheticallybawo",
     instagram: "https://instagram.com/bawocore",
-    calendar: "https://cal.com/estherbawot/15min"
+    calendar: "https://cal.com/estherbawot/",
+    silt: "https://silt-institute.com",
+    substack: "https://whatwebcome.substack.com",
   },
 };
 
@@ -115,28 +118,91 @@ export const tools = [
 
 export const craftCards = [
   {
-    title: "Problem Framing",
-    detail: "User empathy, research, clarity",
+    title: "Research framing",
+    detail: "Questions, learners, testable assumptions",
     copy:
-      "I start by understanding the real user pain, the product goal, and the simplest path to a useful solution.",
+      "I turn broad questions about learning and technology into focused inquiries that can be observed, challenged, and refined.",
   },
   {
-    title: "Product Engineering",
-    detail: "React, TypeScript, Tailwind CSS",
+    title: "Learning systems",
+    detail: "Pedagogy, agent behaviour, human oversight",
     copy:
-      "I build responsive, accessible interfaces that hold up across states, devices, browsers, and real user flows.",
+      "I translate learning-science principles into product behaviours that protect learner agency, effort, and confidence.",
   },
   {
-    title: "Problem Solving",
-    detail: "Systems thinking, edge cases",
+    title: "Product engineering",
+    detail: "React, TypeScript, prototypes, delivery",
     copy:
-      "I break complex requirements into product decisions, UI states, technical tradeoffs, and testable steps.",
+      "I build the interfaces and prototypes that make an idea concrete enough to test with people and improve through evidence.",
   },
   {
-    title: "Product Thinking",
-    detail: "Trust, conversion, retention",
+    title: "Research translation",
+    detail: "Teaching, broadcasting, facilitation",
     copy:
-      "I connect engineering choices to business outcomes, user confidence, and the moments where products earn trust.",
+      "I make complex ideas understandable across classrooms, teams, products, and public-facing research communication.",
+  },
+];
+
+export const journeyChapters = [
+  {
+    period: "2007 - 2009",
+    phase: "The first classroom",
+    title: "I learned technology by helping other people learn it.",
+    role: "Computer Tutor & Administrative Assistant",
+    org: "S n Sol Cyber Cafe",
+    copy:
+      "I arrived as a computer student after secondary school and was invited to join the centre a month later. Helping new learners build digital confidence became my earliest experience of technology-enabled learning.",
+    carriedForward: "Digital confidence grows when instruction feels practical, patient, and safe.",
+  },
+  {
+    period: "2011 - 2012",
+    phase: "Learning became the work",
+    title: "The classroom taught me that understanding is never one-size-fits-all.",
+    role: "Teacher",
+    org: "Moncordel International School",
+    copy:
+      "I taught Computer Studies, Mathematics, English, and Biology across primary and junior secondary levels. I saw how prior knowledge, confidence, explanation, correction, and practice change what a learner can do next.",
+    carriedForward: "Good support adapts without taking the work of thinking away from the learner.",
+  },
+  {
+    period: "2012 - 2019",
+    phase: "Learning to translate",
+    title: "Broadcasting taught me how to research, listen, and make complexity public.",
+    role: "Radio Host, Radio Intern & TV News Anchor Intern",
+    org: "Wave FM, Rhythm FM & Silverbird Television",
+    copy:
+      "Across radio and television, I prepared programmes, interviews, scripts, and live conversations. The work sharpened my editorial judgment and my ability to translate information for very different audiences.",
+    carriedForward: "Clarity is not simplification. It is the discipline of helping people find meaning.",
+  },
+  {
+    period: "2023 - 2025",
+    phase: "From explaining systems to building them",
+    title: "Software engineering gave my ideas a form people could use.",
+    role: "Frontend Engineering Student & Intern",
+    org: "Loctech, HNG Tech, AltSchool Africa & Miva Open University",
+    copy:
+      "I returned to technology through frontend engineering, then expanded into software engineering, responsive products, and cross-functional delivery. I learned to turn human needs into interfaces, states, and working systems.",
+    carriedForward: "A useful idea becomes accountable when people can interact with it.",
+  },
+  {
+    period: "2025 - 2026",
+    phase: "AI became a design material",
+    title: "Building with AI changed the questions I was asking.",
+    role: "AI/ML Intern, Product Engineer & Independent Builder",
+    org: "UNICCON, Echo & Flowst",
+    copy:
+      "Working on machine-learning products, safety technology, and a multi-agent learning platform moved my attention beyond what AI can generate to how it shapes trust, behaviour, agency, and reliance.",
+    carriedForward: "Model capability matters, but human capability is the boundary that matters more.",
+  },
+  {
+    period: "2026 - Now",
+    phase: "The direction",
+    title: "Now I research the relationship between AI and human learning.",
+    role: "Research Lead, Adaptive Learning Systems",
+    org: "SILT Institute",
+    copy:
+      "I lead interdisciplinary inquiry into productive cognitive effort, learner agency, appropriate reliance on AI, age-aware support, human connection, model behaviour, and responsible educational technology.",
+    carriedForward: "The goal is not an AI that does more for learners. It is learning systems that leave people more capable.",
   },
 ];
 
@@ -434,7 +500,7 @@ export const projects: Project[] = [
       "Visual QA",
     ],
     aiUse:
-      "I used AI as a pair-programming and product-thinking partner while I directed the taste, goals, references, and feedback. It helped me inspect the code, explore interaction patterns, implement changes, test builds, and turn feedback into shippable iterations then forced it to give a structured review of what it's like working with me. 🥰",
+      "I used AI as a pair-programming and product-thinking partner while I directed the taste, goals, references, and feedback. It helped me inspect the code, explore interaction patterns, implement changes, test builds, and turn feedback into shippable iterations, then I asked it for a structured review of what it is like to work with me.",
     aiReview: [
       {
         label: "Leadership",
@@ -463,11 +529,11 @@ export const projects: Project[] = [
 export const resumeHighlights = [
   {
     type: "Current position",
-    title: "Head Researcher",
+    title: "Research Lead, Adaptive Learning Systems",
     org: "SILT Institute",
     period: "Present",
     copy:
-      "Leading research at SILT Institute with a focus on turning thoughtful inquiry into useful, human-centred insight for AI in Education and human development",
+      "Leading an interdisciplinary research initiative exploring how AI-supported systems can strengthen learning, learner agency, cognitive development, and healthy interaction with technology.",
   },
   {
     type: "Self-initiated project",
@@ -517,6 +583,30 @@ export const resumeHighlights = [
     copy:
       "Shipped responsive web interfaces with HTML, CSS, JavaScript, React, Next.js, and TypeScript in a remote team.",
   },
+  {
+    type: "Broadcasting",
+    title: "Radio Host & TV News Anchor Intern",
+    org: "Wave FM, Rhythm FM & Silverbird Television",
+    period: "2012 - 2019",
+    copy:
+      "Researched, scripted, presented, and facilitated live conversations, learning how to make complex information clear for public audiences.",
+  },
+  {
+    type: "Education",
+    title: "Teacher",
+    org: "Moncordel International School",
+    period: "2011 - 2012",
+    copy:
+      "Taught primary and junior secondary learners across Computer Studies, Mathematics, English, and Biology, adapting explanations to different levels of knowledge and confidence.",
+  },
+  {
+    type: "Starting point",
+    title: "Computer Tutor & Administrative Assistant",
+    org: "S n Sol Cyber Cafe",
+    period: "2007 - 2009",
+    copy:
+      "Began as a computer student, became an employee, and helped new learners develop foundational computer literacy and practical digital skills.",
+  },
 ];
 
 export const education = [
@@ -531,6 +621,18 @@ export const education = [
     org: "AltSchool Africa",
     period: "2025 - 2026",
     meta: "Diploma",
+  },
+  {
+    title: "Frontend Engineering",
+    org: "Loctech IT Training Institute",
+    period: "2023",
+    meta: "Professional training",
+  },
+  {
+    title: "Public Administration",
+    org: "Federal Polytechnic Nekede",
+    period: "2009 - 2011",
+    meta: "National Diploma",
   },
 ];
 

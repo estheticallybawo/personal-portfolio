@@ -16,7 +16,6 @@ import {
   Palette,
   Pause,
   Play,
-  Shuffle,
   Sparkles,
   Sun,
   Zap,
@@ -27,6 +26,7 @@ import {
   certifications,
   earlyHer,
   education,
+  journeyChapters,
   profile,
   projects,
   resumeHighlights,
@@ -39,20 +39,18 @@ type Theme = "dark" | "light";
 const themeStorageKey = "esther-portfolio-theme";
 const soundStorageKey = "esther-portfolio-sound";
 const soundLevelStorageKey = "esther-portfolio-sound-level";
-const soundLevels = [0, 0.2, 0.55, 1] as const;
-const PLAYLIST_ID = "PLGHl5-LkFRpM";
+const QUIET_SOUND_LEVEL = 0.2;
+const MUSIC_VOLUME = 50;
+const MUSIC_VIDEO_ID = "BmxO3Y1tKyU";
 const clickSoundPath = "/assets/mixkit-coins-handling-1939.wav";
 const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
 const projectRevealSoundPath = "/assets/mixkit-page-forward-single-chime-1107.wav";
 const certificateChimePath = "/assets/mixkit-page-back-chime-1108.wav";
 const heroRoles = [
-  "AI Product & Design Engineer",
-  "Problem Solver",
-  "Product Thinker",
-  "Solution Engineer",
-  "AI Product Builder",
-  "Mobile App Builder",
-  "Open Source Contributor",
+  "AI Researcher & Product Engineer",
+  "Research Lead, Adaptive Learning Systems",
+  "AI for Education",
+  "Learning Systems Builder",
 ];
 
 const buildingPrompts = [
@@ -79,7 +77,7 @@ const buildingPrompts = [
   {
     id: "available",
     q: "Are you available for work?",
-    a: "Yes, open to product engineering, design engineering, or product management roles, especially at teams building tools for how people actually think and learn. If your users are often overlooked by tech, let's talk.",
+    a: "Yes, I am open to research collaborations and product roles focused on educational AI, adaptive learning, learner agency, and human-centred technology. If the work asks how people can think and learn better with AI, let's talk.",
   },
   {
     id: "join",
@@ -95,7 +93,8 @@ type ThemeRipple = { x: number; y: number; color: string; id: number } | null;
 interface YTPlayerInstance {
   playVideo(): void;
   pauseVideo(): void;
-  setShuffle(shuffle: boolean): void;
+  seekTo(seconds: number, allowSeekAhead: boolean): void;
+  setVolume(volume: number): void;
   getCurrentTime(): number;
   getDuration(): number;
   getVideoData(): { title: string; video_id: string; author: string };
@@ -211,15 +210,10 @@ function App() {
   const themeTimersRef = useRef<number[]>([]);
   const themeTransitionRef = useRef(false);
   const [themeRipple, setThemeRipple] = useState<ThemeRipple>(null);
-  const [soundLevel, setSoundLevel] = useState(() => {
-    const savedLevel = Number(localStorage.getItem(soundLevelStorageKey));
-    if (soundLevels.some((level) => level === savedLevel)) return savedLevel;
-    // default ON, off only if user explicitly turned it off before
-    return localStorage.getItem(soundStorageKey) === "off" ? 0 : 0.55;
-  });
+  // Music always starts paused. A visitor must explicitly press play on every page load.
+  const [soundLevel, setSoundLevel] = useState(0);
   const soundEnabled = soundLevel > 0;
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const [showChat, setShowChat] = useState(false);
   const [path, setPath] = useState(() => window.location.pathname);
   const [theme, setTheme] = useState<Theme>(() => {
     const requestedTheme = new URLSearchParams(window.location.search).get("theme");
@@ -231,8 +225,7 @@ function App() {
   });
   const [trackTitle, setTrackTitle] = useState("");
   const [trackProgress, setTrackProgress] = useState(0);
-  const [videoId, setVideoId] = useState("");
-  const [shuffleEnabled, setShuffleEnabled] = useState(false);
+  const [videoId, setVideoId] = useState(MUSIC_VIDEO_ID);
   const musicPausedByVideoRef = useRef(false);
   const soundEnabledRef = useRef(soundEnabled);
   useEffect(() => { soundEnabledRef.current = soundEnabled; }, [soundEnabled]);
@@ -277,23 +270,30 @@ function App() {
       ytPlayerRef.current = new window.YT.Player(mount, {
         height: 1,
         width: 1,
-        videoId: "_rSO8tMhtzo",
+        videoId: MUSIC_VIDEO_ID,
         playerVars: {
-          list: PLAYLIST_ID,
-          listType: "playlist",
-          autoplay: 1,
+          autoplay: 0,
           controls: 0,
+          loop: 1,
+          playlist: MUSIC_VIDEO_ID,
           playsinline: 1,
           origin: window.location.origin,
         },
         events: {
           onReady: () => {
-            try { ytPlayerRef.current?.setShuffle(true); } catch { /* ignore */ }
-            if (soundEnabledRef.current) {
-              try { ytPlayerRef.current?.playVideo(); } catch { /* browser may block */ }
-            }
+            try {
+              // Honour an explicit play click made while the YouTube API was still loading.
+              if (soundEnabledRef.current) ytPlayerRef.current?.playVideo();
+            } catch { /* player not ready */ }
           },
           onStateChange: (event: { data: number }) => {
+            if (event.data === window.YT.PlayerState.ENDED && soundEnabledRef.current) {
+              try {
+                ytPlayerRef.current?.seekTo(0, true);
+                ytPlayerRef.current?.playVideo();
+              } catch { /* player not ready */ }
+              return;
+            }
             if (event.data === 1) {
               if (!progressIntervalRef.current) {
                 progressIntervalRef.current = window.setInterval(() => {
@@ -342,7 +342,22 @@ function App() {
   }, []);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const targetId = window.location.hash.slice(1);
+
+    if (!targetId) {
+      window.scrollTo(0, 0);
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      const target = document.getElementById(targetId);
+      target?.querySelectorAll<HTMLElement>("[data-reveal]").forEach((item) => {
+        item.classList.add("is-visible");
+      });
+      target?.scrollIntoView();
+    });
+
+    return () => window.cancelAnimationFrame(frame);
   }, [path]);
 
   useEffect(() => {
@@ -472,21 +487,20 @@ function App() {
     const audio = ensureAudio();
     if (!audio) return;
     audio.setVolume(soundLevel);
-    try {
-      const state = ytPlayerRef.current?.getPlayerState();
-      if (state !== undefined && state !== 1) ytPlayerRef.current?.playVideo();
-    } catch { /* player not ready */ }
     audio.play(kind);
   };
 
   const toggleSound = () => {
-    const next = soundEnabled ? 0 : 0.55;
+    const next = soundEnabled ? 0 : QUIET_SOUND_LEVEL;
     const audio = ensureAudio();
     if (!audio) return;
     audio.setVolume(next);
     if (next > 0) {
       audio.play("button");
-      try { ytPlayerRef.current?.playVideo(); } catch { /* not ready */ }
+      try {
+        ytPlayerRef.current?.setVolume(MUSIC_VOLUME);
+        ytPlayerRef.current?.playVideo();
+      } catch { /* player not ready */ }
     } else {
       try { ytPlayerRef.current?.pauseVideo(); } catch { /* not ready */ }
       setTrackTitle("");
@@ -496,12 +510,6 @@ function App() {
     setSoundLevel(next);
     localStorage.setItem(soundLevelStorageKey, String(next));
     localStorage.setItem(soundStorageKey, next > 0 ? "on" : "off");
-  };
-
-  const toggleShuffle = () => {
-    const next = !shuffleEnabled;
-    setShuffleEnabled(next);
-    try { ytPlayerRef.current?.setShuffle(next); } catch { /* not ready */ }
   };
 
   const toggleTheme = (event: ReactMouseEvent<HTMLButtonElement>) => {
@@ -588,9 +596,7 @@ function App() {
         themeLabel={themeLabel}
         onThemeToggle={toggleTheme}
         onSoundCue={playSound}
-        onOpenChat={() => { playSound("button"); setShowChat(true); }}
       />
-      {showChat && <ActivelyBuildingModal onClose={() => setShowChat(false)} onSoundCue={playSound} />}
       <main className="site-shell">
         {activeProject ? (
           <ProjectDetail project={activeProject} onBack={() => navigateTo("/")} onNavigate={navigateTo} onSoundCue={playSound} />
@@ -601,11 +607,10 @@ function App() {
         ) : (
           <>
             <Hero onSoundCue={playSound} />
-            <Tools />
+            <CurrentDirection />
             <Projects onNavigate={navigateTo} onSoundCue={playSound} />
-            <WhySection onVideoPlay={handleVideoPlay} onVideoStop={handleVideoStop} />
-            <About />
-            <Resume onNavigate={navigateTo} onSoundCue={playSound} />
+            <Writing onSoundCue={playSound} />
+            <Journey />
           </>
         )}
       </main>
@@ -632,9 +637,7 @@ function App() {
         trackTitle={trackTitle}
         trackProgress={trackProgress}
         videoId={videoId}
-        shuffleEnabled={shuffleEnabled}
         onTogglePlay={toggleSound}
-        onShuffleToggle={toggleShuffle}
       />
     </>
   );
@@ -645,36 +648,28 @@ function Nav({
   themeLabel,
   onThemeToggle,
   onSoundCue,
-  onOpenChat,
 }: {
   theme: Theme;
   themeLabel: string;
   onThemeToggle: (event: ReactMouseEvent<HTMLButtonElement>) => void;
   onSoundCue: (kind: SoundKind) => void;
-  onOpenChat: () => void;
 }) {
   return (
     <header className="nav-wrap">
       <a href="/" className="brand-mark" aria-label="Esther Tsotso home" onClick={() => onSoundCue("button")}>
         <img src="/assets/logo-e.png" alt="" aria-hidden="true" />
       </a>
-      <nav className="nav-links" aria-label="Primary navigation">
-        <a href="/#projects" onClick={() => onSoundCue("button")}>Projects</a>
-        <a href="/#about" onClick={() => onSoundCue("button")}>About</a>
-        <a href={profile.cvUrl} target="_blank" rel="noreferrer" onClick={() => onSoundCue("button")}>
-          Resume
-        </a>
-        <a href="/#contact" onClick={() => onSoundCue("button")}>Contact</a>
-      </nav>
+
       <div className="nav-controls">
-        <button
-          className="actively-building-btn"
-          onClick={onOpenChat}
-          aria-haspopup="dialog"
+        <a
+          className="nav-resume-cta"
+          href={profile.cvUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => onSoundCue("button")}
         >
-          <span className="ab-orb" aria-hidden="true" />
-          Actively Building
-        </button>
+          Resume <ArrowUpRight size={13} />
+        </a>
         <button
           className="theme-toggle"
           aria-label={themeLabel}
@@ -693,17 +688,13 @@ function FloatingMusicPlayer({
   trackTitle,
   trackProgress,
   videoId,
-  shuffleEnabled,
   onTogglePlay,
-  onShuffleToggle,
 }: {
   soundEnabled: boolean;
   trackTitle: string;
   trackProgress: number;
   videoId: string;
-  shuffleEnabled: boolean;
   onTogglePlay: () => void;
-  onShuffleToggle: () => void;
 }) {
   const [imgError, setImgError] = useState(false);
   useEffect(() => { setImgError(false); }, [videoId]);
@@ -744,17 +735,6 @@ function FloatingMusicPlayer({
         </span>
         )}
       </div>
-      {soundEnabled ? (
-        <button
-          className={`floating-player-shuffle${shuffleEnabled ? " is-active" : ""}`}
-          onClick={onShuffleToggle}
-          aria-label={shuffleEnabled ? "Shuffle on" : "Shuffle off"}
-          title={shuffleEnabled ? "Shuffle on" : "Shuffle off"}
-          type="button"
-        >
-          <Shuffle size={11} />
-        </button>
-      ) : null}
       <button
         className="floating-player-toggle"
         onClick={onTogglePlay}
@@ -865,48 +845,125 @@ function ActivelyBuildingModal({
 
 function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
   return (
-    <section className="hero section-anchor" id="home">
-      <div className="hero-grid">
-        <div className="hero-main">
-          <RotatingEyebrow />
-          <h1 data-reveal>
-            <span>Esther</span>
-            <span className="accent-line">Tsotso.</span>
-          </h1>
-        </div>
-
-        <aside className="hero-side" data-reveal>
-          <p>
-            Hi there, I'm an AI Product & Design Engineer from Nigeria who solves product problems with
-            product intuition and user empathy. I focus on building experiences that feel human and well thought out.
-          </p>
-          <div className="hero-actions">
-            <a className="primary-button" href="#projects" onClick={() => onSoundCue("button")}>
-              View work
-            </a>
-            <a
-              className="secondary-button"
-              href={profile.links.calendar}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => onSoundCue("button")}
-            >
-              Get in touch
-            </a>
+    <section className="index-hero about-hero section-anchor" id="home">
+      <p className="index-kicker" data-reveal>About me</p>
+      <div className="index-hero-grid">
+        <div className="index-hero-copy">
+          <h1 className="about-hero-title" data-reveal>I’m Esther Bawo Tsotso.</h1>
+          <div className="about-hero-story" data-reveal>
+            <p>
+              I’m an AI researcher and product engineer in Nigeria. I lead adaptive-learning systems
+              research at SILT Institute and I’m building Flowst, an AI learning platform.
+            </p>
+            <p>
+              I started by helping people learn computers,
+              taught in classrooms, and spent years in radio and television learning how to listen and
+              translate ideas. Then I returned to technology to build products. Each chapter made me
+              more curious about how people understand, trust, and grow.
+            </p>
+            <p>
+              I believe technology should expand human capability to earn, create and connect, not quietly replace it. The world I
+              want to help design makes room for different kinds of minds and intelligence, protects
+              human agency, and treats learning as something deeply human.
+            </p>
+            <p>
+              My life is bigger than the work. My relationship with God anchors me, and loving God shapes
+              how I try to move through the world. I love family, meaningful connection, and the kind of
+              conversations that help people feel seen. Those things shape how I lead, research, and build.
+            </p>
           </div>
-          <SocialLinks compact />
-        </aside>
-      </div>
-
-      <div className="hero-footnote" data-reveal>
-        <div className="portrait-chip">
-          <img src={profile.image} alt="Esther Bawo Tsotso" />
-          <span>
-            I care about your product{" "}
-            <PunWord mistake="leeving" correction="leaving" />{" "}
-            a long lasting impression 😉😏
-          </span>
+          <div className="about-hero-links" data-reveal>
+            <SocialLinks compact />
+          </div>
         </div>
+        <figure className="hero-headshot" data-reveal>
+          <img src={profile.headshot} alt="Esther Bawo Tsotso" />
+          <figcaption>Esther Bawo Tsotso - Research Lead, SILT Institute</figcaption>
+        </figure>
+      </div>
+    </section>
+  );
+}
+
+function CurrentDirection() {
+  const focusAreas = [
+    {
+      number: "01",
+      title: "Cognitive effort",
+      copy: "When should AI guide a learner, and when should it step back?",
+    },
+    {
+      number: "02",
+      title: "Learner agency",
+      copy: "How can assistance strengthen judgment instead of creating dependence?",
+    },
+    {
+      number: "03",
+      title: "Responsible systems",
+      copy: "What should age-aware, human-centred educational AI protect by design?",
+    },
+  ];
+
+  return (
+    <section className="now-section section-anchor" id="research">
+      <div className="index-section-heading" data-reveal>
+        <p>Present - 2026</p>
+        <div>
+          <h2>Researching AI for how people learn.</h2>
+          <p>
+            At SILT Institute, I lead work on adaptive learning systems. Flowst is where that inquiry
+            becomes something learners can use, question, and shape.
+          </p>
+          <a href={profile.links.silt} target="_blank" rel="noreferrer">
+            Research profile <ArrowUpRight size={14} />
+          </a>
+        </div>
+      </div>
+      <ol className="focus-index" data-reveal>
+        {focusAreas.map((area) => (
+          <li key={area.number}>
+            <span>{area.number}</span>
+            <strong>{area.title}</strong>
+            <p>{area.copy}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+function Journey() {
+  return (
+    <section className="journey-index section-anchor" id="journey">
+      <div className="index-section-heading" data-reveal>
+        <p>Journey | 2007—now</p>
+        <div>
+          <h2>One question, seen from different rooms.</h2>
+          <p>
+            Teaching, broadcasting, engineering, and research each taught me something about how
+            people understand difficult things. Open any chapter for the fuller story.
+          </p>
+        </div>
+      </div>
+      <div className="journey-rows" aria-label="Career journey">
+        {journeyChapters.slice().reverse().map((chapter, index) => (
+          <details className="journey-row" data-reveal key={`${chapter.period}-${chapter.title}`}>
+            <summary>
+              <span className="journey-row-number">{String(index + 1).padStart(2, "0")}</span>
+              <time>{chapter.period}</time>
+              <div>
+                <small>{chapter.phase}</small>
+                <h3>{chapter.title}</h3>
+              </div>
+              <ArrowDown size={16} aria-hidden="true" />
+            </summary>
+            <div className="journey-row-detail">
+              <p className="journey-row-role">{chapter.role} / {chapter.org}</p>
+              <p>{chapter.copy}</p>
+              <p><strong>What stayed with me:</strong> {chapter.carriedForward}</p>
+            </div>
+          </details>
+        ))}
       </div>
     </section>
   );
@@ -949,7 +1006,47 @@ function SocialLinks({ compact = false }: { compact?: boolean }) {
         <Instagram size={compact ? 13 : 17} />
         <span>Instagram</span>
       </a>
+      <a href={profile.links.substack} target="_blank" rel="noreferrer">
+        <ArrowUpRight size={compact ? 13 : 17} />
+        <span>Substack</span>
+      </a>
     </div>
+  );
+}
+
+function Writing({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
+  return (
+    <section className="writing-index section-anchor" id="writing">
+      <div className="index-section-heading" data-reveal>
+        <p>Where I write my worldview</p>
+        <div>
+          <h2>Notes on how I view the world with Artificial Intelligence.</h2>
+          <p>
+            Essays and field notes on intelligence, learning, technology, and the ideas shaping my
+            what i build.
+          </p>
+        </div>
+      </div>
+      <a
+        className="publication-row"
+        href={profile.links.substack}
+        target="_blank"
+        rel="noreferrer"
+        onClick={() => onSoundCue("button")}
+        data-reveal
+      >
+        <span className="publication-mark">
+          <img src="/web.png" alt="whatWEBecome Substack logo" />
+        </span>
+        <div>
+          <small>Newsletter | Substack</small>
+          <h3>whatWEBecome</h3>
+          <p>Worldviews and working notes from designing for many forms of intelligence.</p>
+        </div>
+        <span className="publication-status">New essays coming soon</span>
+        <ArrowUpRight size={18} aria-hidden="true" />
+      </a>
+    </section>
   );
 }
 
@@ -981,114 +1078,50 @@ function Projects({
   onNavigate: (path: string) => void;
   onSoundCue: (kind: SoundKind) => void;
 }) {
-  const [activeProject, setActiveProject] = useState(0);
-  const touchStartRef = useRef<number | null>(null);
-  const project = projects[activeProject];
-
-  const moveProject = (direction: 1 | -1) => {
-    onSoundCue("projectReveal");
-    setActiveProject((current) => (current + direction + projects.length) % projects.length);
+  const projectSummaries: Record<string, string> = {
+    flowst: "An agent-led learning system built around understanding, expression, and feedback.",
+    "echo-landing": "A safety platform that turns urgent signals into clear, coordinated action.",
+    veritrade: "An AI-assisted trust layer for safer peer-to-peer commerce.",
+    "loft-craft": "A product experience that makes custom furniture easier to imagine and order.",
   };
-
-  const showProject = (index: number) => {
-    if (index === activeProject) return;
-    onSoundCue("projectReveal");
-    setActiveProject(index);
-  };
+  const featuredProjectSlugs = ["flowst", "echo-landing", "veritrade", "loft-craft"];
+  const featuredProjects = featuredProjectSlugs
+    .map((slug) => projects.find((project) => project.slug === slug))
+    .filter((project): project is (typeof projects)[number] => Boolean(project));
 
   return (
-    <section className="projects section-anchor" id="projects">
-      <SectionHeading
-        eyebrow="Selected work"
-        title="Problems turned into usable products."
-        copy="Each project starts with a real user or product friction, then moves through technical decisions, interface states, and delivery."
-      />
-      <div className="project-carousel" style={{ "--project-count": projects.length } as CSSProperties}>
-        <div className="project-carousel-top" data-reveal>
-          <div>
-            <span>{String(activeProject + 1).padStart(2, "0")}</span>
-            <span>/</span>
-            <span>{String(projects.length).padStart(2, "0")}</span>
-          </div>
-          <div className="project-carousel-controls">
-            <button type="button" onClick={() => moveProject(-1)} aria-label="Previous project">
-              <ArrowLeft size={16} />
-            </button>
-            <button type="button" onClick={() => moveProject(1)} aria-label="Next project">
-              <ArrowUpRight size={16} />
-            </button>
-          </div>
+    <section className="project-index section-anchor" id="projects">
+      <div className="index-section-heading" data-reveal>
+        <p>Selected work | 2024—now</p>
+        <div>
+          <h2>Technical Explorations</h2>
+          <p>Four products that show how I move from a human problem to a system people can use.</p>
         </div>
-        <div className="project-view">
-          <article
-            className="project-feature"
+      </div>
+      <div className="project-rows" aria-label="Selected case studies">
+        {featuredProjects.map((project, index) => (
+          <a
+            className="project-row"
+            data-reveal
+            href={`/work/${project.slug}`}
             key={project.slug}
             onPointerEnter={() => onSoundCue("project")}
-            onTouchStart={(event) => {
-              touchStartRef.current = event.touches[0]?.clientX ?? null;
-            }}
-            onTouchEnd={(event) => {
-              if (touchStartRef.current === null) return;
-              const distance = (event.changedTouches[0]?.clientX ?? touchStartRef.current) - touchStartRef.current;
-              touchStartRef.current = null;
-              if (Math.abs(distance) < 42) return;
-              moveProject(distance < 0 ? 1 : -1);
+            onClick={(event) => {
+              event.preventDefault();
+              onSoundCue("button");
+              onNavigate(`/work/${project.slug}`);
             }}
           >
-            <div className="project-copy">
-              <div className="project-topline">
-                <span>{String(activeProject + 1).padStart(2, "0")}</span>
-                <span>{project.role}</span>
-              </div>
+            <span className="project-row-number">{String(index + 1).padStart(2, "0")}</span>
+            <div className="project-row-title">
               <h3>{project.name}</h3>
-              <p>{project.description}</p>
-              <div className="tags">
-                {project.tech.slice(0, 4).map((tag) => (
-                  <span key={tag}>{tag}</span>
-                ))}
-              </div>
-              <div className="project-actions">
-                <button type="button" onClick={() => { onSoundCue("button"); onNavigate(`/work/${project.slug}`); }}>
-                  Case Study <ArrowUpRight size={15} />
-                </button>
-              </div>
+              <p>{project.role}</p>
             </div>
-            <a
-              className="project-image"
-              href={`/work/${project.slug}`}
-              aria-label={`Open ${project.name} case study`}
-              onClick={(event) => {
-                event.preventDefault();
-                onSoundCue("button");
-                onNavigate(`/work/${project.slug}`);
-              }}
-            >
-              <img src={project.image} alt={`${project.name} preview`} />
-            </a>
-          </article>
-          <div
-            className="project-preview"
-            aria-label={`Current project: ${project.name}`}
-          >
-            <span>Current</span>
-            <strong>{String(activeProject + 1).padStart(2, "0")}</strong>
-            <em>{project.name}</em>
-          </div>
-        </div>
-        <div className="project-carousel-dots" aria-label="Project carousel navigation">
-          {projects.map((project, index) => (
-            <button
-              type="button"
-              key={project.slug}
-              className={index === activeProject ? "is-active" : ""}
-              onClick={() => showProject(index)}
-              aria-label={`Show ${project.name}`}
-              aria-current={index === activeProject ? "true" : undefined}
-            >
-              {String(index + 1).padStart(2, "0")}
-            </button>
-          ))}
-        </div>
+            <p className="project-row-summary">{projectSummaries[project.slug]}</p>
+            <span className="project-row-year">{project.year}</span>
+            <ArrowUpRight size={17} aria-hidden="true" />
+          </a>
+        ))}
       </div>
     </section>
   );
@@ -1129,7 +1162,7 @@ function ProjectDetail({
       </button>
 
       <header className="case-hero">
-        <p className="eyebrow">{project.role} / {project.year}</p>
+        <p className="eyebrow">{project.role} | {project.year}</p>
         <h1>{project.name}</h1>
         <span>{project.description}</span>
         <div className="case-actions">
@@ -2170,29 +2203,25 @@ function About() {
         eyebrow="About"
         title={
           <>
-            I care about building the{" "}
-            <PunWord mistake="write" correction="right" />{" "}
-            thing before writing code.
+            Teaching, communication, engineering, and research are not separate careers to me.
           </>
         }
-        copy="Every product I touch starts with three questions: are people safer because of it? Can they earn more? Do they connect more meaningfully?"
+        copy="They are different ways of doing the same work: understanding people, making complexity clearer, and building support that leaves them more capable."
       />
       <div className="about-narrative" data-reveal>
         <p>
-          I take a people-first approach to building, starting with the users most often
-          overlooked by technology. When you design for the margins, you raise the floor
-          for everyone.
+          The classroom taught me to notice when an explanation is not landing. Broadcasting taught
+          me to listen, research, and translate ideas without flattening them. Engineering gave me a
+          way to turn those observations into systems people can actually use.
         </p>
         <p>
-          I work with AI as a core collaborator in my process. It's my multiplier, it
-          lets me take an idea from zero to testable faster than ever, close the gap
-          between what I can imagine and what I can ship, and move with confidence even
-          as I'm still growing.
+          AI brought the threads together. It gave me a new design material, but it also raised a
+          harder responsibility: deciding when assistance supports learning and when it quietly
+          removes the effort, judgment, or human connection learning depends on.
         </p>
         <p>
-          My next chapter is design. Because I believe the most powerful builders of the
-          next decade will be designer-first engineers, people who lead with empathy,
-          and let AI handle the rest.
+          That is the direction I am on now: research that can inform responsible learning systems,
+          and products that make the research concrete enough to question, observe, and improve.
         </p>
       </div>
       <div className="craft-grid">
@@ -2225,8 +2254,8 @@ function Resume({
     <section className="resume section-anchor" id="resume">
       <SectionHeading
         eyebrow="Proof"
-        title="Experience that backs up the story."
-        copy="A curated resume layer, focused on what each chapter proves my ability to solve, collaborate, and ship."
+        title="A career that compounds."
+        copy="The formal record behind the narrative, from early teaching and broadcasting to software engineering, AI products, and adaptive-learning research."
       />
 
       <div
@@ -2254,8 +2283,8 @@ function Resume({
       <div className="resume-proof-heading">
         <SectionHeading
           eyebrow="Learning & recognition"
-          title="Education with one standout award."
-          copy="Formal training and the recognition that shows the same care I bring to product and design engineering delivery."
+          title="Formal learning across public service, software, and AI."
+          copy="Education and recognition that support a practice built across disciplines rather than inside a single lane."
         />
       </div>
 
@@ -2337,16 +2366,14 @@ function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
           Contact
         </p>
         <h2 data-reveal>
-          Have a problem worth solving?
+          Let's
           <span>
-            Let&apos;s build something users{" "}
-            <PunWord mistake="rove" correction="love" />
-            .
+            Connect
           </span>
         </h2>
         <p data-reveal>
-          Open to product engineering, design engineering, and product management roles, product collaborations, and user-centered problems
-          that need clear thinking, technical execution, and product care.
+          Open to educational AI research collaborations, adaptive-learning product work, and teams
+          that care about learner agency, responsible assistance, and human-centred technology.
         </p>
         <div className="contact-actions" data-reveal>
           <a
