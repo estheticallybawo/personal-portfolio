@@ -642,24 +642,32 @@ export const education = [
     org: "Miva Open University",
     period: "2023 - Present",
     meta: "Bachelor of Science",
+    detail:
+      "Currently pursuing a software-engineering degree while applying the learning across AI research and product development.",
   },
   {
     title: "Frontend Engineering",
     org: "AltSchool Africa",
     period: "2025 - 2026",
     meta: "Diploma",
+    detail:
+      "Completed an intensive frontend-engineering programme and graduated as the highest-scoring learner in the School of Computing.",
   },
   {
     title: "Frontend Engineering",
     org: "Loctech IT Training Institute",
     period: "2023",
     meta: "Professional training",
+    detail:
+      "Built a practical foundation in responsive web development and interface implementation.",
   },
   {
     title: "Public Administration",
     org: "Federal Polytechnic Nekede",
     period: "2009 - 2011",
     meta: "National Diploma",
+    detail:
+      "Studied public institutions and administration—an early foundation for thinking about systems, people, and service.",
   },
 ];
 

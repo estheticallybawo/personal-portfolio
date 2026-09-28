@@ -612,6 +612,7 @@ function App() {
             <Projects onNavigate={navigateTo} onSoundCue={playSound} />
             <Writing onSoundCue={playSound} />
             <Journey />
+            <LearningCredentials onNavigate={navigateTo} onSoundCue={playSound} />
           </>
         )}
       </main>
@@ -662,6 +663,7 @@ function Nav({
       </a>
 
       <div className="nav-controls">
+      
         <a
           className="nav-resume-cta"
           href={profile.cvUrl}
@@ -961,7 +963,7 @@ function Journey() {
             <div className="journey-row-detail">
               <p className="journey-row-role">{chapter.role} / {chapter.org}</p>
               <p>{chapter.copy}</p>
-              <p><strong>What stayed with me:</strong> {chapter.carriedForward}</p>
+              <p><strong>Key TakeAways:</strong> {chapter.carriedForward}</p>
             </div>
           </details>
         ))}
@@ -1021,7 +1023,7 @@ function Writing({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
       <div className="index-section-heading" data-reveal>
         <p>Where I write my worldview</p>
         <div>
-          <h2>Notes on how I view the world with Artificial Intelligence.</h2>
+          <h2>Notes on how I view the world with Artificial Intelligence in it.</h2>
           <p>
             Essays and field notes on intelligence, learning, technology, and the ideas shaping my
             work.
@@ -1087,6 +1089,88 @@ function Writing({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
           Subscribe on Substack <ArrowUpRight size={16} />
         </a>
       </aside>
+    </section>
+  );
+}
+
+function LearningCredentials({
+  onNavigate,
+  onSoundCue,
+}: {
+  onNavigate: (path: string) => void;
+  onSoundCue: (kind: SoundKind) => void;
+}) {
+  const featuredCertifications = certifications.slice(0, 3);
+
+  return (
+    <section className="learning-section section-anchor" id="credentials">
+      <SectionHeading
+        eyebrow="Learning & credentials"
+        title="Formal Learning and Professional Recognition"
+        copy="A multidisciplinary path through public administration, software engineering, product practice, and AI—supported by focused professional credentials."
+      />
+
+      <div className="learning-layout">
+        <div className="education-ledger" data-reveal>
+          <div className="learning-panel-heading">
+            <h3>Education</h3>
+            <span>{String(education.length).padStart(2, "0")} programmes</span>
+          </div>
+          <div className="education-list">
+            {education.map((item, index) => (
+              <article className="education-row" key={`${item.org}-${item.title}`}>
+                <span className="education-index">{String(index + 1).padStart(2, "0")}</span>
+                <div className="education-details">
+                  <h4>{item.title}</h4>
+                  <p className="education-school">{item.org}</p>
+                  <p>{item.detail}</p>
+                </div>
+                <div className="education-meta">
+                  <strong>{item.meta}</strong>
+                  <time>{item.period}</time>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <aside className="credentials-index" data-reveal aria-labelledby="credentials-title">
+          <div className="learning-panel-heading">
+            <h3 id="credentials-title">Selected credentials</h3>
+            <span>{String(certifications.length).padStart(2, "0")} documented</span>
+          </div>
+          <div className="credential-list">
+            {featuredCertifications.map((certificate, index) => (
+              <article className="credential-row" key={`${certificate.issuer}-${certificate.title}`}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <h4>{certificate.title}</h4>
+                  <p>{certificate.issuer} / {certificate.category}</p>
+                  <small>{certificate.skills.join(" · ")}</small>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="recognition-note">
+            <span>Recognition</span>
+            <strong>{credentials[0]}</strong>
+            <p>Highest overall score in Frontend Engineering within AltSchool Africa’s School of Computing.</p>
+          </div>
+
+          <a
+            className="credential-archive-link"
+            href={profile.certificationsUrl}
+            onClick={(event) => {
+              event.preventDefault();
+              onSoundCue("button");
+              onNavigate("/certifications");
+            }}
+          >
+            View all certifications <ArrowUpRight size={15} />
+          </a>
+        </aside>
+      </div>
     </section>
   );
 }
@@ -2413,7 +2497,7 @@ function Footer({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
           </span>
         </h2>
         <p data-reveal>
-          Open to educational AI research collaborations, adaptive-learning product work, and teams
+          Open to educational AI research collaborations, adaptive-learning product engineering with teams
           that care about learner agency, responsible assistance, and human-centred technology.
         </p>
         <div className="contact-actions" data-reveal>
