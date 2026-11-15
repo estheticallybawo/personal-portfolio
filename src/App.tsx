@@ -48,8 +48,8 @@ const themeSoundPath = "/assets/mixkit-sand-swish-1494.wav";
 const projectRevealSoundPath = "/assets/mixkit-page-forward-single-chime-1107.wav";
 const certificateChimePath = "/assets/mixkit-page-back-chime-1108.wav";
 const heroRoles = [
-  "AI Researcher & Product Engineer",
-  "Research Lead, Adaptive Learning Systems",
+  profile.label,
+  "Product Engineer",
   "AI for Education",
   "Learning Systems Builder",
 ];
@@ -58,22 +58,22 @@ const buildingPrompts = [
   {
     id: "building",
     q: "What are you currently building?",
-    a: "https://useflowst.com is my current focus. It's a multi-agent learning platform that helps people learn faster and retain more by thinking out loud, seeing mental models, and getting feedback from AI agents.",
+    a: "I’m the founder and CEO of The Flowst Experience. We’re building Flowst, an ecosystem that connects digital tools with hands-on experiences for lifelong learning. You can find us at https://www.useflowst.com.",
   },
   {
     id: "how",
     q: "How does it work?",
-    a: "It's powered by the Logios cognitive architecture and grounded in a learning doctrine called NeuroMap. Users interact by voice, get visual mental models generated in real time, and receive feedback from multi-agent guidance, all to make any subject click.",
+    a: "A learner can talk through an idea, see it explained visually, try it in a project, and get feedback. Flowst’s agents play different roles along the way.",
   },
   {
     id: "problem",
     q: "What problem are you solving?",
-    a: "Most AI tools are text-in, text-out. That works for some people. But a huge portion of learners think visually, learn by speaking, and retain through expression, not passive reading. Flowst AI is built for them.",
+    a: "It’s easy to read an explanation and feel like you’ve understood it. I’m interested in what happens next, when you have to explain it yourself or put it to work in a real situation.",
   },
   {
     id: "tech",
     q: "What's powering it?",
-    a: "Gemini at the core, with multi-agent orchestration for different learning modes: retrieval, explanation, feedback, and visual generation. The goal is a platform that feels like a thinking partner, not a search engine.",
+    a: "FlowState Engineering is the framework I use to connect what Flowst’s agents can do, how they behave, and how people interact with them. It helps us think through decisions like when an agent should offer a hint or give someone time to try again.",
   },
   {
     id: "available",
@@ -613,6 +613,7 @@ function App() {
             <Writing onSoundCue={playSound} />
             <Journey />
             <LearningCredentials onNavigate={navigateTo} onSoundCue={playSound} />
+            <OutsideWork />
           </>
         )}
       </main>
@@ -855,8 +856,8 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
           <h1 className="about-hero-title" data-reveal>I’m Esther Bawo Tsotso.</h1>
           <div className="about-hero-story" data-reveal>
             <p>
-              I’m an AI researcher and product engineer in Nigeria. I lead adaptive-learning systems
-              research at SILT Institute and I’m building Flowst, an AI learning platform.
+              I’m the founder and CEO of The Flowst Experience. I’m building Flowst from Nigeria,
+              bringing digital tools and hands-on experiences together for lifelong learning.
             </p>
             <p>
               I started by helping people learn computers,
@@ -880,9 +881,39 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
           </div>
         </div>
         <figure className="hero-headshot" data-reveal>
-          <img src={profile.headshot} alt="Esther Bawo Tsotso" />
-          <figcaption>Esther Bawo Tsotso - Research Lead, SILT Institute</figcaption>
+          <div className="hero-headshot__frame">
+            <img src={profile.headshot} alt="Esther Bawo Tsotso" />
+          </div>
+          <figcaption>{profile.name} · {profile.label}</figcaption>
         </figure>
+      </div>
+    </section>
+  );
+}
+
+function OutsideWork() {
+  return (
+    <section className="now-section outside-work section-anchor" id="outside-work" aria-labelledby="outside-work-title">
+      <div className="index-section-heading" data-reveal>
+        <div>
+          <span className="index-kicker">My human side</span>
+          <h2 id="outside-work-title">Outside work.</h2>
+        </div>
+        <div>
+          <p>
+            My family usually gets me out of the house. I’m much more likely to try something
+            new when we’re doing it together. We might go to the cinema, see a live play, or
+            stay in and watch a show.
+          </p>
+          <p>
+            I love singing and learning how to do new things. I like swimming too, and
+            I’m still getting the hang of it.
+          </p>
+          <p>
+            When I get a little time to myself, I usually end up on TikTok or Pinterest.
+            I’d like to make more time for reading.
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -910,15 +941,15 @@ function CurrentDirection() {
   return (
     <section className="now-section section-anchor" id="research">
       <div className="index-section-heading" data-reveal>
-        <p>Present - 2026</p>
+        <p>2026–Present</p>
         <div>
-          <h2>Researching AI for how people learn.</h2>
+          <h2>Building The Flowst Experience.</h2>
           <p>
-            At SILT Institute, I lead work on adaptive learning systems. Flowst is where that inquiry
-            becomes something learners can use, question, and shape.
+            My focus is Flowst, where I lead the work of connecting AI-guided learning with
+            hands-on experiences. I’m also a research member at SILT Institute.
           </p>
-          <a href={profile.links.silt} target="_blank" rel="noreferrer">
-            Research profile <ArrowUpRight size={14} />
+          <a href="/work/flowst">
+            Explore Flowst <ArrowUpRight size={14} />
           </a>
         </div>
       </div>
@@ -1034,7 +1065,7 @@ function Writing({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
         <div className="writing-rail-toolbar" aria-hidden="true">
           <span>Published articles</span>
         </div>
-        <div className="writing-rail" aria-label="Newsletter essays">
+        <div className="writing-rail" aria-label="Articles and newsletter essays">
           {writingPosts.map((post) => (
             <article className="writing-card" key={post.url}>
               <a
@@ -1204,7 +1235,7 @@ function Projects({
   onSoundCue: (kind: SoundKind) => void;
 }) {
   const projectSummaries: Record<string, string> = {
-    flowst: "An agent-led learning system built around understanding, expression, and feedback.",
+    flowst: "A lifelong learning ecosystem that connects AI guidance with hands-on projects.",
     "echo-landing": "A safety platform that turns urgent signals into clear, coordinated action.",
     veritrade: "An AI-assisted trust layer for safer peer-to-peer commerce.",
     "loft-craft": "A product experience that makes custom furniture easier to imagine and order.",
@@ -1328,6 +1359,22 @@ function ProjectDetail({
         </div>
         <p>{project.roleDetails}</p>
       </section>
+
+      {project.technicalExplorations?.length ? (
+        <section className="case-list-section" aria-labelledby="technical-explorations-title">
+          <div className="section-heading">
+            <h2 id="technical-explorations-title">Technical explorations</h2>
+          </div>
+          <div className="case-list">
+            {project.technicalExplorations.map((item) => (
+              <article className="case-note" key={item.title}>
+                <h3>{item.title}</h3>
+                <p>{item.copy}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="case-list-section">
         <div className="section-heading">

@@ -1,8 +1,8 @@
 # Esther Tsotso Portfolio
 
-A personal portfolio for Esther Bawo Tsotso, an AI Researcher and Product Engineer focused on responsible educational AI, adaptive learning systems, and human-centred product engineering.
+A personal portfolio for Esther Bawo Tsotso, Founder and CEO of The Flowst Experience and a research member at SILT Institute.
 
-The site tells a chronological journey from early computer tutoring and classroom teaching through broadcasting, software engineering, AI product work, and research leadership at SILT Institute. It also highlights applied projects, research interests, experience, education, and contact links in a responsive React portfolio.
+The site follows Esther’s journey from computer tutoring, design prototyping, and classroom teaching through broadcasting, software engineering, and leading Flowst. It also includes technical explorations, published writing, and professional experience.
 
 ## Tech Stack
 

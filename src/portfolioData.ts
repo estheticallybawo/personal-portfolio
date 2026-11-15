@@ -12,6 +12,7 @@ export type Project = {
   overview: string;
   roleDetails: string;
   process: string[];
+  technicalExplorations?: Array<{ title: string; copy: string }>;
   outcomes: string[];
   lessons: string[];
   transferableSkills: string[];
@@ -37,7 +38,7 @@ export const profile = {
   name: "Esther Bawo Tsotso",
   shortName: "Esther Tsotso",
   initials: "ET",
-  label: "AI Researcher & Product Engineer",
+  label: "Founder & CEO of The Flowst Experience",
   email: "estherbawotsotso@gmail.com",
   contactEmail: "estheticallybawo@gmail.com",
   phone: "+234 806 136 5611",
@@ -58,6 +59,26 @@ export const profile = {
 };
 
 export const writingPosts = [
+  {
+    publication: "The Flowst Experience",
+    title: "FlowState Engineering: A Proposed framework for designing intelligent systems for learning",
+    description: "The eight questions that shape how Flowst’s agents reason, behave, and support learning.",
+    date: "15 Nov 2026",
+    dateTime: "2026-11-15",
+    image: "/writing-flowstate-engineering.webp",
+    imageAlt: "A learner studies a cardboard bridge prototype at a workbench.",
+    url: "https://www.useflowst.com/articles/flowstate-engineering",
+  },
+  {
+    publication: "The Flowst Experience",
+    title: "Why the next generation of AI-native builders need to know a little about everything",
+    description: "What my first radio internship taught me about curiosity, and how that lesson shapes Flowst.",
+    date: "15 Nov 2026",
+    dateTime: "2026-11-15",
+    image: "/writing-ai-native-builders.webp",
+    imageAlt: "A microphone, headphones, and an open notebook in a radio studio.",
+    url: "https://www.useflowst.com/articles/why-ai-native-builders-need-curiosity",
+  },
   {
     publication: "whatWEBecome",
     title: "Before AI, We Were Already Extending Ourselves",
@@ -174,11 +195,11 @@ export const journeyChapters = [
   {
     period: "2007 - 2009",
     phase: "The first classroom",
-    title: "I learned technology by helping other people learn it.",
+    title: "I learned technology by teaching it and helping people turn ideas into prototypes.",
     role: "Computer Tutor & Administrative Assistant",
     org: "S n Sol Cyber Cafe",
     copy:
-      "I arrived as a computer student after secondary school and was invited to join the centre a month later. Helping new learners build digital confidence became my earliest experience of technology-enabled learning.",
+      "I arrived as a computer student after secondary school and was invited to join the centre a month into a six months training. Much of my teaching focused on design, I helped other learners turn an idea into something they could see, try, and improve.",
     carriedForward: "Digital confidence grows when instruction feels practical, patient, and safe.",
   },
   {
@@ -222,14 +243,14 @@ export const journeyChapters = [
     carriedForward: "Model capability matters, but human capability is the boundary that matters more.",
   },
   {
-    period: "2026 - Now",
-    phase: "The direction",
-    title: "Now I research the relationship between AI and human learning.",
-    role: "Research Lead, Adaptive Learning Systems",
-    org: "SILT Institute",
+    period: "2026–Present",
+    phase: "Building The Flowst Experience",
+    title: "I’m building and leading an ecosystem for lifelong learning.",
+    role: "Founder & CEO",
+    org: "The Flowst Experience",
     copy:
-      "I lead interdisciplinary inquiry into productive cognitive effort, learner agency, appropriate reliance on AI, age-aware support, human connection, model behaviour, and responsible educational technology.",
-    carriedForward: "The goal is not an AI that does more for learners. It is learning systems that leave people more capable.",
+      "I lead Flowst, where we’re designing phygital learning experiences that connect digital tools with hands-on practice. The work brings together the parts of my career I keep returning to: teaching, making things, and helping people understand what they can do with an idea.",
+    carriedForward: "An idea becomes useful when you can take it into the next thing you do.",
   },
 ];
 
@@ -237,37 +258,51 @@ export const projects: Project[] = [
   {
     slug: "flowst",
     name: "Flowst",
-    role: "AI learning platform",
-    year: "2026",
+    role: "Founder & CEO",
+    year: "2026–Present",
     description:
-      "Flowst AI, the flow state of learning — named AI agents that teach for retention: understand first, then express, in a zero-judgment sandbox.",
+      "An ecosystem that connects digital tools with hands-on experiences for lifelong learning.",
     story:
-      "A learning problem: passive study doesn't stick. Flowst turns learning into an active loop — understand, connect, express — guided by agents designed for how minds actually retain.",
-    tech: ["AI Agents", "EdTech", "Product Design"],
-    liveUrl: "https://useflowst.com",
+      "I’m building Flowst around a question that goes back to my time teaching. What helps someone take an idea they understand and use it in a situation they haven’t seen before?",
+    tech: ["AI Agent Orchestration", "Learning Design", "Product Engineering"],
+    liveUrl: "https://www.useflowst.com",
     image: "/flowsthero.PNG",
     overview:
-      "Flowst is an AI learning platform built around a simple conviction: retention comes from expressing what you understand, not re-reading what you don't. Learners work with a cast of named agents — each with its own method, from PREP and MECE structuring to pressure simulation — inside a zero-judgment sandbox made for minds that think in pictures.",
+      "Flowst connects AI-guided learning with things people can try, build, and discuss in the physical world. A learner might work through an idea with an agent, try it in a hands-on project, then come back to explain what happened. The aim is to make learning part of everyday life, across school, home, and the communities people belong to.",
     roleDetails:
-      "I'm building Flowst end-to-end — product direction, the agent cast and their teaching methods, brand and interface design, and the engineering underneath. It's currently pre-launch, growing a waitlist.",
+      "As Founder and CEO of The Flowst Experience, I lead product direction and work across learning design, agent architecture, prototyping, and interface engineering.",
     process: [
-      "Started from the retention problem: why passive study fades and what an active understand-then-express loop needs to feel like.",
-      "Designed a cast of distinct agents, each carrying one proven learning method, so the pedagogy lives in characters rather than settings menus.",
-      "Shaped the experience around visual connection, safe practice and proof-driven progress — then began building toward launch.",
+      "Started with a learning question. What can someone explain or apply after getting help?",
+      "Designed distinct roles for agents that plan, clarify, guide conversation, support visual exploration, and help learners work through projects.",
+      "Connected those roles to physical and digital activities so learners can carry an idea from a conversation into something they make.",
+    ],
+    technicalExplorations: [
+      {
+        title: "FlowState Engineering",
+        copy: "I’m developing the framework that connects agent capabilities, behaviour, and interface design. The design decisions include when an agent should step in, which context it needs, and which choices stay with the learner or educator.",
+      },
+      {
+        title: "Specialised agents",
+        copy: "I’m working through how to give each agent a clear role. A planning agent needs different information from an agent helping a learner explain a difficult idea, even when both are working toward the same learning goal.",
+      },
+      {
+        title: "Physical and digital learning",
+        copy: "I’m designing activities that move between a digital workspace and a hands-on task. A learner might discuss a bridge design with an agent, build the bridge offline, then return to explain where it bent and what they would change.",
+      },
     ],
     outcomes: [
-      "A clear product thesis: learn from agents designed for retention.",
-      "A pre-launch platform with a distinct identity and a growing waitlist.",
-      "A working foundation for creators and teams, not just individual learners.",
+      "A product direction that connects AI guidance, hands-on projects, and learning with other people.",
+      "A defined set of agent roles for different kinds of support.",
+      "A framework for making agent behaviour a deliberate part of product design.",
     ],
     lessons: [
-      "Pedagogy is a design material — methods become lovable when they become characters.",
-      "A safe sandbox matters as much as smart AI; judgment is the real blocker to practice.",
-      "Building an AI product end-to-end sharpens every question about trust, tone and reliance.",
+      "The kind of help a learner needs depends on what they’ve already tried.",
+      "People need to see what an agent is doing and know how to redirect it.",
+      "A useful learning interaction gives someone something they can carry into the next problem.",
     ],
-    transferableSkills: ["AI product design", "Agent experience design", "Learning science", "End-to-end ownership"],
+    transferableSkills: ["AI product design", "Agent orchestration", "Learning design", "Design prototyping"],
     aiUse:
-      "Flowst is an AI-native product, so AI sits on both sides of the work: agents power the learning experience itself, and AI pairing accelerates how I design, write and build it — with the product judgment, agent personalities and pedagogy staying firmly mine.",
+      "AI guides learning inside Flowst. I also use it while designing and building the product, especially to explore alternatives and work through tricky interaction states.",
   },
   {
     slug: "loft-craft",
@@ -556,19 +591,19 @@ export const projects: Project[] = [
 export const resumeHighlights = [
   {
     type: "Current position",
-    title: "Research Lead, Adaptive Learning Systems",
+    title: "Founder & CEO",
+    org: "The Flowst Experience",
+    period: "2026–Present",
+    copy:
+      "Building and leading a lifelong learning ecosystem that connects AI-guided digital experiences with hands-on projects and practice.",
+  },
+  {
+    type: "Research affiliation",
+    title: "Research Member",
     org: "SILT Institute",
     period: "Present",
     copy:
-      "Leading an interdisciplinary research initiative exploring how AI-supported systems can strengthen learning, learner agency, cognitive development, and healthy interaction with technology.",
-  },
-  {
-    type: "Self-initiated project",
-    title: "Flowst",
-    org: "Personal initiative",
-    period: "2026",
-    copy:
-      "A multi-agent learning platform from concept to launch-readiness, blending AI, product & design engineering as a self-directed project.",
+      "A member of the research community exploring how AI-supported systems can strengthen learning and learner agency.",
   },
   {
     type: "Hackathon",
@@ -632,7 +667,7 @@ export const resumeHighlights = [
     org: "S n Sol Cyber Cafe",
     period: "2007 - 2009",
     copy:
-      "Began as a computer student, became an employee, and helped new learners develop foundational computer literacy and practical digital skills.",
+      "Began as a computer student, then joined the centre and taught practical digital skills with a focus on design and prototyping.",
   },
 ];
 
