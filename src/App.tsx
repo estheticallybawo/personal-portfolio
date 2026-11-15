@@ -35,7 +35,7 @@ import {
   whyCards,
   writingPosts,
 } from "./portfolioData";
-import { FavoriteRevealCard, type FavoriteRevealMode } from "./FavoriteRevealCard";
+import { FavoriteRevealCard } from "./FavoriteRevealCard";
 
 type Theme = "dark" | "light";
 
@@ -893,18 +893,21 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
   );
 }
 
+const favoriteCards = humanFavorites.flatMap((favorite) =>
+  favorite.items.map((_, itemIndex) => ({ favorite, itemIndex }))
+);
+
 function OutsideWork({ theme, onSoundCue }: { theme: Theme; onSoundCue: (kind: SoundKind) => void }) {
   const [activeFavorite, setActiveFavorite] = useState(0);
   const [direction, setDirection] = useState<-1 | 1>(1);
-  const [revealMode, setRevealMode] = useState<FavoriteRevealMode>("click");
-  const group = humanFavorites[activeFavorite];
-  const previousGroup = humanFavorites[(activeFavorite - 1 + humanFavorites.length) % humanFavorites.length];
-  const nextGroup = humanFavorites[(activeFavorite + 1) % humanFavorites.length];
+  const card = favoriteCards[activeFavorite];
+  const previousCard = favoriteCards[(activeFavorite - 1 + favoriteCards.length) % favoriteCards.length];
+  const nextCard = favoriteCards[(activeFavorite + 1) % favoriteCards.length];
 
   const moveFavorite = (direction: -1 | 1) => {
     onSoundCue("button");
     setDirection(direction);
-    setActiveFavorite((index) => (index + direction + humanFavorites.length) % humanFavorites.length);
+    setActiveFavorite((index) => (index + direction + favoriteCards.length) % favoriteCards.length);
   };
 
   return (
@@ -931,57 +934,39 @@ function OutsideWork({ theme, onSoundCue }: { theme: Theme; onSoundCue: (kind: S
         </div>
       </div>
       <div className="favorites-carousel" role="region" aria-roledescription="carousel" aria-label="My favorites" data-reveal>
-        <div className="favorites-toolbar">
-          <p className="favorites-position" aria-live="polite" aria-atomic="true">
-            <span>{String(activeFavorite + 1).padStart(2, "0")}</span>
-            <span>/ {String(humanFavorites.length).padStart(2, "0")}</span>
-          </p>
-          <div className="favorites-modes" role="group" aria-label="Reveal style">
-            {(["click", "hover", "scratch"] as const).map((mode) => (
-              <button
-                type="button"
-                key={mode}
-                aria-pressed={revealMode === mode}
-                onClick={() => {
-                  onSoundCue("button");
-                  setRevealMode(mode);
-                }}
-              >
-                {mode === "click" ? "Click" : mode === "hover" ? "Hover" : "Scratch"}
-              </button>
-            ))}
-          </div>
+        <div className="favorites-card-heading" aria-live="polite" aria-atomic="true">
+          <h3 className="favorites-active-title">{card.favorite.title}</h3>
+          <p className="favorites-item-count">{card.itemIndex + 1} of {card.favorite.items.length}</p>
         </div>
-        <h3 className="favorites-active-title" aria-live="polite" aria-atomic="true">{group.title}</h3>
         <div className="favorites-deck">
-          <div className="favorite-peek favorite-peek--previous" aria-hidden="true" key={`previous-${previousGroup.id}`}>
+          <div className="favorite-peek favorite-peek--previous" aria-hidden="true">
             <span>?</span>
-            <small>{previousGroup.title}</small>
+            <small>{previousCard.favorite.title} · {previousCard.itemIndex + 1} of {previousCard.favorite.items.length}</small>
           </div>
-          <div className="favorite-peek favorite-peek--next" aria-hidden="true" key={`next-${nextGroup.id}`}>
+          <div className="favorite-peek favorite-peek--next" aria-hidden="true">
             <span>?</span>
-            <small>{nextGroup.title}</small>
+            <small>{nextCard.favorite.title} · {nextCard.itemIndex + 1} of {nextCard.favorite.items.length}</small>
           </div>
-          <div className="project-carousel-controls favorites-controls">
-            <button type="button" onClick={() => moveFavorite(-1)} aria-label="Previous favorites category" aria-controls="favorite-slide">
-              <ArrowLeft size={18} aria-hidden="true" />
-            </button>
-            <button type="button" onClick={() => moveFavorite(1)} aria-label="Next favorites category" aria-controls="favorite-slide">
-              <ArrowRight size={18} aria-hidden="true" />
-            </button>
-          </div>
-          <div id="favorite-slide" role="group" aria-roledescription="slide" aria-label={`${activeFavorite + 1} of ${humanFavorites.length}: ${group.title}`}>
+          <div id="favorite-slide" role="group" aria-roledescription="slide" aria-label={`${activeFavorite + 1} of ${favoriteCards.length}: ${card.favorite.title}, ${card.itemIndex + 1} of ${card.favorite.items.length}`}>
             <FavoriteRevealCard
-              key={group.id}
-              favorite={group}
-              mode={revealMode}
+              key={`${card.favorite.id}-${card.itemIndex}`}
+              favorite={card.favorite}
+              itemIndex={card.itemIndex}
               theme={theme}
               direction={direction}
               onReveal={() => onSoundCue("projectReveal")}
             />
           </div>
+          <div className="project-carousel-controls favorites-controls">
+            <button type="button" onClick={() => moveFavorite(-1)} aria-label="Previous favorite" aria-controls="favorite-slide">
+              <ArrowLeft size={18} aria-hidden="true" />
+            </button>
+            <button type="button" onClick={() => moveFavorite(1)} aria-label="Next favorite" aria-controls="favorite-slide">
+              <ArrowRight size={18} aria-hidden="true" />
+            </button>
+          </div>
         </div>
-        <p className="favorites-help">Use the arrows to discover more.</p>
+        <p id="favorite-scratch-instructions" className="favorite-reveal-announcement">Scratch to reveal one favorite. You can also focus the scratch card and use the arrow keys to scratch. Use the previous and next buttons to shuffle through the cards.</p>
       </div>
     </section>
   );

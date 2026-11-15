@@ -1,8 +1,6 @@
-import { type CSSProperties, type PointerEvent, useCallback, useEffect, useRef, useState } from "react";
-import { ArrowRight, RotateCcw, Sparkles } from "lucide-react";
+import { type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent, useCallback, useLayoutEffect, useRef, useState } from "react";
+import { Sparkles } from "lucide-react";
 import type { humanFavorites } from "./portfolioData";
-
-export type FavoriteRevealMode = "click" | "hover" | "scratch";
 
 type Favorite = (typeof humanFavorites)[number];
 type Point = { x: number; y: number };
@@ -14,40 +12,35 @@ const REVEAL_THRESHOLD = 0.34;
 
 export function FavoriteRevealCard({
   favorite,
-  mode,
+  itemIndex,
   theme,
   direction,
   onReveal,
 }: {
   favorite: Favorite;
-  mode: FavoriteRevealMode;
+  itemIndex: number;
   theme: "dark" | "light";
   direction: -1 | 1;
   onReveal: () => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const surfaceRef = useRef<HTMLDivElement>(null);
   const lastPointRef = useRef<Point | null>(null);
   const pointerRef = useRef<number | null>(null);
   const scratchedRef = useRef(new Set<number>());
   const revealedRef = useRef(false);
   const pendingRevealRef = useRef(false);
   const revealFrameRef = useRef<number | null>(null);
-  const settleTimerRef = useRef<number | null>(null);
+  const keyboardPointRef = useRef<Point | null>(null);
   const [revealed, setRevealed] = useState(false);
-  const [hovered, setHovered] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [scratchReady, setScratchReady] = useState(true);
-  const [activeItem, setActiveItem] = useState(0);
-  const item = favorite.items[activeItem];
-  const visible = revealed || (mode === "hover" && hovered);
+  const item = favorite.items[itemIndex];
 
   const paintCover = useCallback(() => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     if (!canvas || !context) return;
 
-    const { width, height } = canvas.getBoundingClientRect();
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
     if (!width || !height) return;
     const scale = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(width * scale);
@@ -99,36 +92,30 @@ export function FavoriteRevealCard({
     context.fillText("?", width / 2, height * 0.49);
     context.globalAlpha = 0.7;
     context.font = '500 10px "Sora", sans-serif';
-    const instruction = mode === "click" ? "CLICK TO REVEAL" : mode === "hover" ? "HOVER TO REVEAL" : "SCRATCH TO REVEAL";
-    context.fillText(instruction, width / 2, height * 0.8);
+    context.fillText("SCRATCH TO REVEAL", width / 2, height * 0.8);
     context.globalAlpha = 1;
-  }, [mode, theme]);
+  }, [theme]);
 
   const reset = useCallback(() => {
     if (revealFrameRef.current !== null) cancelAnimationFrame(revealFrameRef.current);
     revealFrameRef.current = null;
-    if (settleTimerRef.current !== null) window.clearTimeout(settleTimerRef.current);
-    settleTimerRef.current = null;
     pendingRevealRef.current = false;
     revealedRef.current = false;
     scratchedRef.current.clear();
     lastPointRef.current = null;
     pointerRef.current = null;
+    keyboardPointRef.current = null;
     setRevealed(false);
-    setHovered(false);
-    setProgress(0);
-    setScratchReady(true);
     paintCover();
   }, [paintCover]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     reset();
     const canvas = canvasRef.current;
     if (!canvas) return;
     const resize = new ResizeObserver(() => {
       if (pointerRef.current !== null) return;
       scratchedRef.current.clear();
-      setProgress(revealedRef.current ? 100 : 0);
       paintCover();
     });
     resize.observe(canvas);
@@ -140,7 +127,6 @@ export function FavoriteRevealCard({
       active = false;
       resize.disconnect();
       if (revealFrameRef.current !== null) cancelAnimationFrame(revealFrameRef.current);
-      if (settleTimerRef.current !== null) window.clearTimeout(settleTimerRef.current);
     };
   }, [paintCover, reset]);
 
@@ -149,19 +135,6 @@ export function FavoriteRevealCard({
     pendingRevealRef.current = false;
     revealedRef.current = true;
     setRevealed(true);
-    setProgress(100);
-    onReveal();
-  };
-
-  const showNextFavorite = () => {
-    if (!visible) {
-      reveal();
-      return;
-    }
-    setActiveItem((index) => (index + 1) % favorite.items.length);
-    revealedRef.current = true;
-    setRevealed(true);
-    setProgress(100);
     onReveal();
   };
 
@@ -204,18 +177,16 @@ export function FavoriteRevealCard({
     }
     lastPointRef.current = point;
     const coverage = scratchedRef.current.size / (GRID_COLUMNS * GRID_ROWS);
-    setProgress(Math.min(100, Math.round((coverage / REVEAL_THRESHOLD) * 100)));
     if (coverage >= REVEAL_THRESHOLD) pendingRevealRef.current = true;
   };
 
   const pointerPoint = (event: PointerEvent<HTMLCanvasElement>): Point => {
     const rect = event.currentTarget.getBoundingClientRect();
-    // The surface stays flat while scratching, so coordinates match the mask.
     return { x: event.clientX - rect.left, y: event.clientY - rect.top };
   };
 
   const startScratch = (event: PointerEvent<HTMLCanvasElement>) => {
-    if (mode !== "scratch" || revealedRef.current || event.button !== 0 || pointerRef.current !== null) return;
+    if (revealedRef.current || event.button !== 0 || pointerRef.current !== null) return;
     event.preventDefault();
     pointerRef.current = event.pointerId;
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -230,59 +201,47 @@ export function FavoriteRevealCard({
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
     if (pendingRevealRef.current) {
-      setScratchReady(false);
       if (revealFrameRef.current !== null) cancelAnimationFrame(revealFrameRef.current);
       // Keep the scratch surface in place until the gesture has fully ended.
       revealFrameRef.current = requestAnimationFrame(() => {
         revealFrameRef.current = null;
         if (pendingRevealRef.current && pointerRef.current === null) {
           reveal();
-          // Let touch compatibility events finish before enabling the next item.
-          settleTimerRef.current = window.setTimeout(() => {
-            settleTimerRef.current = null;
-            setScratchReady(true);
-          }, 400);
         }
       });
     }
   };
 
-  const moveSurface = (event: PointerEvent<HTMLDivElement>) => {
-    if (mode === "scratch" || event.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const surface = surfaceRef.current;
-    if (!surface) return;
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width;
-    const y = (event.clientY - rect.top) / rect.height;
-    surface.style.setProperty("--favorite-tilt-x", `${(0.5 - y) * 8}deg`);
-    surface.style.setProperty("--favorite-tilt-y", `${(x - 0.5) * 8}deg`);
-    surface.style.setProperty("--favorite-glow-x", `${x * 100}%`);
-    surface.style.setProperty("--favorite-glow-y", `${y * 100}%`);
+  const scratchWithKeyboard = (event: ReactKeyboardEvent<HTMLCanvasElement>) => {
+    if (revealedRef.current) return;
+    const moves: Record<string, Point> = {
+      ArrowLeft: { x: -32, y: 0 },
+      ArrowRight: { x: 32, y: 0 },
+      ArrowUp: { x: 0, y: -32 },
+      ArrowDown: { x: 0, y: 32 },
+    };
+    const move = moves[event.key];
+    if (!move) return;
+    event.preventDefault();
+    const canvas = event.currentTarget;
+    const previous = keyboardPointRef.current ?? { x: canvas.clientWidth / 2, y: canvas.clientHeight / 2 };
+    const next = {
+      x: Math.max(0, Math.min(canvas.clientWidth, previous.x + move.x)),
+      y: Math.max(0, Math.min(canvas.clientHeight, previous.y + move.y)),
+    };
+    lastPointRef.current = previous;
+    scratch(next);
+    keyboardPointRef.current = next;
+    lastPointRef.current = null;
+    if (pendingRevealRef.current) reveal();
   };
 
   return (
     <div className="favorite-primary" style={{ "--favorite-enter-x": `${direction * 48}px` } as CSSProperties}>
-      <div
-        ref={surfaceRef}
-        className={`favorite-surface favorite-surface--${mode}${visible ? " is-revealed" : ""}`}
-        onPointerEnter={(event) => {
-          if (mode === "hover" && event.pointerType === "mouse") setHovered(true);
-        }}
-        onPointerLeave={() => {
-          setHovered(false);
-          surfaceRef.current?.style.setProperty("--favorite-tilt-x", "0deg");
-          surfaceRef.current?.style.setProperty("--favorite-tilt-y", "0deg");
-        }}
-        onPointerMove={moveSurface}
-      >
-        <div id={`favorite-picks-${favorite.id}`} className="favorite-reveal-content" aria-hidden={!visible}>
-          <span className="favorite-content-kicker">{favorite.title}</span>
+      <div className={`favorite-surface${revealed ? " is-revealed" : ""}`}>
+        <div className="favorite-reveal-content" aria-hidden={!revealed}>
           {favorite.note && <p className="favorite-note">{favorite.note}</p>}
-          <div className="favorite-single-pick" key={item.name}>
-            <p className="favorite-item-position" aria-label={`Favorite ${activeItem + 1} of ${favorite.items.length}`}>
-              <span>{String(activeItem + 1).padStart(2, "0")}</span>
-              <span>/ {String(favorite.items.length).padStart(2, "0")}</span>
-            </p>
+          <div className="favorite-single-pick">
             {favorite.id === "books" ? <cite>{item.name}</cite> : <span className="favorite-pick-name">{item.name}</span>}
             {item.detail && <span className="favorite-pick-detail">{item.detail}</span>}
           </div>
@@ -291,7 +250,11 @@ export function FavoriteRevealCard({
         <canvas
           ref={canvasRef}
           className="favorite-scratch-cover"
-          aria-hidden="true"
+          role="img"
+          aria-label={`${favorite.title}, ${itemIndex + 1} of ${favorite.items.length}. ${revealed ? "Revealed." : "Scratch to reveal."}`}
+          aria-describedby="favorite-scratch-instructions"
+          tabIndex={revealed ? -1 : 0}
+          onKeyDown={scratchWithKeyboard}
           onPointerDown={startScratch}
           onPointerMove={(event) => {
             if (pointerRef.current === event.pointerId) scratch(pointerPoint(event));
@@ -305,54 +268,8 @@ export function FavoriteRevealCard({
             }
           }}
         />
-        <div className="favorite-surface-shine" aria-hidden="true" />
-        {(mode === "click" || visible) && scratchReady && (
-          <button
-            type="button"
-            className="favorite-card-action"
-            aria-label={visible ? `Show next item in ${favorite.title.toLowerCase()}` : `Reveal an item in ${favorite.title.toLowerCase()}`}
-            aria-expanded={visible}
-            aria-controls={`favorite-picks-${favorite.id}`}
-            aria-describedby={`favorite-instruction-${favorite.id}`}
-            onClick={showNextFavorite}
-          />
-        )}
       </div>
-      <div className="favorite-reveal-footer">
-        <p id={`favorite-instruction-${favorite.id}`} className="favorite-instruction">
-          {visible ? "Click the card for the next favorite." : mode === "click" ? "Click to reveal one favorite." : mode === "hover" ? "Hover to reveal one favorite." : "Scratch to reveal one favorite."}
-        </p>
-        {mode === "scratch" && (
-          <div
-            className="favorite-scratch-progress"
-            role="progressbar"
-            aria-label="Scratch reveal progress"
-            aria-valuenow={progress}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            style={{ "--scratch-progress": `${progress}%` } as CSSProperties}
-          ><span /></div>
-        )}
-        <div className="favorite-item-actions">
-          <button
-            className="favorite-reveal-button"
-            type="button"
-            aria-expanded={visible}
-            aria-controls={`favorite-picks-${favorite.id}`}
-            disabled={!scratchReady}
-            onClick={showNextFavorite}
-          >
-            {visible ? <ArrowRight size={14} aria-hidden="true" /> : <Sparkles size={14} aria-hidden="true" />}
-            {!scratchReady ? "Revealing…" : visible ? "Next favorite" : "Reveal favorite"}
-          </button>
-          {revealed && (
-            <button className="favorite-reveal-button favorite-cover-button" type="button" aria-label="Cover this favorite" onClick={reset}>
-              <RotateCcw size={14} aria-hidden="true" />
-            </button>
-          )}
-        </div>
-        <span className="favorite-reveal-announcement" role="status">{revealed ? `${item.name}. Favorite ${activeItem + 1} of ${favorite.items.length}.` : ""}</span>
-      </div>
+      <span className="favorite-reveal-announcement" role="status">{revealed ? `${item.name}${item.detail ? `, ${item.detail}` : ""}.` : ""}</span>
     </div>
   );
 }
