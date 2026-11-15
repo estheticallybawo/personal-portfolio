@@ -244,6 +244,7 @@ export function FavoriteRevealCard({
           <div className="favorite-single-pick">
             {favorite.id === "books" ? <cite>{item.name}</cite> : <span className="favorite-pick-name">{item.name}</span>}
             {item.detail && <span className="favorite-pick-detail">{item.detail}</span>}
+            {item.note && <p className="favorite-personal-note">{item.note}</p>}
           </div>
           <Sparkles className="favorite-content-sparkle" size={22} aria-hidden="true" />
         </div>
@@ -269,7 +270,7 @@ export function FavoriteRevealCard({
           }}
         />
       </div>
-      <span className="favorite-reveal-announcement" role="status">{revealed ? `${item.name}${item.detail ? `, ${item.detail}` : ""}.` : ""}</span>
+      <span className="favorite-reveal-announcement" role="status">{revealed ? `${item.name}${item.detail ? `, ${item.detail}` : ""}.${item.note ? ` ${item.note}` : ""}` : ""}</span>
     </div>
   );
 }

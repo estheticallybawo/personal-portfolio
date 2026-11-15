@@ -62,7 +62,7 @@ export const humanFavorites: Array<{
   id: string;
   title: string;
   note?: string;
-  items: Array<{ name: string; detail?: string }>;
+  items: Array<{ name: string; detail?: string; note?: string }>;
 }> = [
   {
     id: "meals",
@@ -99,6 +99,23 @@ export const humanFavorites: Array<{
       { name: "Amy Okoli" },
       { name: "Tobe Szn" },
       { name: "Layi Wasabi" },
+      { name: "Toni Olaoye" },
+    ],
+  },
+  {
+    id: "couples",
+    title: "Favorite couples",
+    items: [
+      { name: "Barack × Michelle" },
+      { name: "Tara × Fela" },
+      { name: "Jay × Bey" },
+    ],
+  },
+  {
+    id: "president",
+    title: "Favorite president",
+    items: [
+      { name: "Peter Obi", note: "Not president yet, but he’s my favorite." },
     ],
   },
   {
