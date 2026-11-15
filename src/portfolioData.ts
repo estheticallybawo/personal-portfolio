@@ -58,6 +58,62 @@ export const profile = {
   },
 };
 
+export const humanFavorites: Array<{
+  id: string;
+  title: string;
+  note?: string;
+  items: Array<{ name: string; detail?: string }>;
+}> = [
+  {
+    id: "meals",
+    title: "Favorite meals",
+    note: "It’s a tough choice between these two.",
+    items: [{ name: "Afang soup" }, { name: "Chinese fried rice" }],
+  },
+  {
+    id: "artists",
+    title: "Favorite artists",
+    items: [
+      { name: "Tems", detail: "of course" },
+      { name: "Prinz Emmanuel" },
+      { name: "Ayra Starr" },
+      { name: "Omah Lay" },
+      { name: "Amb. Chinyere Udoma" },
+    ],
+  },
+  {
+    id: "books",
+    title: "Favorite books",
+    note: "The books I’ve read so far that have made the biggest impact on my life.",
+    items: [
+      { name: "Becoming Supernatural", detail: "Joe Dispenza" },
+      { name: "Why You Act the Way You Do", detail: "Tim LaHaye" },
+      { name: "You Are a Badass", detail: "Jen Sincero" },
+    ],
+  },
+  {
+    id: "creators",
+    title: "Favorite creators",
+    items: [
+      { name: "Toke Makinwa" },
+      { name: "Amy Okoli" },
+      { name: "Tobe Szn" },
+      { name: "Layi Wasabi" },
+    ],
+  },
+  {
+    id: "shows",
+    title: "Favorite shows",
+    items: [
+      { name: "Supernatural" },
+      { name: "Warrior Nun" },
+      { name: "American Gods" },
+      { name: "The Originals" },
+      { name: "Dead Boy Detectives" },
+    ],
+  },
+];
+
 export const writingPosts = [
   {
     publication: "The Flowst Experience",

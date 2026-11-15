@@ -26,6 +26,7 @@ import {
   certifications,
   earlyHer,
   education,
+  humanFavorites,
   journeyChapters,
   profile,
   projects,
@@ -34,6 +35,7 @@ import {
   whyCards,
   writingPosts,
 } from "./portfolioData";
+import { FavoriteRevealCard, type FavoriteRevealMode } from "./FavoriteRevealCard";
 
 type Theme = "dark" | "light";
 
@@ -613,7 +615,7 @@ function App() {
             <Writing onSoundCue={playSound} />
             <Journey />
             <LearningCredentials onNavigate={navigateTo} onSoundCue={playSound} />
-            <OutsideWork />
+            <OutsideWork theme={theme} onSoundCue={playSound} />
           </>
         )}
       </main>
@@ -891,7 +893,20 @@ function Hero({ onSoundCue }: { onSoundCue: (kind: SoundKind) => void }) {
   );
 }
 
-function OutsideWork() {
+function OutsideWork({ theme, onSoundCue }: { theme: Theme; onSoundCue: (kind: SoundKind) => void }) {
+  const [activeFavorite, setActiveFavorite] = useState(0);
+  const [direction, setDirection] = useState<-1 | 1>(1);
+  const [revealMode, setRevealMode] = useState<FavoriteRevealMode>("click");
+  const group = humanFavorites[activeFavorite];
+  const previousGroup = humanFavorites[(activeFavorite - 1 + humanFavorites.length) % humanFavorites.length];
+  const nextGroup = humanFavorites[(activeFavorite + 1) % humanFavorites.length];
+
+  const moveFavorite = (direction: -1 | 1) => {
+    onSoundCue("button");
+    setDirection(direction);
+    setActiveFavorite((index) => (index + direction + humanFavorites.length) % humanFavorites.length);
+  };
+
   return (
     <section className="now-section outside-work section-anchor" id="outside-work" aria-labelledby="outside-work-title">
       <div className="index-section-heading" data-reveal>
@@ -914,6 +929,59 @@ function OutsideWork() {
             I’d like to make more time for reading.
           </p>
         </div>
+      </div>
+      <div className="favorites-carousel" role="region" aria-roledescription="carousel" aria-label="My favorites" data-reveal>
+        <div className="favorites-toolbar">
+          <p className="favorites-position" aria-live="polite" aria-atomic="true">
+            <span>{String(activeFavorite + 1).padStart(2, "0")}</span>
+            <span>/ {String(humanFavorites.length).padStart(2, "0")}</span>
+          </p>
+          <div className="favorites-modes" role="group" aria-label="Reveal style">
+            {(["click", "hover", "scratch"] as const).map((mode) => (
+              <button
+                type="button"
+                key={mode}
+                aria-pressed={revealMode === mode}
+                onClick={() => {
+                  onSoundCue("button");
+                  setRevealMode(mode);
+                }}
+              >
+                {mode === "click" ? "Click" : mode === "hover" ? "Hover" : "Scratch"}
+              </button>
+            ))}
+          </div>
+        </div>
+        <h3 className="favorites-active-title" aria-live="polite" aria-atomic="true">{group.title}</h3>
+        <div className="favorites-deck">
+          <div className="favorite-peek favorite-peek--previous" aria-hidden="true" key={`previous-${previousGroup.id}`}>
+            <span>?</span>
+            <small>{previousGroup.title}</small>
+          </div>
+          <div className="favorite-peek favorite-peek--next" aria-hidden="true" key={`next-${nextGroup.id}`}>
+            <span>?</span>
+            <small>{nextGroup.title}</small>
+          </div>
+          <div className="project-carousel-controls favorites-controls">
+            <button type="button" onClick={() => moveFavorite(-1)} aria-label="Previous favorites category" aria-controls="favorite-slide">
+              <ArrowLeft size={18} aria-hidden="true" />
+            </button>
+            <button type="button" onClick={() => moveFavorite(1)} aria-label="Next favorites category" aria-controls="favorite-slide">
+              <ArrowRight size={18} aria-hidden="true" />
+            </button>
+          </div>
+          <div id="favorite-slide" role="group" aria-roledescription="slide" aria-label={`${activeFavorite + 1} of ${humanFavorites.length}: ${group.title}`}>
+            <FavoriteRevealCard
+              key={group.id}
+              favorite={group}
+              mode={revealMode}
+              theme={theme}
+              direction={direction}
+              onReveal={() => onSoundCue("projectReveal")}
+            />
+          </div>
+        </div>
+        <p className="favorites-help">Use the arrows to discover more.</p>
       </div>
     </section>
   );
