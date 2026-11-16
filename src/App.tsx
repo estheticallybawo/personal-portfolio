@@ -935,9 +935,10 @@ function OutsideWork({ theme, onSoundCue }: { theme: Theme; onSoundCue: (kind: S
           </p>
         </div>
       </div>
-      <div className="favorites-carousel" role="region" aria-roledescription="carousel" aria-label="My favorites" data-reveal>
+      <div className="favorites-carousel" role="region" aria-roledescription="carousel" aria-labelledby="favorites-title" data-reveal>
+        <h3 className="favorites-title" id="favorites-title">Scratch to reveal a few of my favorite things.</h3>
         <div className="favorites-card-heading" aria-live="polite" aria-atomic="true">
-          <h3 className="favorites-active-title">{card.favorite.title}</h3>
+          <h4 className="favorites-active-title">{card.favorite.title}</h4>
           <p className="favorites-item-count">{card.itemIndex + 1} of {card.favorite.items.length}</p>
         </div>
         <div className="favorites-deck">

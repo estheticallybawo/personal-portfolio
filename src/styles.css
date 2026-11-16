@@ -4033,11 +4033,23 @@ img {
   margin-top: clamp(40px, 6vw, 64px);
 }
 
+.favorites-title {
+  max-width: 30ch;
+  margin: 0 auto clamp(24px, 3vw, 36px);
+  color: var(--text);
+  font-family: var(--heading-font);
+  font-size: clamp(1.65rem, 3vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  text-align: center;
+}
+
 .favorites-active-title {
   margin: 0;
   color: var(--text);
   font-family: var(--heading-font);
-  font-size: clamp(1.8rem, 3.4vw, 2.7rem);
+  font-size: clamp(1.1rem, 2.1vw, 1.45rem);
   font-weight: 600;
   letter-spacing: -0.035em;
   line-height: 1.15;
