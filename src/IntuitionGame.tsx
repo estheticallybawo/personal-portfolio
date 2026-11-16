@@ -60,7 +60,7 @@ export function IntuitionGame({ onInteract }: { onInteract: () => void }) {
         </div>
         <div>
           <p className="intuition-intro">Two lies. One truth. How well have you read me?</p>
-          <p>Five rounds about the person behind the work. Pick the statement that feels true in each one.</p>
+          <p>{intuitionRounds.length} rounds about the person behind the work. Pick the statement that feels true in each one.</p>
         </div>
       </div>
 

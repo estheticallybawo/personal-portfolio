@@ -40,11 +40,20 @@ export const intuitionRounds = [
   },
   {
     id: "round-five",
-    category: "One last guess",
+    category: "Another side of me",
     options: [
       "I once cooked a full meal for thirty people.",
       "I can finish a 1,000-piece puzzle in one afternoon.",
       "I started school in Primary 3.",
+    ],
+  },
+  {
+    id: "round-six",
+    category: "One last guess",
+    options: [
+      "I’ve learned to play the drums.",
+      "I’ve got anxiety evoked dyslexia.",
+      "I once grew all the vegetables for a meal myself.",
     ],
   },
 ] as const;

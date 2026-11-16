@@ -37,6 +37,7 @@ import {
 } from "./portfolioData";
 import { FavoriteRevealCard } from "./FavoriteRevealCard";
 import { IntuitionGame } from "./IntuitionGame";
+import { VersusSeries } from "./VersusSeries";
 
 type Theme = "dark" | "light";
 
@@ -617,6 +618,7 @@ function App() {
             <Journey />
             <LearningCredentials onNavigate={navigateTo} onSoundCue={playSound} />
             <OutsideWork theme={theme} onSoundCue={playSound} />
+            <VersusSeries onInteract={() => playSound("button")} />
             <IntuitionGame onInteract={() => playSound("button")} />
           </>
         )}
