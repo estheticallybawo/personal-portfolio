@@ -36,6 +36,7 @@ import {
   writingPosts,
 } from "./portfolioData";
 import { FavoriteRevealCard } from "./FavoriteRevealCard";
+import { IntuitionGame } from "./IntuitionGame";
 
 type Theme = "dark" | "light";
 
@@ -616,6 +617,7 @@ function App() {
             <Journey />
             <LearningCredentials onNavigate={navigateTo} onSoundCue={playSound} />
             <OutsideWork theme={theme} onSoundCue={playSound} />
+            <IntuitionGame onInteract={() => playSound("button")} />
           </>
         )}
       </main>

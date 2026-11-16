@@ -1,0 +1,405 @@
+.intuition-section .index-kicker {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.intuition-section .intuition-intro {
+  margin-top: 0;
+  color: var(--muted-strong);
+}
+
+.intuition-game {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 760px);
+  margin-inline: auto;
+  padding: clamp(22px, 4vw, 42px);
+  overflow: clip;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background: var(--project-card-bg);
+  box-shadow: inset 0 1px 0 var(--line), 0 20px 50px var(--shadow);
+}
+
+.intuition-game::before {
+  position: absolute;
+  z-index: -1;
+  top: -150px;
+  right: -160px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-soft), transparent 70%);
+  pointer-events: none;
+  content: "";
+}
+
+.intuition-progress {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.intuition-progress > span {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line);
+  transition: background 200ms ease;
+}
+
+.intuition-progress > .is-complete {
+  background: var(--accent);
+}
+
+.intuition-progress > .is-current {
+  background: var(--accent-line);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.intuition-progress > .is-complete.is-current {
+  background: var(--accent);
+}
+
+.intuition-round-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.intuition-kicker {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.66rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.intuition-rule {
+  display: inline-flex;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+
+.intuition-rule > span {
+  color: var(--accent);
+}
+
+.intuition-round h3,
+.intuition-finish h3 {
+  margin: 16px 0 0;
+  color: var(--text);
+  font-family: var(--heading-font);
+  font-size: clamp(1.65rem, 3.2vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.intuition-round h3:focus,
+.intuition-finish h3:focus {
+  outline: none;
+}
+
+.intuition-options {
+  display: grid;
+  gap: 13px;
+  min-width: 0;
+  margin: 26px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.intuition-options legend {
+  margin-bottom: 16px;
+  padding: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.intuition-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 78px;
+  padding: 17px 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel);
+  cursor: pointer;
+  transition: border-color 200ms ease, background 200ms ease;
+}
+
+.intuition-option input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.intuition-option-letter {
+  display: grid;
+  flex: 0 0 35px;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--muted-strong);
+  font-family: var(--heading-font);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.intuition-option-copy {
+  min-width: 0;
+  color: var(--muted-strong);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.intuition-option.is-selected {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.intuition-option.is-selected .intuition-option-letter {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--bg);
+}
+
+.intuition-option.is-selected .intuition-option-copy {
+  color: var(--text);
+}
+
+.intuition-option:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.intuition-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.intuition-back,
+.intuition-next,
+.intuition-connect,
+.intuition-replay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 44px;
+  border: 0;
+  font: inherit;
+  font-size: 0.77rem;
+  line-height: 1.5;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.intuition-next,
+.intuition-connect {
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  font-weight: 700;
+}
+
+.intuition-back,
+.intuition-replay {
+  padding: 8px 0;
+  background: transparent;
+  color: var(--muted-strong);
+}
+
+.intuition-next:disabled,
+.intuition-back:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.intuition-back:focus-visible,
+.intuition-next:focus-visible,
+.intuition-connect:focus-visible,
+.intuition-replay:focus-visible,
+.intuition-recap summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.intuition-finish {
+  padding-top: 10px;
+  text-align: center;
+}
+
+.intuition-finish-icon {
+  display: grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 24px;
+  border: 1px solid var(--accent-line);
+  border-radius: 22px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  transform: rotate(-7deg);
+}
+
+.intuition-finish h3 {
+  max-width: 22ch;
+  margin-inline: auto;
+  font-size: clamp(1.95rem, 3.8vw, 2.9rem);
+}
+
+.intuition-finish > p:not(.intuition-kicker) {
+  max-width: 49ch;
+  margin: 20px auto 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.75;
+}
+
+.intuition-finish-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.intuition-recap {
+  margin-top: 30px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  text-align: left;
+}
+
+.intuition-recap summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 30px;
+  color: var(--muted-strong);
+  font-size: 0.77rem;
+  line-height: 1.5;
+  list-style: none;
+  cursor: pointer;
+}
+
+.intuition-recap summary::-webkit-details-marker {
+  display: none;
+}
+
+.intuition-recap[open] summary > svg {
+  transform: rotate(180deg);
+}
+
+.intuition-recap ol {
+  display: grid;
+  gap: 20px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.intuition-recap li > span {
+  color: var(--accent);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.intuition-recap li > p {
+  margin: 7px 0 0;
+  color: var(--muted-strong);
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.intuition-enter {
+  animation: intuition-enter 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes intuition-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (hover: hover) {
+  .intuition-option:hover {
+    border-color: var(--accent-line);
+    background: var(--accent-soft);
+  }
+}
+
+@media (max-width: 520px) {
+  .intuition-game {
+    padding: 24px 20px;
+    border-radius: 20px;
+  }
+
+  .intuition-option {
+    gap: 12px;
+    padding: 15px 12px;
+    border-radius: 15px;
+  }
+
+  .intuition-option-copy {
+    font-size: 0.8rem;
+  }
+
+  .intuition-option-letter {
+    flex-basis: 30px;
+    width: 30px;
+    height: 30px;
+    font-size: 0.75rem;
+  }
+
+  .intuition-back,
+  .intuition-next {
+    gap: 6px;
+    font-size: 0.72rem;
+  }
+
+  .intuition-next {
+    padding-inline: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intuition-enter {
+    animation: none !important;
+  }
+
+  .intuition-option,
+  .intuition-progress > span {
+    transition: none;
+  }
+
+  .intuition-finish-icon {
+    transform: none;
+  }
+}
