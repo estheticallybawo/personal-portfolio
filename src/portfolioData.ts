@@ -84,7 +84,7 @@ export const humanFavorites: Array<{
   {
     id: "books",
     title: "Favorite books",
-    note: "The books I’ve read so far that have made the biggest impact on my life.",
+    note: "One of the books that’s had the biggest impact on my life.",
     items: [
       { name: "Becoming Supernatural", detail: "Joe Dispenza" },
       { name: "Why You Act the Way You Do", detail: "Tim LaHaye" },

@@ -33,6 +33,7 @@ export function FavoriteRevealCard({
   const keyboardPointRef = useRef<Point | null>(null);
   const [revealed, setRevealed] = useState(false);
   const item = favorite.items[itemIndex];
+  const reason = item.note ?? favorite.note;
 
   const paintCover = useCallback(() => {
     const canvas = canvasRef.current;
@@ -239,38 +240,43 @@ export function FavoriteRevealCard({
   return (
     <div className="favorite-primary" style={{ "--favorite-enter-x": `${direction * 48}px` } as CSSProperties}>
       <div className={`favorite-surface${revealed ? " is-revealed" : ""}`}>
-        <div className="favorite-reveal-content" aria-hidden={!revealed}>
-          {favorite.note && <p className="favorite-note">{favorite.note}</p>}
-          <div className="favorite-single-pick">
-            {favorite.id === "books" ? <cite>{item.name}</cite> : <span className="favorite-pick-name">{item.name}</span>}
-            {item.detail && <span className="favorite-pick-detail">{item.detail}</span>}
-            {item.note && <p className="favorite-personal-note">{item.note}</p>}
-          </div>
-          <Sparkles className="favorite-content-sparkle" size={22} aria-hidden="true" />
+        <div className="favorites-card-heading" aria-live="polite" aria-atomic="true">
+          <h4 className="favorites-active-title">{favorite.title}</h4>
+          <p className="favorites-item-count">{itemIndex + 1} of {favorite.items.length}</p>
         </div>
-        <canvas
-          ref={canvasRef}
-          className="favorite-scratch-cover"
-          role="img"
-          aria-label={`${favorite.title}, ${itemIndex + 1} of ${favorite.items.length}. ${revealed ? "Revealed." : "Scratch to reveal."}`}
-          aria-describedby="favorite-scratch-instructions"
-          tabIndex={revealed ? -1 : 0}
-          onKeyDown={scratchWithKeyboard}
-          onPointerDown={startScratch}
-          onPointerMove={(event) => {
-            if (pointerRef.current === event.pointerId) scratch(pointerPoint(event));
-          }}
-          onPointerUp={endScratch}
-          onPointerCancel={endScratch}
-          onLostPointerCapture={(event) => {
-            if (pointerRef.current === event.pointerId) {
-              pointerRef.current = null;
-              lastPointRef.current = null;
-            }
-          }}
-        />
+        <div className="favorite-scratch-area">
+          <div className="favorite-reveal-content" aria-hidden={!revealed}>
+            <div className="favorite-single-pick">
+              {favorite.id === "books" ? <cite>{item.name}</cite> : <span className="favorite-pick-name">{item.name}</span>}
+              {item.detail && <span className="favorite-pick-detail">{item.detail}</span>}
+              {reason && <p className="favorite-personal-note">{reason}</p>}
+            </div>
+            <Sparkles className="favorite-content-sparkle" size={22} aria-hidden="true" />
+          </div>
+          <canvas
+            ref={canvasRef}
+            className="favorite-scratch-cover"
+            role="img"
+            aria-label={`${favorite.title}, ${itemIndex + 1} of ${favorite.items.length}. ${revealed ? "Revealed." : "Scratch to reveal."}`}
+            aria-describedby="favorite-scratch-instructions"
+            tabIndex={revealed ? -1 : 0}
+            onKeyDown={scratchWithKeyboard}
+            onPointerDown={startScratch}
+            onPointerMove={(event) => {
+              if (pointerRef.current === event.pointerId) scratch(pointerPoint(event));
+            }}
+            onPointerUp={endScratch}
+            onPointerCancel={endScratch}
+            onLostPointerCapture={(event) => {
+              if (pointerRef.current === event.pointerId) {
+                pointerRef.current = null;
+                lastPointRef.current = null;
+              }
+            }}
+          />
+        </div>
       </div>
-      <span className="favorite-reveal-announcement" role="status">{revealed ? `${item.name}${item.detail ? `, ${item.detail}` : ""}.${item.note ? ` ${item.note}` : ""}` : ""}</span>
+      <span className="favorite-reveal-announcement" role="status">{revealed ? `${item.name}${item.detail ? `, ${item.detail}` : ""}.${reason ? ` ${reason}` : ""}` : ""}</span>
     </div>
   );
 }

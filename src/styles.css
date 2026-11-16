@@ -4056,8 +4056,15 @@ img {
   text-align: center;
 }
 
+.favorites-card-heading {
+  flex: none;
+  padding: 20px clamp(24px, 3.4vw, 38px) 18px;
+  border-bottom: 1px solid var(--line);
+  background: var(--project-card-bg);
+}
+
 .favorites-item-count {
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   color: var(--muted);
   font-size: 0.78rem;
   font-variant-numeric: tabular-nums;
@@ -4161,6 +4168,8 @@ img {
 
 .favorite-surface {
   position: relative;
+  display: flex;
+  flex-direction: column;
   user-select: none;
   height: var(--favorite-card-height);
   overflow: hidden;
@@ -4176,6 +4185,14 @@ img {
   box-shadow: inset 0 1px 0 var(--accent-line), 0 24px 60px var(--shadow), 0 0 45px var(--accent-soft);
 }
 
+.favorite-scratch-area {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 0 0 25px 25px;
+}
+
 .favorite-reveal-content {
   position: relative;
   display: flex;
@@ -4184,13 +4201,6 @@ img {
   height: 100%;
   padding: clamp(24px, 3.4vw, 38px);
   background: radial-gradient(ellipse at 50% 0, var(--accent-soft), transparent 75%);
-}
-
-.favorite-note {
-  margin: 0 0 24px;
-  color: var(--muted);
-  font-size: 0.78rem;
-  line-height: 1.65;
 }
 
 .favorite-single-pick {
