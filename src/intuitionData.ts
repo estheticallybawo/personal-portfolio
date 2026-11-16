@@ -1,49 +1,49 @@
-// Based on personal stories Esther shared, with alternative versions for the
-// game. Choices stay unscored: the answers belong in a conversation, not an
-// answer key in the browser.
+// Each round mixes one shared personal fact with two unrelated fictional
+// statements. Choices stay unscored: the answers belong in a conversation,
+// not an answer key in the browser.
 export const intuitionRounds = [
   {
-    id: "cycling",
-    category: "On two wheels",
+    id: "round-one",
+    category: "First impressions",
     options: [
-      "A friend taught me how to ride a bicycle.",
+      "I can juggle three oranges without dropping one.",
       "I taught myself how to ride a bicycle.",
-      "I learned to ride a bicycle with an instructor.",
+      "I’ve never tasted coffee.",
     ],
   },
   {
-    id: "childhood",
-    category: "A childhood plot twist",
+    id: "round-two",
+    category: "A little backstory",
     options: [
-      "My childhood fall landed me in a swimming pool.",
-      "My childhood fall landed me in a sandpit.",
-      "My childhood fall landed me in a gutter.",
+      "I once won a karaoke competition.",
+      "I collect postcards from every city I visit.",
+      "I fell inside a gutter as a child.",
     ],
   },
   {
-    id: "fears",
-    category: "Little fears",
+    id: "round-three",
+    category: "More than meets the eye",
     options: [
       "I have trypophobia and I’m scared of heights.",
-      "I’m scared of heights, but I don’t have trypophobia.",
-      "I have trypophobia, but heights don’t scare me.",
+      "I can write neatly with both hands.",
+      "I once slept through an entire concert.",
     ],
   },
   {
-    id: "blue",
-    category: "My blue dilemma",
+    id: "round-four",
+    category: "Follow your instinct",
     options: [
-      "I’ve already settled on one favorite shade of blue.",
+      "I’ve been an extra in a movie.",
       "I can’t decide which shade of blue is my favorite.",
-      "I don’t like any shade of blue.",
+      "I can name every country in Africa from memory.",
     ],
   },
   {
-    id: "school",
-    category: "The first classroom",
+    id: "round-five",
+    category: "One last guess",
     options: [
-      "I started school in Primary 1.",
-      "I started school in Primary 2.",
+      "I once cooked a full meal for thirty people.",
+      "I can finish a 1,000-piece puzzle in one afternoon.",
       "I started school in Primary 3.",
     ],
   },
